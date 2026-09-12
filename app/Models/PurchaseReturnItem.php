@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToCompany;
 use Illuminate\Database\Eloquent\Model;
 
 class PurchaseReturnItem extends Model
 {
+    use BelongsToCompany;
+
     protected $fillable = [
+        'company_id',
         'purchase_return_id',
         'product_id',
         'unit_id',

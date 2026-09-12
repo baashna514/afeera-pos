@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -15,13 +16,17 @@ class UserController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = User::with('roles')->latest();
+        $query = User::with(['roles', 'company'])->latest();
 
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%");
             });
+        }
+
+        if ($companyId = $request->input('company_id')) {
+            $query->where('company_id', $companyId);
         }
 
         if ($roleId = $request->input('role_id')) {
@@ -34,28 +39,41 @@ class UserController extends Controller
 
         $users = $query->paginate(15)->withQueryString();
         $roles = Role::orderBy('name')->get();
+        $companies = Company::orderBy('name')->get();
 
-        return view('users.index', compact('users', 'roles'));
+        return view('users.index', compact('users', 'roles', 'companies'));
     }
 
     public function create(): View
     {
         $roles = Role::orderBy('name')->get();
+        $companies = Company::where('is_active', true)->orderBy('name')->get();
 
-        return view('users.create', compact('roles'));
+        return view('users.create', compact('roles', 'companies'));
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
+        $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:6'],
             'role_id' => ['nullable', 'exists:roles,id'],
             'is_active' => ['nullable', 'boolean'],
-        ]);
+        ];
+
+        if (Auth::user()?->isSuperAdmin()) {
+            $rules['company_id'] = ['nullable', 'exists:companies,id'];
+        }
+
+        $validated = $request->validate($rules);
+
+        $companyId = Auth::user()?->isSuperAdmin()
+            ? ($validated['company_id'] ?? Auth::user()->company_id)
+            : Auth::user()->company_id;
 
         $user = User::create([
+            'company_id' => $companyId,
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
@@ -76,19 +94,26 @@ class UserController extends Controller
     public function edit(User $user): View
     {
         $roles = Role::orderBy('name')->get();
+        $companies = Company::orderBy('name')->get();
 
-        return view('users.edit', compact('user', 'roles'));
+        return view('users.edit', compact('user', 'roles', 'companies'));
     }
 
     public function update(Request $request, User $user): RedirectResponse
     {
-        $validated = $request->validate([
+        $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'password' => ['nullable', 'string', 'min:6'],
             'role_id' => ['nullable', 'exists:roles,id'],
             'is_active' => ['nullable', 'boolean'],
-        ]);
+        ];
+
+        if (Auth::user()?->isSuperAdmin()) {
+            $rules['company_id'] = ['nullable', 'exists:companies,id'];
+        }
+
+        $validated = $request->validate($rules);
 
         // Guard against self deactivation
         if ($user->id === Auth::id() && ! $request->boolean('is_active')) {
@@ -100,6 +125,10 @@ class UserController extends Controller
             'email' => $validated['email'],
             'is_active' => $request->boolean('is_active', true),
         ];
+
+        if (Auth::user()?->isSuperAdmin() && array_key_exists('company_id', $validated)) {
+            $userData['company_id'] = $validated['company_id'];
+        }
 
         if (! empty($validated['password'])) {
             $userData['password'] = Hash::make($validated['password']);

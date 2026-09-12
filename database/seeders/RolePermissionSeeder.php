@@ -2,9 +2,29 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
+use App\Models\Company;
+use App\Models\Customer;
 use App\Models\Permission;
+use App\Models\Product;
+use App\Models\ProductUnit;
+use App\Models\Purchase;
+use App\Models\PurchaseItem;
+use App\Models\PurchaseOrder;
+use App\Models\PurchaseOrderItem;
+use App\Models\PurchaseReturn;
+use App\Models\PurchaseReturnItem;
 use App\Models\Role;
+use App\Models\Sale;
+use App\Models\SaleItem;
+use App\Models\SaleOrder;
+use App\Models\SaleOrderItem;
+use App\Models\SaleReturn;
+use App\Models\SaleReturnItem;
+use App\Models\StockMovement;
+use App\Models\Unit;
 use App\Models\User;
+use App\Models\Vendor;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -14,6 +34,12 @@ class RolePermissionSeeder extends Seeder
     {
         // 1. Define All Granular Module Permissions
         $permissionsList = [
+            // Companies (Multi-Tenancy)
+            ['name' => 'View Companies', 'slug' => 'companies.view', 'group' => 'Companies', 'description' => 'Can view list of tenant companies'],
+            ['name' => 'Create Company', 'slug' => 'companies.create', 'group' => 'Companies', 'description' => 'Can register and setup new tenant companies'],
+            ['name' => 'Edit Company', 'slug' => 'companies.edit', 'group' => 'Companies', 'description' => 'Can modify company information and settings'],
+            ['name' => 'Delete Company', 'slug' => 'companies.delete', 'group' => 'Companies', 'description' => 'Can deactivate or delete companies'],
+
             // Dashboard
             ['name' => 'View Dashboard', 'slug' => 'dashboard.view', 'group' => 'Dashboard', 'description' => 'Can view business metrics and dashboard overview'],
 
@@ -281,11 +307,52 @@ class RolePermissionSeeder extends Seeder
         ])->get();
         $inventoryRole->syncPermissions($inventoryPermissions);
 
-        // 4. Create Default Super Admin & Demo Cashier Users
-        $adminUser = User::firstOrCreate(
+        // 4. Seed Default Tenant Company
+        $defaultCompany = Company::firstOrCreate(
+            ['name' => 'Smart POS General Trading LLC'],
+            [
+                'code' => 'COMP-001',
+                'email' => 'contact@smartpos.com',
+                'phone' => '+92 300 1234567',
+                'address' => 'Main Commercial Boulevard, Suite 100',
+                'currency' => 'PKR',
+                'is_active' => true,
+            ]
+        );
+
+        // Associate existing data without company_id to default company
+        $tenantModels = [
+            Product::class,
+            Category::class,
+            Unit::class,
+            Customer::class,
+            Vendor::class,
+            Sale::class,
+            SaleItem::class,
+            SaleOrder::class,
+            SaleOrderItem::class,
+            SaleReturn::class,
+            SaleReturnItem::class,
+            Purchase::class,
+            PurchaseItem::class,
+            PurchaseOrder::class,
+            PurchaseOrderItem::class,
+            PurchaseReturn::class,
+            PurchaseReturnItem::class,
+            StockMovement::class,
+            ProductUnit::class,
+        ];
+
+        foreach ($tenantModels as $modelClass) {
+            $modelClass::withoutGlobalScopes()->whereNull('company_id')->update(['company_id' => $defaultCompany->id]);
+        }
+
+        // 5. Create Default Super Admin & Demo Cashier Users
+        $adminUser = User::updateOrCreate(
             ['email' => 'admin@smartpos.com'],
             [
                 'name' => 'Super Admin',
+                'company_id' => $defaultCompany->id,
                 'password' => Hash::make('password123'),
                 'is_active' => true,
             ]
@@ -296,10 +363,13 @@ class RolePermissionSeeder extends Seeder
             ['email' => 'cashier@smartpos.com'],
             [
                 'name' => 'Afeera Cashier',
+                'company_id' => $defaultCompany->id,
                 'password' => Hash::make('password123'),
                 'is_active' => true,
             ]
         );
         $cashierUser->syncRoles([$cashierRole]);
+
+        User::withoutGlobalScopes()->whereNull('company_id')->update(['company_id' => $defaultCompany->id]);
     }
 }

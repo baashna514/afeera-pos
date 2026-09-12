@@ -56,11 +56,22 @@
                 </select>
             </div>
 
+            @if(auth()->user()?->isSuperAdmin())
+                <div class="w-full sm:w-48">
+                    <select name="company_id" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                        <option value="">All Companies</option>
+                        @foreach($companies as $c)
+                            <option value="{{ $c->id }}" {{ request('company_id') == $c->id ? 'selected' : '' }}>{{ $c->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            @endif
+
             <div class="flex items-center gap-2 w-full sm:w-auto">
                 <button type="submit" class="w-full sm:w-auto px-4 py-2 bg-slate-800 text-white text-sm font-semibold rounded-lg hover:bg-slate-700 transition">
                     Filter
                 </button>
-                @if(request()->hasAny(['search', 'role_id', 'status']))
+                @if(request()->hasAny(['search', 'role_id', 'company_id', 'status']))
                     <a href="{{ route('users.index') }}" class="px-3 py-2 text-xs font-semibold text-slate-500 hover:text-slate-800 transition">
                         Clear
                     </a>
@@ -77,6 +88,7 @@
                     <tr>
                         <th class="px-6 py-3.5">User</th>
                         <th class="px-6 py-3.5">Email</th>
+                        <th class="px-6 py-3.5">Company</th>
                         <th class="px-6 py-3.5">Role</th>
                         <th class="px-6 py-3.5">Status</th>
                         <th class="px-6 py-3.5">Created At</th>
@@ -99,6 +111,16 @@
                             </td>
                             <td class="px-6 py-4 text-slate-600 font-mono text-xs">
                                 {{ $user->email }}
+                            </td>
+                            <td class="px-6 py-4">
+                                @if($user->company)
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200/80">
+                                        <i class="fa-solid fa-building text-[10px] text-blue-500"></i>
+                                        {{ $user->company->name }}
+                                    </span>
+                                @else
+                                    <span class="text-xs text-slate-400 italic">All / Global Admin</span>
+                                @endif
                             </td>
                             <td class="px-6 py-4">
                                 @if($user->role)

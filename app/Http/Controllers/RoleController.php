@@ -142,6 +142,7 @@ class RoleController extends Controller
             ['name' => 'Allow Print Product Barcode Labels', 'slug' => 'products.barcode'],
             ['name' => 'Allow Convert Sale Orders to Invoices', 'slug' => 'sale_orders.convert'],
             ['name' => 'Allow Convert Purchase Orders to Invoices', 'slug' => 'purchase_orders.convert'],
+            ['name' => 'Allow Multi-Company & Tenant Management', 'slug' => 'companies.view'],
             ['name' => 'Allow access to time sheet (if checked user with this role will be able to see time sheet of other users)', 'slug' => 'timesheet.access'],
             ['name' => 'Allow access to People area (People list and Allocations report)', 'slug' => 'people.access'],
             ['name' => 'Has Effort', 'slug' => 'effort.access'],
@@ -156,6 +157,7 @@ class RoleController extends Controller
     private function getEntities(): array
     {
         return [
+            'Company' => 'companies',
             'Project' => 'project',
             'Release' => 'release',
             'Iteration' => 'iteration',

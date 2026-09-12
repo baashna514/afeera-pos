@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LedgerController;
@@ -54,6 +55,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard')
         ->middleware('permission:dashboard.view');
+
+    // Companies Management (Multi-Tenancy)
+    Route::get('companies', [CompanyController::class, 'index'])->name('companies.index')->middleware('permission:companies.view');
+    Route::get('companies/create', [CompanyController::class, 'create'])->name('companies.create')->middleware('permission:companies.create');
+    Route::post('companies', [CompanyController::class, 'store'])->name('companies.store')->middleware('permission:companies.create');
+    Route::get('companies/{company}/edit', [CompanyController::class, 'edit'])->name('companies.edit')->middleware('permission:companies.edit');
+    Route::put('companies/{company}', [CompanyController::class, 'update'])->name('companies.update')->middleware('permission:companies.edit');
+    Route::delete('companies/{company}', [CompanyController::class, 'destroy'])->name('companies.destroy')->middleware('permission:companies.delete');
 
     // Users Management
     Route::get('users', [UserController::class, 'index'])->name('users.index')->middleware('permission:users.view');

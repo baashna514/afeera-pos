@@ -236,6 +236,14 @@
         <i class="fa-solid fa-shield-halved text-[10px]"></i> User & Access Control
     </p>
 
+    @if($user->isSuperAdmin() || $user->hasPermission('companies.view'))
+        <a href="{{ route('companies.index') }}"
+           class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('companies.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+            <i class="fa-solid fa-building w-5 text-center text-slate-400 {{ request()->routeIs('companies.*') ? 'text-white' : '' }}"></i>
+            <span>Companies & Tenants</span>
+        </a>
+    @endif
+
     @if($user->isSuperAdmin() || $user->hasPermission('users.view'))
         <a href="{{ route('users.index') }}"
            class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('users.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
@@ -272,9 +280,18 @@
                     <span class="font-medium">System Online</span>
                 </div>
                 @if(auth()->check())
-                    <div class="text-xs text-slate-300 mb-1">
+                    <div class="text-xs text-slate-300 mb-0.5 font-bold">
                         <i class="fa-solid fa-user-circle mr-1"></i> {{ auth()->user()->name }}
                     </div>
+                    @if(auth()->user()->company)
+                        <div class="text-[11px] text-blue-400 font-medium mb-2 truncate" title="{{ auth()->user()->company->name }}">
+                            <i class="fa-solid fa-building mr-1 text-slate-500"></i> {{ auth()->user()->company->name }}
+                        </div>
+                    @elseif(auth()->user()->isSuperAdmin())
+                        <div class="text-[11px] text-amber-400 font-semibold mb-2">
+                            <i class="fa-solid fa-crown mr-1"></i> Global Super Admin
+                        </div>
+                    @endif
                     <div class="flex items-center justify-between">
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
