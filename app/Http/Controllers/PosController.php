@@ -11,6 +11,8 @@ use App\Models\SaleOrder;
 use App\Models\Scopes\CompanyScope;
 use App\Models\StockMovement;
 use App\Models\Unit;
+use App\Models\Warehouse;
+use App\Models\WarehouseStock;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -23,13 +25,11 @@ class PosController extends Controller
     /**
      * Show the POS terminal screen.
      */
-    /**
-     * Show the POS terminal screen.
-     */
     public function index(Request $request): View
     {
         $categories = Category::withCount('products')->orderBy('name')->get();
         $customers = Customer::orderBy('name')->get();
+        $warehouses = Warehouse::where('is_active', true)->orderBy('name')->get();
         $products = Product::with(['category', 'unit', 'secondaryUnits.unit'])
             ->orderBy('name')
             ->get();
@@ -86,6 +86,7 @@ class PosController extends Controller
 
         $validated = $request->validate([
             'customer_id' => ['nullable', 'exists:customers,id'],
+            'warehouse_id' => ['nullable', 'exists:warehouses,id'],
             'sale_order_id' => ['nullable', 'exists:sale_orders,id'],
             'payment_method' => ['required', 'in:cash,card,bank_transfer,online'],
             'paid_amount' => ['required', 'numeric', 'min:0'],
@@ -99,6 +100,9 @@ class PosController extends Controller
         ]);
 
         return DB::transaction(function () use ($validated) {
+            $userCompanyId = auth()->user()?->company_id;
+            $warehouseId = $validated['warehouse_id'] ?? Warehouse::where('company_id', $userCompanyId)->where('is_default', true)->value('id') ?? Warehouse::where('company_id', $userCompanyId)->value('id');
+
             // Check if linked Sale Order is already converted
             if (! empty($validated['sale_order_id'])) {
                 $linkedOrder = SaleOrder::find($validated['sale_order_id']);
@@ -163,12 +167,11 @@ class PosController extends Controller
             $paymentStatus = Sale::computePaymentStatus($paidAmount, $totalAmount);
             $invoiceNumber = 'INV-'.date('Ymd').'-'.strtoupper(Str::random(4));
 
-            $userCompanyId = auth()->user()?->company_id;
-
             // 2. Create Sale
             $sale = Sale::create([
                 'company_id' => $userCompanyId,
                 'sale_order_id' => $validated['sale_order_id'] ?? null,
+                'warehouse_id' => $warehouseId,
                 'invoice_number' => $invoiceNumber,
                 'customer_id' => $validated['customer_id'] ?? null,
                 'total_amount' => $totalAmount,
@@ -200,6 +203,14 @@ class PosController extends Controller
                 $entry['product']->decrement('quantity', $entry['base_quantity']);
                 $afterQty = $beforeQty - $entry['base_quantity'];
 
+                if ($warehouseId) {
+                    $whStock = WarehouseStock::firstOrCreate(
+                        ['company_id' => $userCompanyId, 'warehouse_id' => $warehouseId, 'product_id' => $entry['product']->id],
+                        ['quantity' => $beforeQty]
+                    );
+                    $whStock->decrement('quantity', $entry['base_quantity']);
+                }
+
                 $unitModel = ! empty($entry['unit_id']) ? Unit::find($entry['unit_id']) : null;
                 $unitLabel = $unitModel ? $unitModel->short_code : ($entry['product']->unit ? $entry['product']->unit->short_code : 'units');
 
@@ -207,6 +218,7 @@ class PosController extends Controller
                 StockMovement::create([
                     'company_id' => $userCompanyId,
                     'product_id' => $entry['product']->id,
+                    'warehouse_id' => $warehouseId,
                     'type' => 'sale',
                     'quantity' => $entry['base_quantity'],
                     'before_quantity' => $beforeQty,

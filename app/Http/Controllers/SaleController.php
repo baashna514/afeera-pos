@@ -9,9 +9,12 @@ use App\Models\SaleItem;
 use App\Models\SaleOrder;
 use App\Models\StockMovement;
 use App\Models\Unit;
+use App\Models\Warehouse;
+use App\Models\WarehouseStock;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -29,57 +32,59 @@ class SaleController extends Controller
 
         $customers = Customer::orderBy('name')->get();
 
-        $sales = Sale::with(['customer', 'items.product'])
-            ->when($search, function ($query, $search) {
-                return $query->where('invoice_number', 'like', "%{$search}%")
-                    ->orWhereHas('customer', function ($q) use ($search) {
-                        $q->where('name', 'like', "%{$search}%");
-                    });
+        $query = Sale::with(['customer', 'saleOrder', 'warehouse', 'items.product'])
+            ->when($search, function ($q, $search) {
+                return $q->where(function ($sub) use ($search) {
+                    $sub->where('invoice_number', 'like', "%{$search}%")
+                        ->orWhereHas('customer', function ($cQuery) use ($search) {
+                            $cQuery->where('name', 'like', "%{$search}%")
+                                ->orWhere('phone', 'like', "%{$search}%");
+                        });
+                });
             })
-            ->when($customerId, function ($query, $customerId) {
-                return $query->where('customer_id', $customerId);
+            ->when($paymentStatus, function ($q, $status) {
+                return $q->where('payment_status', $status);
             })
-            ->when($paymentStatus, function ($query, $paymentStatus) {
-                return $query->where('payment_status', $paymentStatus);
+            ->when($paymentMethod, function ($q, $method) {
+                return $q->where('payment_method', $method);
             })
-            ->when($paymentMethod, function ($query, $paymentMethod) {
-                return $query->where('payment_method', $paymentMethod);
+            ->when($customerId, function ($q, $cId) {
+                return $q->where('customer_id', $cId);
             })
-            ->when($dateFrom, function ($query, $dateFrom) {
-                return $query->whereDate('created_at', '>=', $dateFrom);
+            ->when($dateFrom, function ($q, $from) {
+                return $q->whereDate('created_at', '>=', $from);
             })
-            ->when($dateTo, function ($query, $dateTo) {
-                return $query->whereDate('created_at', '<=', $dateTo);
-            })
-            ->latest()
-            ->paginate(10)
-            ->withQueryString();
+            ->when($dateTo, function ($q, $to) {
+                return $q->whereDate('created_at', '<=', $to);
+            });
+
+        $sales = $query->latest()->paginate(15)->withQueryString();
 
         $totalRevenue = Sale::sum('total_amount');
         $totalPaid = Sale::sum('paid_amount');
         $totalDue = Sale::sum('due_amount');
         $totalOrders = Sale::count();
 
-        return view('sales.index', compact('sales', 'customers', 'search', 'customerId', 'paymentStatus', 'paymentMethod', 'dateFrom', 'dateTo', 'totalRevenue', 'totalPaid', 'totalDue', 'totalOrders'));
+        return view('sales.index', compact('sales', 'customers', 'search', 'paymentStatus', 'paymentMethod', 'customerId', 'dateFrom', 'dateTo', 'totalRevenue', 'totalPaid', 'totalDue', 'totalOrders'));
     }
 
     public function create(Request $request): View
     {
         $customers = Customer::orderBy('name')->get();
-        $products = Product::with(['unit', 'secondaryUnits.unit'])->where('quantity', '>', 0)->orderBy('name')->get();
-        $pendingOrders = SaleOrder::with(['customer', 'items.product.unit', 'items.product.secondaryUnits.unit', 'items.unit'])
+        $products = Product::where('quantity', '>', 0)->with('secondaryUnits.unit')->orderBy('name')->get();
+        $warehouses = Warehouse::where('is_active', true)->orderBy('name')->get();
+
+        $pendingOrders = SaleOrder::with(['customer', 'items.product'])
             ->pending()
             ->latest()
             ->get();
 
         $selectedSo = null;
-        $soId = $request->query('sale_order_id') ?? $request->query('so_id') ?? $request->query('order_id');
-        if ($soId) {
-            $selectedSo = SaleOrder::with(['customer', 'items.product.unit', 'items.product.secondaryUnits.unit', 'items.unit'])
-                ->find($soId);
+        if ($request->has('sale_order_id')) {
+            $selectedSo = SaleOrder::with(['customer', 'items.product.secondaryUnits.unit'])->find($request->query('sale_order_id'));
         }
 
-        return view('sales.create', compact('customers', 'products', 'pendingOrders', 'selectedSo'));
+        return view('sales.create', compact('customers', 'products', 'warehouses', 'pendingOrders', 'selectedSo'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -87,6 +92,7 @@ class SaleController extends Controller
         $validated = $request->validate([
             'sale_order_id' => ['nullable', 'exists:sale_orders,id'],
             'customer_id' => ['required', 'exists:customers,id'],
+            'warehouse_id' => ['nullable', 'exists:warehouses,id'],
             'sale_date' => ['nullable', 'date'],
             'paid_amount' => ['nullable', 'numeric', 'min:0'],
             'payment_method' => ['nullable', 'string', 'in:cash,card,bank_transfer,cheque,online'],
@@ -100,6 +106,9 @@ class SaleController extends Controller
             'items.*.quantity' => ['required', 'integer', 'min:1'],
             'items.*.unit_price' => ['required', 'numeric', 'min:0'],
         ]);
+
+        $companyId = Auth::user()?->company_id;
+        $warehouseId = $validated['warehouse_id'] ?? Warehouse::where('company_id', $companyId)->where('is_default', true)->value('id') ?? Warehouse::where('company_id', $companyId)->value('id');
 
         if (! empty($validated['sale_order_id'])) {
             $linkedSo = SaleOrder::find($validated['sale_order_id']);
@@ -119,7 +128,7 @@ class SaleController extends Controller
             }
         }
 
-        $sale = DB::transaction(function () use ($validated) {
+        $sale = DB::transaction(function () use ($validated, $companyId, $warehouseId) {
             $totalAmount = 0;
             foreach ($validated['items'] as $item) {
                 $totalAmount += $item['quantity'] * $item['unit_price'];
@@ -133,7 +142,9 @@ class SaleController extends Controller
             $invoiceNumber = 'SI-'.date('Ymd').'-'.strtoupper(Str::random(4));
 
             $sale = Sale::create([
+                'company_id' => $companyId,
                 'sale_order_id' => $validated['sale_order_id'] ?? null,
+                'warehouse_id' => $warehouseId,
                 'invoice_number' => $invoiceNumber,
                 'customer_id' => $validated['customer_id'],
                 'total_amount' => $totalAmount,
@@ -170,11 +181,21 @@ class SaleController extends Controller
                     $product->decrement('quantity', $baseQuantity);
                     $afterQty = $beforeQty - $baseQuantity;
 
+                    if ($warehouseId) {
+                        $whStock = WarehouseStock::firstOrCreate(
+                            ['company_id' => $companyId, 'warehouse_id' => $warehouseId, 'product_id' => $product->id],
+                            ['quantity' => $beforeQty]
+                        );
+                        $whStock->decrement('quantity', $baseQuantity);
+                    }
+
                     $unitModel = ! empty($item['unit_id']) ? Unit::find($item['unit_id']) : null;
                     $unitLabel = $unitModel ? $unitModel->short_code : ($product->unit ? $product->unit->short_code : 'units');
 
                     StockMovement::create([
+                        'company_id' => $companyId,
                         'product_id' => $product->id,
+                        'warehouse_id' => $warehouseId,
                         'type' => 'sale',
                         'quantity' => $baseQuantity,
                         'before_quantity' => $beforeQty,

@@ -22,10 +22,12 @@ use App\Http\Controllers\SaleController;
 use App\Http\Controllers\SaleOrderController;
 use App\Http\Controllers\SaleReturnController;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\StockTransferController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\VoucherController;
+use App\Http\Controllers\WarehouseController;
 use Illuminate\Support\Facades\Route;
 
 // Authentication Routes
@@ -134,10 +136,18 @@ Route::middleware(['auth'])->group(function () {
     Route::put('units/{unit}', [UnitController::class, 'update'])->name('units.update')->middleware('permission:units.edit');
     Route::delete('units/{unit}', [UnitController::class, 'destroy'])->name('units.destroy')->middleware('permission:units.delete');
 
-    // Stock Management & Movements
+    // Warehouses CRUD & Multi-location Management
+    Route::resource('warehouses', WarehouseController::class)->middleware('permission:warehouses.view,warehouses.create');
+
+    // Stock Management & Internal Transfers
     Route::get('/stock', [StockController::class, 'index'])->name('stock.index')->middleware('permission:stock.view');
     Route::post('/stock/adjust', [StockController::class, 'adjust'])->name('stock.adjust')->middleware('permission:stock.adjust');
     Route::get('/stock/movements', [StockController::class, 'movements'])->name('stock.movements')->middleware('permission:stock.movements,stock.view');
+
+    Route::get('/stock-transfers', [StockTransferController::class, 'index'])->name('stock-transfers.index')->middleware('permission:stock_transfers.view,stock.view');
+    Route::get('/stock-transfers/create', [StockTransferController::class, 'create'])->name('stock-transfers.create')->middleware('permission:stock_transfers.create,stock.view');
+    Route::post('/stock-transfers', [StockTransferController::class, 'store'])->name('stock-transfers.store')->middleware('permission:stock_transfers.create,stock.view');
+    Route::get('/stock-transfers/{stockTransfer}', [StockTransferController::class, 'show'])->name('stock-transfers.show')->middleware('permission:stock_transfers.view,stock.view');
 
     // Customers & Vendors
     Route::get('customers', [CustomerController::class, 'index'])->name('customers.index')->middleware('permission:customers.view');

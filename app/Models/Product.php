@@ -57,6 +57,22 @@ class Product extends Model
         return $this->hasMany(ProductUnit::class);
     }
 
+    public function warehouseStocks()
+    {
+        return $this->hasMany(WarehouseStock::class);
+    }
+
+    public function getQuantityInWarehouse(?int $warehouseId): int
+    {
+        if (! $warehouseId) {
+            return (int) $this->quantity;
+        }
+
+        $ws = $this->warehouseStocks->firstWhere('warehouse_id', $warehouseId);
+
+        return $ws ? (int) $ws->quantity : 0;
+    }
+
     /**
      * Get all available units (Base Unit + Secondary Units) with their conversion rates & prices.
      */

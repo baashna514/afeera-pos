@@ -9,9 +9,12 @@ use App\Models\PurchaseOrder;
 use App\Models\StockMovement;
 use App\Models\Unit;
 use App\Models\Vendor;
+use App\Models\Warehouse;
+use App\Models\WarehouseStock;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -28,7 +31,7 @@ class PurchaseController extends Controller
 
         $vendors = Vendor::orderBy('name')->get();
 
-        $purchases = Purchase::with(['vendor', 'items.product'])
+        $purchases = Purchase::with(['vendor', 'warehouse', 'items.product'])
             ->when($search, function ($query, $search) {
                 return $query->where('reference_no', 'like', "%{$search}%")
                     ->orWhereHas('vendor', function ($q) use ($search) {
@@ -42,10 +45,10 @@ class PurchaseController extends Controller
                 return $query->where('payment_status', $paymentStatus);
             })
             ->when($dateFrom, function ($query, $dateFrom) {
-                return $query->whereDate('purchase_date', '>=', $dateFrom);
+                return $query->whereDate('created_at', '>=', $dateFrom);
             })
             ->when($dateTo, function ($query, $dateTo) {
-                return $query->whereDate('purchase_date', '<=', $dateTo);
+                return $query->whereDate('created_at', '<=', $dateTo);
             })
             ->latest()
             ->paginate(10)
@@ -63,6 +66,7 @@ class PurchaseController extends Controller
     {
         $vendors = Vendor::orderBy('name')->get();
         $products = Product::with(['unit', 'secondaryUnits.unit'])->orderBy('name')->get();
+        $warehouses = Warehouse::where('is_active', true)->orderBy('name')->get();
         $pendingOrders = PurchaseOrder::with(['vendor', 'items.product.unit', 'items.product.secondaryUnits.unit', 'items.unit'])
             ->pending()
             ->latest()
@@ -75,7 +79,7 @@ class PurchaseController extends Controller
                 ->find($poId);
         }
 
-        return view('purchases.create', compact('vendors', 'products', 'pendingOrders', 'selectedPo'));
+        return view('purchases.create', compact('vendors', 'products', 'warehouses', 'pendingOrders', 'selectedPo'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -83,6 +87,7 @@ class PurchaseController extends Controller
         $validated = $request->validate([
             'purchase_order_id' => ['nullable', 'exists:purchase_orders,id'],
             'vendor_id' => ['required', 'exists:vendors,id'],
+            'warehouse_id' => ['nullable', 'exists:warehouses,id'],
             'purchase_date' => ['nullable', 'date'],
             'paid_amount' => ['nullable', 'numeric', 'min:0'],
             'payment_method' => ['nullable', 'string', 'in:cash,bank_transfer,cheque,online'],
@@ -97,6 +102,9 @@ class PurchaseController extends Controller
             'items.*.purchase_price' => ['required', 'numeric', 'min:0'],
         ]);
 
+        $companyId = Auth::user()?->company_id;
+        $warehouseId = $validated['warehouse_id'] ?? Warehouse::where('company_id', $companyId)->where('is_default', true)->value('id') ?? Warehouse::where('company_id', $companyId)->value('id');
+
         if (! empty($validated['purchase_order_id'])) {
             $linkedPo = PurchaseOrder::find($validated['purchase_order_id']);
             if ($linkedPo && $linkedPo->isConverted()) {
@@ -104,7 +112,7 @@ class PurchaseController extends Controller
             }
         }
 
-        $purchase = DB::transaction(function () use ($validated) {
+        $purchase = DB::transaction(function () use ($validated, $companyId, $warehouseId) {
             $totalAmount = 0;
             foreach ($validated['items'] as $item) {
                 $totalAmount += $item['quantity'] * $item['purchase_price'];
@@ -117,7 +125,9 @@ class PurchaseController extends Controller
             $referenceNo = 'PI-'.date('Ymd').'-'.strtoupper(Str::random(4));
 
             $purchase = Purchase::create([
+                'company_id' => $companyId,
                 'purchase_order_id' => $validated['purchase_order_id'] ?? null,
+                'warehouse_id' => $warehouseId,
                 'reference_no' => $referenceNo,
                 'vendor_id' => $validated['vendor_id'],
                 'purchase_date' => $validated['purchase_date'] ?? now()->toDateString(),
@@ -155,12 +165,22 @@ class PurchaseController extends Controller
                     $product->increment('quantity', $baseQuantity);
                     $afterQty = $beforeQty + $baseQuantity;
 
+                    if ($warehouseId) {
+                        $whStock = WarehouseStock::firstOrCreate(
+                            ['company_id' => $companyId, 'warehouse_id' => $warehouseId, 'product_id' => $product->id],
+                            ['quantity' => 0]
+                        );
+                        $whStock->increment('quantity', $baseQuantity);
+                    }
+
                     // Record Stock Movement History
                     $unitModel = ! empty($item['unit_id']) ? Unit::find($item['unit_id']) : null;
                     $unitLabel = $unitModel ? $unitModel->short_code : ($product->unit ? $product->unit->short_code : 'units');
 
                     StockMovement::create([
+                        'company_id' => $companyId,
                         'product_id' => $product->id,
+                        'warehouse_id' => $warehouseId,
                         'type' => 'purchase',
                         'quantity' => $baseQuantity,
                         'before_quantity' => $beforeQty,

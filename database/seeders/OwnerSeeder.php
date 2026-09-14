@@ -7,6 +7,7 @@ use App\Models\ExpenseCategory;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Warehouse;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -82,10 +83,16 @@ class OwnerSeeder extends Seeder
             ['name' => 'Edit Unit', 'slug' => 'units.edit', 'group' => 'Units', 'description' => 'Can edit units and conversion factors'],
             ['name' => 'Delete Unit', 'slug' => 'units.delete', 'group' => 'Units', 'description' => 'Can delete units'],
 
-            // Stock Management
+            // Stock Management & Warehouses
             ['name' => 'View Stock Levels', 'slug' => 'stock.view', 'group' => 'Stock Management', 'description' => 'Can view stock inventory table'],
             ['name' => 'Adjust Stock', 'slug' => 'stock.adjust', 'group' => 'Stock Management', 'description' => 'Can perform physical inventory stock adjustments'],
             ['name' => 'View Stock Movements', 'slug' => 'stock.movements', 'group' => 'Stock Management', 'description' => 'Can audit complete stock movement audit logs'],
+            ['name' => 'View Warehouses', 'slug' => 'warehouses.view', 'group' => 'Warehouses', 'description' => 'Can view list of warehouses and storage locations'],
+            ['name' => 'Create Warehouse', 'slug' => 'warehouses.create', 'group' => 'Warehouses', 'description' => 'Can register new warehouses and locations'],
+            ['name' => 'Edit Warehouse', 'slug' => 'warehouses.edit', 'group' => 'Warehouses', 'description' => 'Can modify warehouse information and default settings'],
+            ['name' => 'Delete Warehouse', 'slug' => 'warehouses.delete', 'group' => 'Warehouses', 'description' => 'Can delete storage locations'],
+            ['name' => 'View Stock Transfers', 'slug' => 'stock_transfers.view', 'group' => 'Stock Transfers', 'description' => 'Can view internal stock transfers history'],
+            ['name' => 'Create Stock Transfer', 'slug' => 'stock_transfers.create', 'group' => 'Stock Transfers', 'description' => 'Can transfer inventory between warehouses'],
 
             // Customers
             ['name' => 'View Customers', 'slug' => 'customers.view', 'group' => 'Customers', 'description' => 'Can view customer directory'],
@@ -255,6 +262,17 @@ class OwnerSeeder extends Seeder
                 'address' => 'Main Commercial Boulevard, Suite 100',
                 'currency' => 'PKR',
                 'is_active' => true,
+            ]
+        );
+
+        Warehouse::firstOrCreate(
+            ['company_id' => $defaultCompany->id, 'code' => 'WH-MAIN'],
+            [
+                'name' => 'Main Central Warehouse',
+                'phone' => '+92 300 1234567',
+                'address' => 'Main Commercial Boulevard, Suite 100',
+                'is_active' => true,
+                'is_default' => true,
             ]
         );
 

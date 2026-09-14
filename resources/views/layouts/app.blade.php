@@ -133,6 +133,18 @@
                                 <span>Units & Conversion</span>
                             </a>
                         @endif
+
+                        <a href="{{ route('warehouses.index') }}" 
+                           class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('warehouses.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                            <i class="fa-solid fa-warehouse w-5 text-center text-slate-400 {{ request()->routeIs('warehouses.*') ? 'text-white' : '' }}"></i>
+                            <span>Warehouses</span>
+                        </a>
+
+                        <a href="{{ route('stock-transfers.index') }}" 
+                           class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('stock-transfers.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                            <i class="fa-solid fa-right-left w-5 text-center text-slate-400 {{ request()->routeIs('stock-transfers.*') ? 'text-white' : '' }}"></i>
+                            <span>Stock Transfers</span>
+                        </a>
                     @endif
 
                     <!-- Sales Section -->
