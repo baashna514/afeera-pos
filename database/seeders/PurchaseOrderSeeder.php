@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Company;
 use App\Models\Product;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderItem;
@@ -19,6 +20,8 @@ class PurchaseOrderSeeder extends Seeder
         $product1 = Product::with('unit')->first();
         $product2 = Product::with('unit')->skip(1)->first();
 
+        $companyId = Company::first()?->id ?? 1;
+
         if ($vendor && $product1 && $product2) {
             $poNumber = 'PO-'.date('Ymd').'-DEMO';
             if (! PurchaseOrder::where('po_number', $poNumber)->exists()) {
@@ -29,6 +32,7 @@ class PurchaseOrderSeeder extends Seeder
                 $total = ($qty1 * $price1) + ($qty2 * $price2);
 
                 $po = PurchaseOrder::create([
+                    'company_id' => $companyId,
                     'po_number' => $poNumber,
                     'vendor_id' => $vendor->id,
                     'total_amount' => $total,
@@ -37,6 +41,7 @@ class PurchaseOrderSeeder extends Seeder
                 ]);
 
                 PurchaseOrderItem::create([
+                    'company_id' => $companyId,
                     'purchase_order_id' => $po->id,
                     'product_id' => $product1->id,
                     'unit_id' => $product1->unit_id,
@@ -47,6 +52,7 @@ class PurchaseOrderSeeder extends Seeder
                 ]);
 
                 PurchaseOrderItem::create([
+                    'company_id' => $companyId,
                     'purchase_order_id' => $po->id,
                     'product_id' => $product2->id,
                     'unit_id' => $product2->unit_id,

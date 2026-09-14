@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Company;
 use App\Models\Customer;
 use Illuminate\Database\Seeder;
 
@@ -18,7 +19,10 @@ class CustomerSeeder extends Seeder
             ['name' => 'Usman Tariq',        'phone' => '0345-5432109', 'email' => 'usman.tariq@email.com', 'address' => 'Cavalry Ground, Lahore'],
         ];
 
+        $companyId = Company::first()?->id ?? 1;
+
         foreach ($customers as $customer) {
+            $customer['company_id'] = $companyId;
             Customer::firstOrCreate(['name' => $customer['name']], $customer);
         }
     }

@@ -8,6 +8,7 @@ use App\Models\PurchaseReturn;
 use App\Models\Sale;
 use App\Models\SaleReturn;
 use App\Models\Vendor;
+use App\Models\Voucher;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -85,8 +86,27 @@ class LedgerController extends Controller
                     ];
                 });
 
+            // 3. Receipt Vouchers (Payment received from customer -> Credit)
+            $vouchers = Voucher::where('customer_id', $selectedCustomer->id)
+                ->where('type', 'receipt')
+                ->when($dateFrom, fn ($q) => $q->whereDate('voucher_date', '>=', $dateFrom))
+                ->when($dateTo, fn ($q) => $q->whereDate('voucher_date', '<=', $dateTo))
+                ->get()
+                ->map(function ($vch) {
+                    return [
+                        'date' => $vch->voucher_date,
+                        'type' => 'Receipt Voucher',
+                        'type_badge' => 'bg-emerald-100 text-emerald-800 border border-emerald-300',
+                        'reference' => $vch->voucher_number,
+                        'url' => route('vouchers.show', $vch),
+                        'description' => 'Payment received via '.ucfirst($vch->payment_method).($vch->notes ? ' - '.$vch->notes : ''),
+                        'debit' => 0.0,
+                        'credit' => (float) $vch->amount,
+                    ];
+                });
+
             // Merge & sort chronologically
-            $ledgerEntries = $sales->concat($returns)->sortBy('date')->values();
+            $ledgerEntries = $sales->concat($returns)->concat($vouchers)->sortBy('date')->values();
 
             // Calculate running balance
             $runningBalance = 0;
@@ -177,8 +197,27 @@ class LedgerController extends Controller
                     ];
                 });
 
+            // 3. Payment Vouchers (Payment made to vendor -> Debit)
+            $vouchers = Voucher::where('vendor_id', $selectedVendor->id)
+                ->where('type', 'payment')
+                ->when($dateFrom, fn ($q) => $q->whereDate('voucher_date', '>=', $dateFrom))
+                ->when($dateTo, fn ($q) => $q->whereDate('voucher_date', '<=', $dateTo))
+                ->get()
+                ->map(function ($vch) {
+                    return [
+                        'date' => $vch->voucher_date,
+                        'type' => 'Payment Voucher',
+                        'type_badge' => 'bg-blue-100 text-blue-800 border border-blue-300',
+                        'reference' => $vch->voucher_number,
+                        'url' => route('vouchers.show', $vch),
+                        'description' => 'Payment made via '.ucfirst($vch->payment_method).($vch->notes ? ' - '.$vch->notes : ''),
+                        'debit' => (float) $vch->amount,
+                        'credit' => 0.0,
+                    ];
+                });
+
             // Merge & sort chronologically
-            $ledgerEntries = $purchases->concat($returns)->sortBy('date')->values();
+            $ledgerEntries = $purchases->concat($returns)->concat($vouchers)->sortBy('date')->values();
 
             // Calculate running balance (Credit is payable, Debit reduces payable)
             $runningBalance = 0;

@@ -21,6 +21,7 @@ use App\Http\Controllers\StockController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VendorController;
+use App\Http\Controllers\VoucherController;
 use Illuminate\Support\Facades\Route;
 
 // Authentication Routes
@@ -179,9 +180,16 @@ Route::middleware(['auth'])->group(function () {
     Route::post('purchase-returns', [PurchaseReturnController::class, 'store'])->name('purchase-returns.store')->middleware('permission:purchase_returns.create,purchases.return');
     Route::get('purchase-returns/{purchaseReturn}', [PurchaseReturnController::class, 'show'])->name('purchase-returns.show')->middleware('permission:purchase_returns.show,purchase_returns.view,purchases.return');
 
-    // Chart of Accounts: Ledgers (Khata)
+    // Chart of Accounts: Ledgers (Khata) & Cash Vouchers
     Route::get('/ledgers/customer', [LedgerController::class, 'customerLedger'])->name('ledgers.customer')->middleware('permission:ledgers.customer,ledgers.view');
     Route::get('/ledgers/vendor', [LedgerController::class, 'vendorLedger'])->name('ledgers.vendor')->middleware('permission:ledgers.vendor,ledgers.view');
+
+    // Payment Vouchers (Receipts & Payments)
+    Route::get('vouchers', [VoucherController::class, 'index'])->name('vouchers.index')->middleware('permission:ledgers.view,sales.view');
+    Route::get('vouchers/create', [VoucherController::class, 'create'])->name('vouchers.create')->middleware('permission:ledgers.view,sales.create');
+    Route::post('vouchers', [VoucherController::class, 'store'])->name('vouchers.store')->middleware('permission:ledgers.view,sales.create');
+    Route::get('vouchers/{voucher}', [VoucherController::class, 'show'])->name('vouchers.show')->middleware('permission:ledgers.view,sales.view');
+    Route::delete('vouchers/{voucher}', [VoucherController::class, 'destroy'])->name('vouchers.destroy')->middleware('permission:ledgers.view');
 
     // Analytics & Reports
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index')->middleware('permission:reports.view');

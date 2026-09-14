@@ -62,13 +62,13 @@ class UserController extends Controller
             'is_active' => ['nullable', 'boolean'],
         ];
 
-        if (Auth::user()?->isSuperAdmin()) {
+        if (Auth::user()?->isOwner()) {
             $rules['company_id'] = ['nullable', 'exists:companies,id'];
         }
 
         $validated = $request->validate($rules);
 
-        $companyId = Auth::user()?->isSuperAdmin()
+        $companyId = Auth::user()?->isOwner()
             ? ($validated['company_id'] ?? Auth::user()->company_id)
             : Auth::user()->company_id;
 
@@ -109,7 +109,7 @@ class UserController extends Controller
             'is_active' => ['nullable', 'boolean'],
         ];
 
-        if (Auth::user()?->isSuperAdmin()) {
+        if (Auth::user()?->isOwner()) {
             $rules['company_id'] = ['nullable', 'exists:companies,id'];
         }
 
@@ -126,7 +126,7 @@ class UserController extends Controller
             'is_active' => $request->boolean('is_active', true),
         ];
 
-        if (Auth::user()?->isSuperAdmin() && array_key_exists('company_id', $validated)) {
+        if (Auth::user()?->isOwner() && array_key_exists('company_id', $validated)) {
             $userData['company_id'] = $validated['company_id'];
         }
 

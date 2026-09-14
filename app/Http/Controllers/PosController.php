@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Sale;
 use App\Models\SaleItem;
 use App\Models\SaleOrder;
+use App\Models\Scopes\CompanyScope;
 use App\Models\StockMovement;
 use App\Models\Unit;
 use Illuminate\Http\JsonResponse;
@@ -71,6 +72,18 @@ class PosController extends Controller
      */
     public function checkout(Request $request): JsonResponse
     {
+        // Sanitize items array: convert empty unit_id strings or null values cleanly
+        if ($request->has('items') && is_array($request->input('items'))) {
+            $items = array_map(function ($item) {
+                if (isset($item['unit_id']) && (string) $item['unit_id'] === '') {
+                    $item['unit_id'] = null;
+                }
+
+                return $item;
+            }, $request->input('items'));
+            $request->merge(['items' => $items]);
+        }
+
         $validated = $request->validate([
             'customer_id' => ['nullable', 'exists:customers,id'],
             'sale_order_id' => ['nullable', 'exists:sale_orders,id'],
@@ -78,7 +91,7 @@ class PosController extends Controller
             'paid_amount' => ['required', 'numeric', 'min:0'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.id' => ['required', 'exists:products,id'],
-            'items.*.unit_id' => ['nullable', 'exists:units,id'],
+            'items.*.unit_id' => ['nullable'],
             'items.*.conversion_rate' => ['nullable', 'numeric', 'min:0.0001'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
             'items.*.price' => ['nullable', 'numeric', 'min:0'],
@@ -101,7 +114,7 @@ class PosController extends Controller
 
             // 1. Verify stock availability and lock rows
             foreach ($validated['items'] as $item) {
-                $product = Product::lockForUpdate()->find($item['id']);
+                $product = Product::withoutGlobalScope(CompanyScope::class)->lockForUpdate()->find($item['id']);
 
                 if (! $product) {
                     throw ValidationException::withMessages([
@@ -150,8 +163,11 @@ class PosController extends Controller
             $paymentStatus = Sale::computePaymentStatus($paidAmount, $totalAmount);
             $invoiceNumber = 'INV-'.date('Ymd').'-'.strtoupper(Str::random(4));
 
+            $userCompanyId = auth()->user()?->company_id;
+
             // 2. Create Sale
             $sale = Sale::create([
+                'company_id' => $userCompanyId,
                 'sale_order_id' => $validated['sale_order_id'] ?? null,
                 'invoice_number' => $invoiceNumber,
                 'customer_id' => $validated['customer_id'] ?? null,
@@ -168,6 +184,7 @@ class PosController extends Controller
             $processedItems = [];
             foreach ($itemsToProcess as $entry) {
                 $saleItem = SaleItem::create([
+                    'company_id' => $userCompanyId,
                     'sale_id' => $sale->id,
                     'product_id' => $entry['product']->id,
                     'unit_id' => $entry['unit_id'],
@@ -188,6 +205,7 @@ class PosController extends Controller
 
                 // Record Stock Movement History
                 StockMovement::create([
+                    'company_id' => $userCompanyId,
                     'product_id' => $entry['product']->id,
                     'type' => 'sale',
                     'quantity' => $entry['base_quantity'],

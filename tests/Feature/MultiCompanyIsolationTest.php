@@ -8,15 +8,15 @@ use App\Models\Unit;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-test('super admin can view companies index and register a new company', function () {
-    $superAdmin = User::where('email', 'admin@smartpos.com')->first();
+test('system owner can view companies index and register a new company', function () {
+    $owner = User::where('email', 'owner@smartpos.com')->first();
 
-    $this->actingAs($superAdmin)
+    $this->actingAs($owner)
         ->get(route('companies.index'))
         ->assertOk()
         ->assertSee('Companies');
 
-    $this->actingAs($superAdmin)
+    $this->actingAs($owner)
         ->post(route('companies.store'), [
             'name' => 'Falcon Enterprises LLC',
             'code' => 'FALCON-01',
@@ -189,15 +189,15 @@ test('pos product search isolates inventory by company', function () {
         ->and($data[0]['name'])->toBe('Organic Milk A');
 });
 
-test('super admin has global visibility over all companies data', function () {
-    $superAdmin = User::where('email', 'admin@smartpos.com')->first();
+test('system owner has global visibility over all companies data', function () {
+    $owner = User::where('email', 'owner@smartpos.com')->first();
 
-    $this->actingAs($superAdmin)
+    $this->actingAs($owner)
         ->get(route('products.index'))
         ->assertOk();
 
-    // Super admin can see all registered companies
-    $this->actingAs($superAdmin)
+    // Owner can see all registered companies
+    $this->actingAs($owner)
         ->get(route('companies.index'))
         ->assertOk()
         ->assertSee('Smart POS General Trading LLC');

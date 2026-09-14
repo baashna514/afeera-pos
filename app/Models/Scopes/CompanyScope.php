@@ -28,7 +28,7 @@ class CompanyScope implements Scope
             if (auth()->check()) {
                 $user = auth()->user();
 
-                if ($user && ! $user->isSuperAdmin()) {
+                if ($user && ! $user->isOwner()) {
                     $builder->where($model->getTable().'.company_id', $user->company_id);
                 }
             }

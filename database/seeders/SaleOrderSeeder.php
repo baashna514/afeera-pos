@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Company;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\SaleOrder;
@@ -19,6 +20,8 @@ class SaleOrderSeeder extends Seeder
         $product1 = Product::with('unit')->first();
         $product2 = Product::with('unit')->skip(1)->first();
 
+        $companyId = Company::first()?->id ?? 1;
+
         if ($customer && $product1 && $product2) {
             $soNumber = 'SO-'.date('Ymd').'-DEMO';
             if (! SaleOrder::where('so_number', $soNumber)->exists()) {
@@ -29,6 +32,7 @@ class SaleOrderSeeder extends Seeder
                 $total = ($qty1 * $price1) + ($qty2 * $price2);
 
                 $so = SaleOrder::create([
+                    'company_id' => $companyId,
                     'so_number' => $soNumber,
                     'customer_id' => $customer->id,
                     'total_amount' => $total,
@@ -37,6 +41,7 @@ class SaleOrderSeeder extends Seeder
                 ]);
 
                 SaleOrderItem::create([
+                    'company_id' => $companyId,
                     'sale_order_id' => $so->id,
                     'product_id' => $product1->id,
                     'unit_id' => $product1->unit_id,
@@ -47,6 +52,7 @@ class SaleOrderSeeder extends Seeder
                 ]);
 
                 SaleOrderItem::create([
+                    'company_id' => $companyId,
                     'sale_order_id' => $so->id,
                     'product_id' => $product2->id,
                     'unit_id' => $product2->unit_id,

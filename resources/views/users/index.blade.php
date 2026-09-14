@@ -56,7 +56,7 @@
                 </select>
             </div>
 
-            @if(auth()->user()?->isSuperAdmin())
+            @if(auth()->user()?->isOwner())
                 <div class="w-full sm:w-48">
                     <select name="company_id" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
                         <option value="">All Companies</option>

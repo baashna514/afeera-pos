@@ -190,7 +190,8 @@
                     <p class="text-sm font-semibold text-slate-500">Cart is empty</p>
                     <p class="text-xs text-slate-400 mt-0.5">Scan a barcode or click any product to add.</p>
                 </div>
-                <!-- Dynamic cart rows will appear here -->
+                <!-- Cart items rendered here by JS — emptyCartMessage stays in DOM and is only toggled -->
+                <div id="cartItemsList"></div>
             </div>
 
             <!-- Billing & Payment Panel -->
@@ -695,23 +696,33 @@
             const item = cart[itemIndex];
             if (!item) return;
 
-            let current = parseInt(item.quantity, 10) || 1;
+            // Ensure quantity is always a clean integer
+            let current = parseInt(item.quantity, 10);
+            if (isNaN(current) || current < 1) current = 1;
+
             let target = current + delta;
 
-            if (target < 1) {
-                target = 1;
-            }
+            // Minimum of 1
+            if (target < 1) target = 1;
 
             const stock = parseFloat(item.stock) || 0;
             const conv = parseFloat(item.conversion_rate) || 1.0;
-            const maxAllowed = conv > 0 ? Math.floor(stock / conv) : 9999;
+            const maxAllowed = (stock > 0 && conv > 0) ? Math.floor(stock / conv) : 9999;
+
             if (maxAllowed > 0 && target > maxAllowed) {
-                alert(`Only ${stock} base units in stock (maximum ${maxAllowed} ${item.unit_name}).`);
+                if (delta > 0) {
+                    alert(`Only ${stock} base units in stock (maximum ${maxAllowed} ${item.unit_name}).`);
+                }
                 target = maxAllowed;
             }
 
             item.quantity = target;
-            renderCart();
+
+            // Update the input field directly without full re-render for smooth UX
+            const inputEl = document.getElementById(`cart_qty_input_${itemIndex}`);
+            if (inputEl) inputEl.value = target;
+
+            updateLiveCartTotals();
         }
 
         function onCartQtyInput(inputEl, itemIndex) {
@@ -806,14 +817,13 @@
         }
 
         function renderCart() {
-            const container = document.getElementById('cartContainer');
+            const listContainer = document.getElementById('cartItemsList');
             const emptyMsg = document.getElementById('emptyCartMessage');
             const checkoutBtn = document.getElementById('checkoutBtn');
 
             if (cart.length === 0) {
-                container.innerHTML = '';
-                container.appendChild(emptyMsg);
-                emptyMsg.classList.remove('hidden');
+                if (listContainer) listContainer.innerHTML = '';
+                if (emptyMsg) emptyMsg.classList.remove('hidden');
                 document.getElementById('cartItemsCount').innerText = '0 items';
                 document.getElementById('cartTotalDisplay').innerText = 'Rs. 0.00';
                 document.getElementById('paidAmountInput').value = '';
@@ -823,7 +833,7 @@
                 return;
             }
 
-            emptyMsg.classList.add('hidden');
+            if (emptyMsg) emptyMsg.classList.add('hidden');
             let html = '';
             let total = 0;
             let totalQty = 0;
@@ -867,14 +877,14 @@
                         <!-- Quantity Stepper -->
                         <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg">
                             <button type="button" onclick="stepCartQty(${index}, -1)" class="w-6 h-6 flex items-center justify-center bg-white rounded text-slate-600 hover:text-rose-600 text-xs font-bold shadow-xs active:bg-slate-200 cursor-pointer" title="Decrease Quantity (-1)">
-                                <i class="fa-solid fa-minus text-[10px]"></i>
+                                <i class="fa-solid fa-minus text-[10px] pointer-events-none"></i>
                             </button>
                             <input type="number" min="1" id="cart_qty_input_${index}" value="${item.quantity}" 
                                    oninput="onCartQtyInput(this, ${index})" 
                                    onchange="onCartQtyChange(this, ${index})"
                                    class="w-10 text-center text-xs font-bold bg-white border border-slate-200 rounded py-0.5 focus:ring-1 focus:ring-emerald-500 focus:outline-none">
                             <button type="button" onclick="stepCartQty(${index}, 1)" class="w-6 h-6 flex items-center justify-center bg-white rounded text-slate-600 hover:text-emerald-600 text-xs font-bold shadow-xs active:bg-slate-200 cursor-pointer" title="Increase Quantity (+1)">
-                                <i class="fa-solid fa-plus text-[10px]"></i>
+                                <i class="fa-solid fa-plus text-[10px] pointer-events-none"></i>
                             </button>
                         </div>
 
@@ -889,7 +899,7 @@
                 `;
             });
 
-            container.innerHTML = html;
+            if (listContainer) listContainer.innerHTML = html;
             document.getElementById('cartItemsCount').innerText = `${totalQty} units (${cart.length} items)`;
             document.getElementById('cartTotalDisplay').innerText = 'Rs. ' + total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             checkoutBtn.disabled = false;
@@ -975,7 +985,8 @@
 
         function addCashShortcut(amount) {
             isCustomPaidAmount = true;
-            const current = parseFloat(document.getElementById('paidAmountInput').value) || 0;
+            const currentVal = document.getElementById('paidAmountInput').value;
+            const current = (currentVal === '' || currentVal === null) ? getCartTotal() : (parseFloat(currentVal) || 0);
             document.getElementById('paidAmountInput').value = (current + amount).toFixed(2);
             calculateChange();
         }
@@ -1056,7 +1067,18 @@
                     body: JSON.stringify(payload),
                 });
 
-                const data = await res.json();
+                // Read raw text first to avoid JSON parse errors on HTML error pages
+                const rawText = await res.text();
+                let data;
+                try {
+                    data = JSON.parse(rawText);
+                } catch (parseErr) {
+                    console.error('Non-JSON server response:', rawText.substring(0, 500));
+                    alert('Server error: Could not process sale. Check browser console for details.\n\n' + rawText.substring(0, 300));
+                    checkoutBtn.disabled = false;
+                    checkoutBtn.innerHTML = `<i class="fa-solid fa-circle-check text-base"></i> <span>COMPLETE SALE</span>`;
+                    return;
+                }
 
                 if (!res.ok || !data.success) {
                     const msg = data.message || (data.errors ? Object.values(data.errors).flat().join('\n') : 'Error completing sale.');
@@ -1100,8 +1122,8 @@
                 checkoutBtn.innerHTML = `<i class="fa-solid fa-circle-check text-base"></i> <span>COMPLETE SALE</span>`;
 
             } catch (err) {
-                console.error(err);
-                alert('Network or server error processing sale.');
+                console.error('POS Checkout fetch error:', err);
+                alert('Connection error. Please check your internet and try again.\n\nError: ' + err.message);
                 checkoutBtn.disabled = false;
                 checkoutBtn.innerHTML = `<i class="fa-solid fa-circle-check text-base"></i> <span>COMPLETE SALE</span>`;
             }

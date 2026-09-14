@@ -57,7 +57,7 @@
                 </div>
             </div>
 
-            @if(auth()->user()?->isSuperAdmin())
+            @if(auth()->user()?->isOwner())
                 <!-- Company Assignment -->
                 <div>
                     <label for="company_id" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Company / Tenant</label>

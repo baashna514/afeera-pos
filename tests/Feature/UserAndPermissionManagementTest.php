@@ -82,6 +82,7 @@ test('user with restricted role is forbidden from unpermitted modules but can ac
     $role->syncPermissions([$viewProductsPerm->id]);
 
     $user = User::create([
+        'company_id' => 1,
         'name' => 'Test Operator',
         'email' => 'operator@test.com',
         'password' => Hash::make('password123'),
@@ -192,7 +193,11 @@ test('cashier can access POS and view sales but is forbidden from creating produ
 
 test('categories index renders and destroy route is defined', function () {
     $superAdmin = User::where('email', 'admin@smartpos.com')->first();
-    $category = Category::create(['name' => 'Test Cat', 'slug' => 'test-cat']);
+    $category = Category::create([
+        'company_id' => $superAdmin->company_id,
+        'name' => 'Test Cat',
+        'slug' => 'test-cat',
+    ]);
 
     $this->actingAs($superAdmin)
         ->get(route('categories.index'))

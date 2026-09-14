@@ -49,6 +49,11 @@ class User extends Authenticatable
         return $this->roles->first();
     }
 
+    public function isOwner(): bool
+    {
+        return $this->hasRole(['owner', 'Owner']) || $this->company_id === null;
+    }
+
     public function isSuperAdmin(): bool
     {
         return $this->hasRole(['super-admin', 'Super Admin']);
@@ -56,8 +61,8 @@ class User extends Authenticatable
 
     public function hasPermission(string $permissionSlug): bool
     {
-        // 1. Super Admin is always granted all permissions by default!
-        if ($this->isSuperAdmin()) {
+        // 1. Owner & Super Admin are granted all permissions by default!
+        if ($this->isOwner() || $this->isSuperAdmin()) {
             return true;
         }
 

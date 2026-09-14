@@ -175,7 +175,7 @@
                 @endif
 
                 <!-- Chart Of Accounts -->
-                @if(auth()->user()?->hasPermission('ledgers.customer') || auth()->user()?->hasPermission('ledgers.vendor'))
+                @if(auth()->user()?->hasPermission('ledgers.customer') || auth()->user()?->hasPermission('ledgers.vendor') || auth()->user()?->isSuperAdmin())
                     <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mt-5 mb-2">Chart Of Accounts</p>
 
                     @if(auth()->user()?->hasPermission('ledgers.customer'))
@@ -193,6 +193,12 @@
                             <span>Vendor Ledgers</span>
                         </a>
                     @endif
+
+                    <a href="{{ route('vouchers.index') }}" 
+                       class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('vouchers.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                        <i class="fa-solid fa-money-bill-transfer w-5 text-center text-slate-400 {{ request()->routeIs('vouchers.*') ? 'text-white' : '' }}"></i>
+                        <span>Cash & Payment Vouchers</span>
+                    </a>
                 @endif
 
                 <!-- People & Contacts -->
@@ -236,7 +242,7 @@
         <i class="fa-solid fa-shield-halved text-[10px]"></i> User & Access Control
     </p>
 
-    @if($user->isSuperAdmin() || $user->hasPermission('companies.view'))
+    @if($user->isOwner())
         <a href="{{ route('companies.index') }}"
            class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('companies.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
             <i class="fa-solid fa-building w-5 text-center text-slate-400 {{ request()->routeIs('companies.*') ? 'text-white' : '' }}"></i>

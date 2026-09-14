@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
+use App\Models\Company;
 use Illuminate\Database\Seeder;
 
 class CategorySeeder extends Seeder
@@ -20,7 +21,10 @@ class CategorySeeder extends Seeder
             ['name' => 'Sports & Fitness',  'description' => 'Sporting goods and equipment'],
         ];
 
+        $companyId = Company::first()?->id ?? 1;
+
         foreach ($categories as $category) {
+            $category['company_id'] = $companyId;
             Category::firstOrCreate(['name' => $category['name']], $category);
         }
     }

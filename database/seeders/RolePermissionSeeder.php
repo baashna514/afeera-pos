@@ -210,11 +210,20 @@ class RolePermissionSeeder extends Seeder
         }
 
         // 2. Create Roles
+        $ownerRole = Role::firstOrCreate(
+            ['name' => 'Owner', 'guard_name' => 'web'],
+            [
+                'slug' => 'owner',
+                'description' => 'Level 1 System Owner with full multi-tenant administration rights.',
+                'is_system' => true,
+            ]
+        );
+
         $superAdminRole = Role::firstOrCreate(
             ['name' => 'Super Admin', 'guard_name' => 'web'],
             [
                 'slug' => 'super-admin',
-                'description' => 'Full unrestricted system access with automatic bypass of all permission restrictions.',
+                'description' => 'Level 2 Company Admin with full control over company users, data, and settings.',
                 'is_system' => true,
             ]
         );
@@ -247,7 +256,8 @@ class RolePermissionSeeder extends Seeder
         );
 
         // 3. Assign Permissions
-        // Super Admin gets all permissions
+        // Owner and Super Admin get all permissions
+        $ownerRole->syncPermissions(Permission::all());
         $superAdminRole->syncPermissions(Permission::all());
 
         // Admin gets all operational modules
@@ -347,7 +357,18 @@ class RolePermissionSeeder extends Seeder
             $modelClass::withoutGlobalScopes()->whereNull('company_id')->update(['company_id' => $defaultCompany->id]);
         }
 
-        // 5. Create Default Super Admin & Demo Cashier Users
+        // 5. Create System Owner, Super Admin & Demo Cashier Users
+        $ownerUser = User::updateOrCreate(
+            ['email' => 'owner@smartpos.com'],
+            [
+                'name' => 'System Owner',
+                'company_id' => null,
+                'password' => Hash::make('password123'),
+                'is_active' => true,
+            ]
+        );
+        $ownerUser->syncRoles([$ownerRole]);
+
         $adminUser = User::updateOrCreate(
             ['email' => 'admin@smartpos.com'],
             [
@@ -370,6 +391,6 @@ class RolePermissionSeeder extends Seeder
         );
         $cashierUser->syncRoles([$cashierRole]);
 
-        User::withoutGlobalScopes()->whereNull('company_id')->update(['company_id' => $defaultCompany->id]);
+        User::withoutGlobalScopes()->whereNull('company_id')->where('id', '!=', $ownerUser->id)->update(['company_id' => $defaultCompany->id]);
     }
 }

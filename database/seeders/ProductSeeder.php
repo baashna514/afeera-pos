@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
+use App\Models\Company;
 use App\Models\Product;
 use App\Models\ProductUnit;
 use App\Models\Unit;
@@ -147,7 +148,10 @@ class ProductSeeder extends Seeder
             ],
         ];
 
+        $companyId = Company::first()?->id ?? 1;
+
         foreach ($products as $productData) {
+            $productData['company_id'] = $companyId;
             $created = Product::firstOrCreate(['barcode' => $productData['barcode']], $productData);
 
             // Add sample secondary units for demo testing
@@ -156,6 +160,7 @@ class ProductSeeder extends Seeder
                     'product_id' => $created->id,
                     'unit_id' => $box,
                 ], [
+                    'company_id' => $companyId,
                     'conversion_rate' => 10,
                     'purchase_price' => 7500, // discount on bulk buy
                     'sale_price' => 11000,    // discount on bulk sell
@@ -167,6 +172,7 @@ class ProductSeeder extends Seeder
                     'product_id' => $created->id,
                     'unit_id' => $dozen,
                 ], [
+                    'company_id' => $companyId,
                     'conversion_rate' => 12,
                     'purchase_price' => 280,
                     'sale_price' => 450,

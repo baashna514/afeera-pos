@@ -23,20 +23,20 @@
         @method('PUT')
 
         <div>
-            <label for="name" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                Permission Name <span class="text-rose-500">*</span>
+            <label for="name" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5 flex items-center gap-1.5">
+                Permission Name <span class="text-xs text-amber-600 font-medium">(Read-only - Protected System Attribute)</span>
             </label>
-            <input type="text" name="name" id="name" value="{{ old('name', $permission->name) }}" required
-                   class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+            <input type="text" name="name" id="name" value="{{ old('name', $permission->name) }}" readonly
+                   class="w-full px-4 py-2.5 bg-slate-100 text-slate-600 border border-slate-200 rounded-xl text-sm font-semibold cursor-not-allowed select-none">
         </div>
 
         <div>
-            <label for="slug" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
-                Permission Code / Slug <span class="text-rose-500">*</span>
+            <label for="slug" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5 flex items-center gap-1.5">
+                Permission Code / Slug <span class="text-xs text-amber-600 font-medium">(Read-only - Protected System Attribute)</span>
             </label>
-            <input type="text" name="slug" id="slug" value="{{ old('slug', $permission->slug) }}" required
-                   class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
-            <p class="text-[11px] text-slate-400 mt-1">Unique identifier used in code guards & route middleware (e.g. <code class="font-mono text-emerald-600">sales.create</code>).</p>
+            <input type="text" name="slug" id="slug" value="{{ old('slug', $permission->slug) }}" readonly
+                   class="w-full px-4 py-2.5 bg-slate-100 text-slate-600 border border-slate-200 rounded-xl text-sm font-mono cursor-not-allowed select-none">
+            <p class="text-[11px] text-slate-400 mt-1">Unique identifier used in code guards & route middleware (e.g. <code class="font-mono text-emerald-600">sales.create</code>). Cannot be modified to prevent system errors.</p>
         </div>
 
         <div>

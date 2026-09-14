@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Company;
 use App\Models\Vendor;
 use Illuminate\Database\Seeder;
 
@@ -17,7 +18,10 @@ class VendorSeeder extends Seeder
             ['name' => 'OfficeWorld Supplies', 'phone' => '0345-5555555', 'email' => 'supply@officeworld.pk', 'address' => 'Blue Area, Islamabad'],
         ];
 
+        $companyId = Company::first()?->id ?? 1;
+
         foreach ($vendors as $vendor) {
+            $vendor['company_id'] = $companyId;
             Vendor::firstOrCreate(['name' => $vendor['name']], $vendor);
         }
     }
