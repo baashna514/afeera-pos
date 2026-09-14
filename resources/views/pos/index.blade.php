@@ -42,6 +42,10 @@
                 <i class="fa-regular fa-clock mr-1 text-emerald-400"></i>
                 <span id="posClock"></span>
             </div>
+            <a href="{{ route('day-book.index') }}" target="_blank" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition flex items-center gap-1.5 font-medium" title="Day Book / Daily Cash Drawer Summary">
+                <i class="fa-solid fa-cash-register text-emerald-400"></i>
+                <span>Day Book</span>
+            </a>
             <a href="{{ route('sales.index') }}" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition flex items-center gap-1.5 font-medium">
                 <i class="fa-solid fa-receipt text-emerald-400"></i>
                 <span>Sales History</span>

@@ -5,7 +5,11 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DayBookController;
+use App\Http\Controllers\ExpenseCategoryController;
+use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\LedgerController;
+use App\Http\Controllers\Owner\DashboardController as OwnerDashboardController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PosController;
 use App\Http\Controllers\ProductController;
@@ -33,6 +37,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/', function () {
     if (auth()->check()) {
         $user = auth()->user();
+        if ($user->isOwner()) {
+            return redirect()->route('owner.dashboard');
+        }
         if ($user->isSuperAdmin() || $user->hasPermission('dashboard.view')) {
             return redirect()->route('dashboard');
         }
@@ -48,6 +55,13 @@ Route::get('/', function () {
     }
 
     return redirect()->route('dashboard');
+});
+
+// Dedicated Level 1 Owner Routes
+Route::middleware(['auth', 'owner'])->prefix('owner')->name('owner.')->group(function () {
+    Route::get('/dashboard', [OwnerDashboardController::class, 'index'])->name('dashboard');
+    Route::post('/companies', [OwnerDashboardController::class, 'storeCompany'])->name('companies.store');
+    Route::delete('/companies/{company}', [OwnerDashboardController::class, 'destroyCompany'])->name('companies.destroy');
 });
 
 // Protected Application Routes
@@ -181,6 +195,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('purchase-returns/{purchaseReturn}', [PurchaseReturnController::class, 'show'])->name('purchase-returns.show')->middleware('permission:purchase_returns.show,purchase_returns.view,purchases.return');
 
     // Chart of Accounts: Ledgers (Khata) & Cash Vouchers
+    Route::get('/day-book', [DayBookController::class, 'index'])->name('day-book.index')->middleware('permission:day_book.view,ledgers.view');
+    Route::post('/day-book/opening-balance', [DayBookController::class, 'storeOpeningBalance'])->name('day-book.store-opening')->middleware('permission:day_book.create,ledgers.view');
+
     Route::get('/ledgers/customer', [LedgerController::class, 'customerLedger'])->name('ledgers.customer')->middleware('permission:ledgers.customer,ledgers.view');
     Route::get('/ledgers/vendor', [LedgerController::class, 'vendorLedger'])->name('ledgers.vendor')->middleware('permission:ledgers.vendor,ledgers.view');
 
@@ -190,6 +207,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('vouchers', [VoucherController::class, 'store'])->name('vouchers.store')->middleware('permission:ledgers.view,sales.create');
     Route::get('vouchers/{voucher}', [VoucherController::class, 'show'])->name('vouchers.show')->middleware('permission:ledgers.view,sales.view');
     Route::delete('vouchers/{voucher}', [VoucherController::class, 'destroy'])->name('vouchers.destroy')->middleware('permission:ledgers.view');
+
+    // Expenses & Expense Categories Management
+    Route::resource('expense-categories', ExpenseCategoryController::class)->middleware('permission:expenses.view,expenses.create');
+    Route::resource('expenses', ExpenseController::class)->middleware('permission:expenses.view,expenses.create');
 
     // Analytics & Reports
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index')->middleware('permission:reports.view');

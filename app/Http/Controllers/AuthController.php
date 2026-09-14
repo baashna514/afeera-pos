@@ -12,6 +12,10 @@ class AuthController extends Controller
     public function showLogin(): View|RedirectResponse
     {
         if (Auth::check()) {
+            if (Auth::user()->isOwner()) {
+                return redirect()->route('owner.dashboard');
+            }
+
             return redirect()->route('dashboard');
         }
 
@@ -31,6 +35,12 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             $user = Auth::user();
+
+            if ($user->isOwner()) {
+                return redirect()->route('owner.dashboard')
+                    ->with('success', 'Welcome to Platform Owner Dashboard, '.$user->name.'!');
+            }
+
             $target = route('dashboard');
             if (! $user->isSuperAdmin() && ! $user->hasPermission('dashboard.view')) {
                 if ($user->hasPermission('pos.access')) {

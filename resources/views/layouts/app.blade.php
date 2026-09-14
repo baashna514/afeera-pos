@@ -45,7 +45,7 @@
         <aside class="w-full md:w-64 bg-slate-900 text-slate-200 flex-shrink-0 flex flex-col no-print shadow-xl">
             <!-- Brand -->
             <div class="h-16 flex items-center justify-between px-6 bg-slate-950 border-b border-slate-800">
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
+                <a href="{{ auth()->user()?->isOwner() ? route('owner.dashboard') : route('dashboard') }}" class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-lg bg-emerald-500 flex items-center justify-center text-white font-black shadow-lg shadow-emerald-500/30">
                         <i class="fa-solid fa-cash-register text-lg"></i>
                     </div>
@@ -56,8 +56,8 @@
                 </a>
             </div>
 
-            <!-- POS Terminal Quick Launch -->
-            @if(auth()->user()?->hasPermission('pos.access'))
+            <!-- POS Terminal Quick Launch (Hidden for Owner) -->
+            @if(!auth()->user()?->isOwner() && auth()->user()?->hasPermission('pos.access'))
                 <div class="p-4 border-b border-slate-800/80">
                     <a href="{{ route('pos.index') }}" 
                        class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/25 transition duration-200 group">
@@ -69,214 +69,242 @@
 
             <!-- Navigation Links -->
             <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-                <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">Main Menu</p>
-                
-                @if(auth()->user()?->hasPermission('dashboard.view'))
-                    <a href="{{ route('dashboard') }}" 
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition {{ request()->routeIs('dashboard') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                        <i class="fa-solid fa-chart-pie w-5 text-center text-slate-400 {{ request()->routeIs('dashboard') ? 'text-white' : '' }}"></i>
-                        <span>Dashboard</span>
+                @if(auth()->user()?->isOwner())
+                    <!-- Dedicated Owner Platform Menu: Exactly 2 Modules -->
+                    <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-indigo-400 mb-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-crown text-[10px]"></i> Platform Administration
+                    </p>
+
+                    <a href="{{ route('owner.dashboard') }}" 
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition mb-1 {{ request()->routeIs('owner.*') ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-600/30' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                        <i class="fa-solid fa-building w-5 text-center text-indigo-400 text-sm"></i>
+                        <span>Companies & Tenants</span>
                     </a>
-                @endif
-
-                @if(auth()->user()?->hasPermission('stock.view'))
-                    <a href="{{ route('stock.index') }}" 
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition {{ request()->routeIs('stock.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                        <i class="fa-solid fa-boxes-stacked w-5 text-center text-slate-400 {{ request()->routeIs('stock.*') ? 'text-white' : '' }}"></i>
-                        <span>Stock Overview</span>
-                    </a>
-                @endif
-
-                <!-- Inventory Section -->
-                @if(auth()->user()?->hasPermission('products.view') || auth()->user()?->hasPermission('categories.view') || auth()->user()?->hasPermission('units.view'))
-                    <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mt-5 mb-2">Inventory</p>
-
-                    @if(auth()->user()?->hasPermission('products.view'))
-                        <a href="{{ route('products.index') }}" 
-                           class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('products.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                            <i class="fa-solid fa-box-open w-5 text-center text-slate-400 {{ request()->routeIs('products.*') ? 'text-white' : '' }}"></i>
-                            <span>Products</span>
-                        </a>
-                    @endif
-
-                    @if(auth()->user()?->hasPermission('categories.view'))
-                        <a href="{{ route('categories.index') }}" 
-                           class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('categories.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                            <i class="fa-solid fa-tags w-5 text-center text-slate-400 {{ request()->routeIs('categories.*') ? 'text-white' : '' }}"></i>
-                            <span>Categories</span>
-                        </a>
-                    @endif
-
-                    @if(auth()->user()?->hasPermission('units.view'))
-                        <a href="{{ route('units.index') }}" 
-                           class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('units.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                            <i class="fa-solid fa-scale-balanced w-5 text-center text-slate-400 {{ request()->routeIs('units.*') ? 'text-white' : '' }}"></i>
-                            <span>Units & Conversion</span>
-                        </a>
-                    @endif
-                @endif
-
-                <!-- Sales Section -->
-                @if(auth()->user()?->hasPermission('sale_orders.view') || auth()->user()?->hasPermission('sales.view') || auth()->user()?->hasPermission('sale_returns.view'))
-                    <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mt-5 mb-2">Sales</p>
-
-                    @if(auth()->user()?->hasPermission('sale_orders.view'))
-                        <a href="{{ route('sale-orders.index') }}" 
-                           class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('sale-orders.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                            <i class="fa-solid fa-cart-flatbed w-5 text-center text-slate-400 {{ request()->routeIs('sale-orders.*') ? 'text-white' : '' }}"></i>
-                            <span>Sale Orders</span>
-                        </a>
-                    @endif
-
-                    @if(auth()->user()?->hasPermission('sales.view'))
-                        <a href="{{ route('sales.index') }}" 
-                           class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('sales.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                            <i class="fa-solid fa-receipt w-5 text-center text-slate-400 {{ request()->routeIs('sales.*') ? 'text-white' : '' }}"></i>
-                            <span>Sale Invoices</span>
-                        </a>
-                    @endif
-
-                    @if(auth()->user()?->hasPermission('sale_returns.view'))
-                        <a href="{{ route('sale-returns.index') }}" 
-                           class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('sale-returns.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                            <i class="fa-solid fa-arrow-rotate-left w-5 text-center text-slate-400 {{ request()->routeIs('sale-returns.*') ? 'text-white' : '' }}"></i>
-                            <span>Sale Returns</span>
-                        </a>
-                    @endif
-                @endif
-
-                <!-- Purchases Section -->
-                @if(auth()->user()?->hasPermission('purchase_orders.view') || auth()->user()?->hasPermission('purchases.view') || auth()->user()?->hasPermission('purchase_returns.view'))
-                    <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mt-5 mb-2">Purchases</p>
-
-                    @if(auth()->user()?->hasPermission('purchase_orders.view'))
-                        <a href="{{ route('purchase-orders.index') }}" 
-                           class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('purchase-orders.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                            <i class="fa-solid fa-clipboard-list w-5 text-center text-slate-400 {{ request()->routeIs('purchase-orders.*') ? 'text-white' : '' }}"></i>
-                            <span>Purchase Orders</span>
-                        </a>
-                    @endif
-
-                    @if(auth()->user()?->hasPermission('purchases.view'))
-                        <a href="{{ route('purchases.index') }}" 
-                           class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('purchases.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                            <i class="fa-solid fa-bag-shopping w-5 text-center text-slate-400 {{ request()->routeIs('purchases.*') ? 'text-white' : '' }}"></i>
-                            <span>Purchase Invoices</span>
-                        </a>
-                    @endif
-
-                    @if(auth()->user()?->hasPermission('purchase_returns.view'))
-                        <a href="{{ route('purchase-returns.index') }}" 
-                           class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('purchase-returns.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                            <i class="fa-solid fa-truck-ramp-box w-5 text-center text-slate-400 {{ request()->routeIs('purchase-returns.*') ? 'text-white' : '' }}"></i>
-                            <span>Purchase Returns</span>
-                        </a>
-                    @endif
-                @endif
-
-                <!-- Chart Of Accounts -->
-                @if(auth()->user()?->hasPermission('ledgers.customer') || auth()->user()?->hasPermission('ledgers.vendor') || auth()->user()?->isSuperAdmin())
-                    <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mt-5 mb-2">Chart Of Accounts</p>
-
-                    @if(auth()->user()?->hasPermission('ledgers.customer'))
-                        <a href="{{ route('ledgers.customer') }}" 
-                           class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('ledgers.customer') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                            <i class="fa-solid fa-book-bookmark w-5 text-center text-slate-400 {{ request()->routeIs('ledgers.customer') ? 'text-white' : '' }}"></i>
-                            <span>Customer Ledgers</span>
-                        </a>
-                    @endif
-
-                    @if(auth()->user()?->hasPermission('ledgers.vendor'))
-                        <a href="{{ route('ledgers.vendor') }}" 
-                           class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('ledgers.vendor') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                            <i class="fa-solid fa-book-journal-whills w-5 text-center text-slate-400 {{ request()->routeIs('ledgers.vendor') ? 'text-white' : '' }}"></i>
-                            <span>Vendor Ledgers</span>
-                        </a>
-                    @endif
-
-                    <a href="{{ route('vouchers.index') }}" 
-                       class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('vouchers.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                        <i class="fa-solid fa-money-bill-transfer w-5 text-center text-slate-400 {{ request()->routeIs('vouchers.*') ? 'text-white' : '' }}"></i>
-                        <span>Cash & Payment Vouchers</span>
-                    </a>
-                @endif
-
-                <!-- People & Contacts -->
-                @if(auth()->user()?->hasPermission('customers.view') || auth()->user()?->hasPermission('vendors.view'))
-                    <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mt-5 mb-2">People & Contacts</p>
-
-                    @if(auth()->user()?->hasPermission('customers.view'))
-                        <a href="{{ route('customers.index') }}" 
-                           class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('customers.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                            <i class="fa-solid fa-users w-5 text-center text-slate-400 {{ request()->routeIs('customers.*') ? 'text-white' : '' }}"></i>
-                            <span>Customers</span>
-                        </a>
-                    @endif
-
-                    @if(auth()->user()?->hasPermission('vendors.view'))
-                        <a href="{{ route('vendors.index') }}" 
-                           class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('vendors.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                            <i class="fa-solid fa-truck-moving w-5 text-center text-slate-400 {{ request()->routeIs('vendors.*') ? 'text-white' : '' }}"></i>
-                            <span>Vendors</span>
-                        </a>
-                    @endif
-                @endif
-
-                <!-- Analytics -->
-                @if(auth()->user()?->hasPermission('reports.view'))
-                    <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mt-5 mb-2">Analytics</p>
 
                     <a href="{{ route('reports.index') }}" 
-                       class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('reports.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('reports.*') ? 'bg-indigo-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
                         <i class="fa-solid fa-chart-line w-5 text-center text-slate-400 {{ request()->routeIs('reports.*') ? 'text-white' : '' }}"></i>
-                        <span>Reports & Analytics</span>
+                        <span>Reports</span>
                     </a>
+                @else
+                    <!-- Tenant Company Operations Menu (Super Admin & Staff) -->
+                    <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">Main Menu</p>
+                    
+                    @if(auth()->user()?->hasPermission('dashboard.view'))
+                        <a href="{{ route('dashboard') }}" 
+                           class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition {{ request()->routeIs('dashboard') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                            <i class="fa-solid fa-chart-pie w-5 text-center text-slate-400 {{ request()->routeIs('dashboard') ? 'text-white' : '' }}"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    @endif
+
+                    @if(auth()->user()?->hasPermission('stock.view'))
+                        <a href="{{ route('stock.index') }}" 
+                           class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition {{ request()->routeIs('stock.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                            <i class="fa-solid fa-boxes-stacked w-5 text-center text-slate-400 {{ request()->routeIs('stock.*') ? 'text-white' : '' }}"></i>
+                            <span>Stock Overview</span>
+                        </a>
+                    @endif
+
+                    <!-- Inventory Section -->
+                    @if(auth()->user()?->hasPermission('products.view') || auth()->user()?->hasPermission('categories.view') || auth()->user()?->hasPermission('units.view'))
+                        <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mt-5 mb-2">Inventory</p>
+
+                        @if(auth()->user()?->hasPermission('products.view'))
+                            <a href="{{ route('products.index') }}" 
+                               class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('products.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                                <i class="fa-solid fa-box-open w-5 text-center text-slate-400 {{ request()->routeIs('products.*') ? 'text-white' : '' }}"></i>
+                                <span>Products</span>
+                            </a>
+                        @endif
+
+                        @if(auth()->user()?->hasPermission('categories.view'))
+                            <a href="{{ route('categories.index') }}" 
+                               class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('categories.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                                <i class="fa-solid fa-tags w-5 text-center text-slate-400 {{ request()->routeIs('categories.*') ? 'text-white' : '' }}"></i>
+                                <span>Categories</span>
+                            </a>
+                        @endif
+
+                        @if(auth()->user()?->hasPermission('units.view'))
+                            <a href="{{ route('units.index') }}" 
+                               class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('units.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                                <i class="fa-solid fa-scale-balanced w-5 text-center text-slate-400 {{ request()->routeIs('units.*') ? 'text-white' : '' }}"></i>
+                                <span>Units & Conversion</span>
+                            </a>
+                        @endif
+                    @endif
+
+                    <!-- Sales Section -->
+                    @if(auth()->user()?->hasPermission('sale_orders.view') || auth()->user()?->hasPermission('sales.view') || auth()->user()?->hasPermission('sale_returns.view'))
+                        <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mt-5 mb-2">Sales</p>
+
+                        @if(auth()->user()?->hasPermission('sale_orders.view'))
+                            <a href="{{ route('sale-orders.index') }}" 
+                               class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('sale-orders.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                                <i class="fa-solid fa-cart-flatbed w-5 text-center text-slate-400 {{ request()->routeIs('sale-orders.*') ? 'text-white' : '' }}"></i>
+                                <span>Sale Orders</span>
+                            </a>
+                        @endif
+
+                        @if(auth()->user()?->hasPermission('sales.view'))
+                            <a href="{{ route('sales.index') }}" 
+                               class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('sales.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                                <i class="fa-solid fa-receipt w-5 text-center text-slate-400 {{ request()->routeIs('sales.*') ? 'text-white' : '' }}"></i>
+                                <span>Sale Invoices</span>
+                            </a>
+                        @endif
+
+                        @if(auth()->user()?->hasPermission('sale_returns.view'))
+                            <a href="{{ route('sale-returns.index') }}" 
+                               class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('sale-returns.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                                <i class="fa-solid fa-arrow-rotate-left w-5 text-center text-slate-400 {{ request()->routeIs('sale-returns.*') ? 'text-white' : '' }}"></i>
+                                <span>Sale Returns</span>
+                            </a>
+                        @endif
+                    @endif
+
+                    <!-- Purchases Section -->
+                    @if(auth()->user()?->hasPermission('purchase_orders.view') || auth()->user()?->hasPermission('purchases.view') || auth()->user()?->hasPermission('purchase_returns.view'))
+                        <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mt-5 mb-2">Purchases</p>
+
+                        @if(auth()->user()?->hasPermission('purchase_orders.view'))
+                            <a href="{{ route('purchase-orders.index') }}" 
+                               class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('purchase-orders.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                                <i class="fa-solid fa-clipboard-list w-5 text-center text-slate-400 {{ request()->routeIs('purchase-orders.*') ? 'text-white' : '' }}"></i>
+                                <span>Purchase Orders</span>
+                            </a>
+                        @endif
+
+                        @if(auth()->user()?->hasPermission('purchases.view'))
+                            <a href="{{ route('purchases.index') }}" 
+                               class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('purchases.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                                <i class="fa-solid fa-bag-shopping w-5 text-center text-slate-400 {{ request()->routeIs('purchases.*') ? 'text-white' : '' }}"></i>
+                                <span>Purchase Invoices</span>
+                            </a>
+                        @endif
+
+                        @if(auth()->user()?->hasPermission('purchase_returns.view'))
+                            <a href="{{ route('purchase-returns.index') }}" 
+                               class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('purchase-returns.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                                <i class="fa-solid fa-truck-ramp-box w-5 text-center text-slate-400 {{ request()->routeIs('purchase-returns.*') ? 'text-white' : '' }}"></i>
+                                <span>Purchase Returns</span>
+                            </a>
+                        @endif
+                    @endif
+
+                    <!-- Chart Of Accounts -->
+                    @if(auth()->user()?->hasPermission('day_book.view') || auth()->user()?->hasPermission('ledgers.customer') || auth()->user()?->hasPermission('ledgers.vendor') || auth()->user()?->isSuperAdmin())
+                        <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mt-5 mb-2">Chart Of Accounts</p>
+
+                        @if(auth()->user()?->hasPermission('day_book.view') || auth()->user()?->isSuperAdmin())
+                            <a href="{{ route('day-book.index') }}" 
+                               class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('day-book.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                                <i class="fa-solid fa-cash-register w-5 text-center text-slate-400 {{ request()->routeIs('day-book.*') ? 'text-white' : '' }}"></i>
+                                <span>Day Book / Cash Book</span>
+                            </a>
+                        @endif
+
+                        @if(auth()->user()?->hasPermission('ledgers.customer'))
+                            <a href="{{ route('ledgers.customer') }}" 
+                               class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('ledgers.customer') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                                <i class="fa-solid fa-book-bookmark w-5 text-center text-slate-400 {{ request()->routeIs('ledgers.customer') ? 'text-white' : '' }}"></i>
+                                <span>Customer Ledgers</span>
+                            </a>
+                        @endif
+
+                        @if(auth()->user()?->hasPermission('ledgers.vendor'))
+                            <a href="{{ route('ledgers.vendor') }}" 
+                               class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('ledgers.vendor') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                                <i class="fa-solid fa-book-journal-whills w-5 text-center text-slate-400 {{ request()->routeIs('ledgers.vendor') ? 'text-white' : '' }}"></i>
+                                <span>Vendor Ledgers</span>
+                            </a>
+                        @endif
+
+                        <a href="{{ route('vouchers.index') }}" 
+                           class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('vouchers.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                            <i class="fa-solid fa-money-bill-transfer w-5 text-center text-slate-400 {{ request()->routeIs('vouchers.*') ? 'text-white' : '' }}"></i>
+                            <span>Cash & Payment Vouchers</span>
+                        </a>
+
+                        @if(auth()->user()?->hasPermission('expenses.view'))
+                            <a href="{{ route('expenses.index') }}" 
+                               class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('expenses.*') || request()->routeIs('expense-categories.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                                <i class="fa-solid fa-receipt w-5 text-center text-slate-400 {{ request()->routeIs('expenses.*') || request()->routeIs('expense-categories.*') ? 'text-white' : '' }}"></i>
+                                <span>Operating Expenses</span>
+                            </a>
+                        @endif
+                    @endif
+
+                    <!-- People & Contacts -->
+                    @if(auth()->user()?->hasPermission('customers.view') || auth()->user()?->hasPermission('vendors.view'))
+                        <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mt-5 mb-2">People & Contacts</p>
+
+                        @if(auth()->user()?->hasPermission('customers.view'))
+                            <a href="{{ route('customers.index') }}" 
+                               class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('customers.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                                <i class="fa-solid fa-users w-5 text-center text-slate-400 {{ request()->routeIs('customers.*') ? 'text-white' : '' }}"></i>
+                                <span>Customers</span>
+                            </a>
+                        @endif
+
+                        @if(auth()->user()?->hasPermission('vendors.view'))
+                            <a href="{{ route('vendors.index') }}" 
+                               class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('vendors.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                                <i class="fa-solid fa-truck-moving w-5 text-center text-slate-400 {{ request()->routeIs('vendors.*') ? 'text-white' : '' }}"></i>
+                                <span>Vendors</span>
+                            </a>
+                        @endif
+                    @endif
+
+                    <!-- Analytics -->
+                    @if(auth()->user()?->hasPermission('reports.view'))
+                        <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mt-5 mb-2">Analytics</p>
+
+                        <a href="{{ route('reports.index') }}" 
+                           class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('reports.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                            <i class="fa-solid fa-chart-line w-5 text-center text-slate-400 {{ request()->routeIs('reports.*') ? 'text-white' : '' }}"></i>
+                            <span>Reports & Analytics</span>
+                        </a>
+                    @endif
                 @endif
 
-                <!-- User & Access Management -->
+                <!-- User & Access Management (For Super Admin & Company Staff Only - Hidden for Owner) -->
                 @php
-    $user = auth()->user();
-@endphp
-@if($user && ($user->isSuperAdmin() || $user->hasPermission('users.view') || $user->hasPermission('roles.view') || $user->hasPermission('permissions.view')))
-    <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-amber-400 mt-5 mb-2 flex items-center gap-1.5">
-        <i class="fa-solid fa-shield-halved text-[10px]"></i> User & Access Control
-    </p>
+                    $user = auth()->user();
+                @endphp
+                @if($user && !$user->isOwner() && ($user->isSuperAdmin() || $user->hasPermission('users.view') || $user->hasPermission('roles.view') || $user->hasPermission('permissions.view')))
+                    <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-amber-400 mt-5 mb-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-shield-halved text-[10px]"></i> User & Access Control
+                    </p>
 
-    @if($user->isOwner())
-        <a href="{{ route('companies.index') }}"
-           class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('companies.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-            <i class="fa-solid fa-building w-5 text-center text-slate-400 {{ request()->routeIs('companies.*') ? 'text-white' : '' }}"></i>
-            <span>Companies & Tenants</span>
-        </a>
-    @endif
+                    @if($user->isSuperAdmin() || $user->hasPermission('users.view'))
+                        <a href="{{ route('users.index') }}"
+                           class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('users.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                            <i class="fa-solid fa-user-group w-5 text-center text-slate-400 {{ request()->routeIs('users.*') ? 'text-white' : '' }}"></i>
+                            <span>Staff Users</span>
+                        </a>
+                    @endif
 
-    @if($user->isSuperAdmin() || $user->hasPermission('users.view'))
-        <a href="{{ route('users.index') }}"
-           class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('users.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-            <i class="fa-solid fa-user-group w-5 text-center text-slate-400 {{ request()->routeIs('users.*') ? 'text-white' : '' }}"></i>
-            <span>Staff Users</span>
-        </a>
-    @endif
-
-    @if($user->isSuperAdmin() || $user->hasPermission('roles.view') || $user->hasPermission('permissions.view'))
-        <div class="mt-2">
-            @if($user->isSuperAdmin() || $user->hasPermission('roles.view'))
-                <a href="{{ route('roles.index') }}"
-                   class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('roles.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                    <i class="fa-solid fa-id-badge w-5 text-center text-slate-400 {{ request()->routeIs('roles.*') ? 'text-white' : '' }}"></i>
-                    <span>Roles & Matrix</span>
-                </a>
-            @endif
-            @if($user->isSuperAdmin() || $user->hasPermission('permissions.view'))
-                <a href="{{ route('permissions.index') }}"
-                   class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('permissions.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                    <i class="fa-solid fa-key w-5 text-center text-slate-400 {{ request()->routeIs('permissions.*') ? 'text-white' : '' }}"></i>
-                    <span>Permissions Manager</span>
-                </a>
-            @endif
-        </div>
-    @endif
-@endif
+                    @if($user->isSuperAdmin() || $user->hasPermission('roles.view') || $user->hasPermission('permissions.view'))
+                        <div class="mt-2">
+                            @if($user->isSuperAdmin() || $user->hasPermission('roles.view'))
+                                <a href="{{ route('roles.index') }}"
+                                   class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('roles.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                                    <i class="fa-solid fa-id-badge w-5 text-center text-slate-400 {{ request()->routeIs('roles.*') ? 'text-white' : '' }}"></i>
+                                    <span>Roles & Matrix</span>
+                                </a>
+                            @endif
+                            @if($user->isSuperAdmin() || $user->hasPermission('permissions.view'))
+                                <a href="{{ route('permissions.index') }}"
+                                   class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('permissions.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                                    <i class="fa-solid fa-key w-5 text-center text-slate-400 {{ request()->routeIs('permissions.*') ? 'text-white' : '' }}"></i>
+                                    <span>Permissions Manager</span>
+                                </a>
+                            @endif
+                        </div>
+                    @endif
+                @endif
             </nav>
 
             <!-- Footer / System status -->
@@ -319,7 +347,7 @@
                     <h1 class="text-xl font-bold text-slate-800">{{ $title ?? 'Dashboard' }}</h1>
                 </div>
                 <div class="flex items-center gap-3">
-                    @if(auth()->user()?->hasPermission('pos.access'))
+                    @if(!auth()->user()?->isOwner() && auth()->user()?->hasPermission('pos.access'))
                         <a href="{{ route('pos.index') }}" 
                            class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition">
                             <i class="fa-solid fa-barcode"></i>

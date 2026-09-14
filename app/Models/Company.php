@@ -91,4 +91,14 @@ class Company extends Model
     {
         return $this->hasMany(StockMovement::class);
     }
+
+    public function expenses(): HasMany
+    {
+        return $this->hasMany(Expense::class);
+    }
+
+    public function expenseCategories(): HasMany
+    {
+        return $this->hasMany(ExpenseCategory::class);
+    }
 }

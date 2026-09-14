@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-slate-900">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="bg-slate-950">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Login - SmartPOS Retail & Inventory</title>
+    <title>Login - SaaS Multi-Tenant Platform</title>
 
     <!-- Tailwind CSS & Font Awesome -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -30,22 +30,22 @@
         }
     </script>
 </head>
-<body class="h-full flex items-center justify-center p-4 bg-slate-950 antialiased selection:bg-emerald-500 selection:text-white">
-    <div class="w-full max-w-md">
+<body class="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 py-10 sm:py-16 bg-slate-950 text-slate-100 antialiased selection:bg-emerald-500 selection:text-white">
+    <div class="w-full max-w-md my-auto">
         <!-- Logo & Header -->
-        <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 text-white shadow-xl shadow-emerald-500/20 mb-4 ring-8 ring-emerald-500/10">
-                <i class="fa-solid fa-cash-register text-2xl"></i>
+        <div class="text-center mb-6">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-indigo-500 text-white shadow-xl shadow-emerald-500/20 mb-3 ring-8 ring-emerald-500/10">
+                <i class="fa-solid fa-cloud text-2xl"></i>
             </div>
-            <h1 class="text-3xl font-black tracking-tight text-white">Smart<span class="text-emerald-400">POS</span></h1>
-            <p class="text-sm font-medium text-slate-400 mt-1">Point of Sale & Inventory Management System</p>
+            <h1 class="text-3xl font-black tracking-tight text-white">Smart<span class="text-emerald-400">POS</span> <span class="text-indigo-400 text-xl font-bold">SaaS</span></h1>
+            <p class="text-xs font-semibold text-slate-400 mt-1">Multi-Company • Multi-Tenant Architecture</p>
         </div>
 
         <!-- Login Card -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-8 backdrop-blur">
-            <div class="mb-6">
-                <h2 class="text-xl font-bold text-white">Sign In to Your Account</h2>
-                <p class="text-xs text-slate-400 mt-1">Enter your credentials to access the POS terminal and backoffice</p>
+        <div class="bg-slate-900/90 border border-slate-800 rounded-3xl shadow-2xl p-6 sm:p-8 backdrop-blur">
+            <div class="mb-5">
+                <h2 class="text-xl font-black text-white">Sign In to Platform</h2>
+                <p class="text-xs text-slate-400 mt-1">Enter your credentials to access your tenant terminal or owner dashboard</p>
             </div>
 
             <!-- Flash Alerts -->
@@ -74,9 +74,9 @@
                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
                             <i class="fa-regular fa-envelope text-sm"></i>
                         </div>
-                        <input type="email" name="email" id="email" value="{{ old('email') }}" required autofocus
+                        <input type="email" name="email" id="email" value="{{ old('email', 'owner@saasplatform.com') }}" required autofocus
                                class="w-full pl-10 pr-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition"
-                               placeholder="admin@smartpos.com">
+                               placeholder="owner@saasplatform.com">
                     </div>
                 </div>
 
@@ -86,7 +86,7 @@
                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
                             <i class="fa-solid fa-lock text-sm"></i>
                         </div>
-                        <input type="password" name="password" id="password" required
+                        <input type="password" name="password" id="password" value="password123" required
                                class="w-full pl-10 pr-10 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition"
                                placeholder="••••••••">
                         <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-500 hover:text-slate-300">
@@ -112,32 +112,44 @@
             <!-- Quick Demo Credentials for Fast Testing -->
             <div class="mt-6 pt-5 border-t border-slate-800">
                 <p class="text-[11px] uppercase tracking-wider font-bold text-slate-400 mb-2.5 flex items-center gap-1.5">
-                    <i class="fa-solid fa-bolt text-amber-400"></i> Quick Fill Demo Accounts
+                    <i class="fa-solid fa-bolt text-amber-400"></i> Quick Fill One-Click Logins
                 </p>
-                <div class="grid grid-cols-2 gap-2">
-                    <button type="button" onclick="fillCredentials('admin@smartpos.com', 'password123')"
-                            class="text-left p-2.5 bg-slate-950 hover:bg-slate-800/80 border border-slate-800 hover:border-emerald-500/50 rounded-xl transition group">
-                        <div class="text-xs font-bold text-white group-hover:text-emerald-400 flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                            Super Admin
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    <!-- 1. System Owner (Level 1) -->
+                    <button type="button" onclick="fillCredentials('owner@saasplatform.com', 'password123')"
+                            class="text-left p-2.5 bg-indigo-950/50 hover:bg-indigo-900/80 border border-indigo-700/80 hover:border-indigo-400 rounded-xl transition group shadow-sm">
+                        <div class="text-xs font-bold text-indigo-300 group-hover:text-white flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+                            👑 Owner (L1)
                         </div>
-                        <div class="text-[10px] text-slate-400 font-mono mt-0.5">Full System Access</div>
+                        <div class="text-[10px] text-slate-400 font-mono mt-0.5">All Companies SaaS</div>
                     </button>
 
-                    <button type="button" onclick="fillCredentials('cashier@smartpos.com', 'password123')"
-                            class="text-left p-2.5 bg-slate-950 hover:bg-slate-800/80 border border-slate-800 hover:border-teal-500/50 rounded-xl transition group">
-                        <div class="text-xs font-bold text-white group-hover:text-teal-400 flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-teal-500"></span>
-                            Cashier
+                    <!-- 2. Super Admin (Level 2) -->
+                    <button type="button" onclick="fillCredentials('admin@smartpos.com', 'password123')"
+                            class="text-left p-2.5 bg-slate-950 hover:bg-slate-800/80 border border-slate-800 hover:border-emerald-500/50 rounded-xl transition group shadow-sm">
+                        <div class="text-xs font-bold text-emerald-400 group-hover:text-emerald-300 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            🏢 Admin (L2)
                         </div>
-                        <div class="text-[10px] text-slate-400 font-mono mt-0.5">POS & Sales Only</div>
+                        <div class="text-[10px] text-slate-400 font-mono mt-0.5">Company Dashboard</div>
+                    </button>
+
+                    <!-- 3. Cashier (POS Terminal) -->
+                    <button type="button" onclick="fillCredentials('cashier@smartpos.com', 'password123')"
+                            class="text-left p-2.5 bg-slate-950 hover:bg-slate-800/80 border border-slate-800 hover:border-teal-500/50 rounded-xl transition group shadow-sm">
+                        <div class="text-xs font-bold text-teal-400 group-hover:text-teal-300 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-teal-500"></span>
+                            🛒 Cashier
+                        </div>
+                        <div class="text-[10px] text-slate-400 font-mono mt-0.5">POS & Checkout</div>
                     </button>
                 </div>
             </div>
         </div>
 
         <div class="text-center mt-6 text-xs text-slate-500">
-            SmartPOS &copy; {{ date('Y') }} • All rights reserved
+            SaaS Platform Multi-Tenant POS &copy; {{ date('Y') }} • All rights reserved
         </div>
     </div>
 
