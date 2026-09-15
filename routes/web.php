@@ -133,8 +133,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy')->middleware('permission:categories.delete');
 
     // Inventory: Brands
-    Route::resource('brands', BrandController::class)->middleware('permission:categories.view,categories.create');
-    Route::post('brands/store-inline', [BrandController::class, 'storeInline'])->name('brands.store.inline')->middleware('permission:categories.create');
+    Route::resource('brands', BrandController::class)->middleware('permission:brands.view,brands.create');
+    Route::post('brands/store-inline', [BrandController::class, 'storeInline'])->name('brands.store.inline')->middleware('permission:brands.create');
 
     // Inventory: Units
     Route::get('units', [UnitController::class, 'index'])->name('units.index')->middleware('permission:units.view');
