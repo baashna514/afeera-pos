@@ -10,6 +10,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
+    <!-- SweetAlert2 & jQuery & Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         if (typeof tailwind !== 'undefined') {
             tailwind.config = {
@@ -70,7 +74,7 @@
             <!-- Navigation Links -->
             <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
                 @if(auth()->user()?->isOwner())
-                    <!-- Dedicated Owner Platform Menu: Exactly 2 Modules -->
+                    <!-- Dedicated Owner Platform Menu: Companies & Tenants -->
                     <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-indigo-400 mb-2 flex items-center gap-1.5">
                         <i class="fa-solid fa-crown text-[10px]"></i> Platform Administration
                     </p>
@@ -79,12 +83,6 @@
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition mb-1 {{ request()->routeIs('owner.*') ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-600/30' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
                         <i class="fa-solid fa-building w-5 text-center text-indigo-400 text-sm"></i>
                         <span>Companies & Tenants</span>
-                    </a>
-
-                    <a href="{{ route('reports.index') }}" 
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('reports.*') ? 'bg-indigo-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                        <i class="fa-solid fa-chart-line w-5 text-center text-slate-400 {{ request()->routeIs('reports.*') ? 'text-white' : '' }}"></i>
-                        <span>Reports</span>
                     </a>
                 @else
                     <!-- Tenant Company Operations Menu (Super Admin & Staff) -->
@@ -138,6 +136,12 @@
                            class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('warehouses.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
                             <i class="fa-solid fa-warehouse w-5 text-center text-slate-400 {{ request()->routeIs('warehouses.*') ? 'text-white' : '' }}"></i>
                             <span>Warehouses</span>
+                        </a>
+
+                        <a href="{{ route('brands.index') }}" 
+                           class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('brands.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                            <i class="fa-solid fa-copyright w-5 text-center text-slate-400 {{ request()->routeIs('brands.*') ? 'text-white' : '' }}"></i>
+                            <span>Brands</span>
                         </a>
 
                         <a href="{{ route('stock-transfers.index') }}" 
@@ -281,7 +285,7 @@
                     @endif
                 @endif
 
-                <!-- User & Access Management (For Super Admin & Company Staff Only - Hidden for Owner) -->
+                <!-- User & Access Management -->
                 @php
                     $user = auth()->user();
                 @endphp
@@ -299,7 +303,7 @@
                     @endif
 
                     @if($user->isSuperAdmin() || $user->hasPermission('roles.view') || $user->hasPermission('permissions.view'))
-                        <div class="mt-2">
+                        <div class="mt-2 space-y-1">
                             @if($user->isSuperAdmin() || $user->hasPermission('roles.view'))
                                 <a href="{{ route('roles.index') }}"
                                    class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('roles.*') ? 'bg-emerald-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">

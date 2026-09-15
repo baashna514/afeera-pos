@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use App\Models\Customer;
 use App\Models\Expense;
 use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\Sale;
 use App\Models\SaleItem;
-use App\Models\Vendor;
+use App\Models\SaleOrder;
+use App\Models\Voucher;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,7 +17,7 @@ use Illuminate\View\View;
 class DashboardController extends Controller
 {
     /**
-     * Display the dashboard with key performance indicators & Profit/Loss analytics.
+     * Display the dashboard matching the requested design layout with exact metrics & tabs.
      */
     public function index(Request $request): View|RedirectResponse
     {
@@ -26,14 +25,16 @@ class DashboardController extends Controller
             return redirect()->route('owner.dashboard');
         }
 
+        $now = Carbon::now();
+        $today = Carbon::today();
+
         $presetFilter = $request->input('preset_filter', 'today');
         $dateFrom = $request->input('date_from');
         $dateTo = $request->input('date_to');
 
-        $now = Carbon::now();
         if ($presetFilter === 'today') {
-            $dateFrom = $now->copy()->startOfDay()->toDateString();
-            $dateTo = $now->copy()->endOfDay()->toDateString();
+            $dateFrom = $today->copy()->startOfDay()->toDateString();
+            $dateTo = $today->copy()->endOfDay()->toDateString();
         } elseif ($presetFilter === 'yesterday') {
             $dateFrom = $now->copy()->subDay()->startOfDay()->toDateString();
             $dateTo = $now->copy()->subDay()->endOfDay()->toDateString();
@@ -43,19 +44,33 @@ class DashboardController extends Controller
         } elseif ($presetFilter === 'this_month') {
             $dateFrom = $now->copy()->startOfMonth()->toDateString();
             $dateTo = $now->copy()->endOfMonth()->toDateString();
-        } elseif ($presetFilter === 'all_time') {
-            $dateFrom = null;
-            $dateTo = null;
         }
 
-        $today = Carbon::today();
+        // 1. Top Cards Row 1: Financial Totals
+        $totalReceivables = (float) Sale::sum('due_amount');
+        $totalPayables = (float) Purchase::sum('due_amount');
 
-        // 1. Today's Core Metrics
-        $todaySales = (float) Sale::whereDate('created_at', $today)->sum('total_amount');
-        $todayOrders = Sale::whereDate('created_at', $today)->count();
-        $todayExpenses = (float) Expense::whereDate('expense_date', $today)->sum('amount');
+        $cashIn = (float) Sale::where('payment_method', 'cash')->sum('paid_amount') + (float) Voucher::where('type', 'receipt')->sum('amount');
+        $cashOut = (float) Purchase::where('payment_method', 'cash')->sum('paid_amount') + (float) Expense::sum('amount') + (float) Voucher::where('type', 'payment')->sum('amount');
+        $cashBalance = $cashIn - $cashOut;
 
-        // Today's COGS & Profit
+        $bankIn = (float) Sale::where('payment_method', '!=', 'cash')->sum('paid_amount');
+        $bankOut = (float) Purchase::where('payment_method', '!=', 'cash')->sum('paid_amount');
+        $bankBalance = $bankIn - $bankOut;
+
+        // 2. Top Cards Row 2: Sales Timeframe Breakdowns
+        $dailySale = (float) Sale::whereDate('created_at', $today)->sum('total_amount');
+        $weeklySale = (float) Sale::whereBetween('created_at', [$now->copy()->startOfWeek(), $now->copy()->endOfWeek()])->sum('total_amount');
+        $monthlySale = (float) Sale::whereYear('created_at', $now->year)->whereMonth('created_at', $now->month)->sum('total_amount');
+        $yearlySale = (float) Sale::whereYear('created_at', $now->year)->sum('total_amount');
+
+        // 3. Top Cards Row 3: Expense Timeframe Breakdowns
+        $dailyExpense = (float) Expense::whereDate('expense_date', $today)->sum('amount');
+        $weeklyExpense = (float) Expense::whereBetween('expense_date', [$now->copy()->startOfWeek(), $now->copy()->endOfWeek()])->sum('amount');
+        $monthlyExpense = (float) Expense::whereYear('expense_date', $now->year)->whereMonth('expense_date', $now->month)->sum('amount');
+        $yearlyExpense = (float) Expense::whereYear('expense_date', $now->year)->sum('amount');
+
+        // 4. Profit & Loss Calculations for Filtered Period
         $todayItems = SaleItem::whereHas('sale', fn ($q) => $q->whereDate('created_at', $today))->with('product')->get();
         $todayCogs = 0;
         foreach ($todayItems as $item) {
@@ -63,28 +78,21 @@ class DashboardController extends Controller
             $cost = $item->product ? (float) $item->product->purchase_price : 0;
             $todayCogs += ($qty * $cost);
         }
-        $todayGrossProfit = $todaySales - $todayCogs;
-        $todayNetProfit = $todayGrossProfit - $todayExpenses;
+        $todayGrossProfit = $dailySale - $todayCogs;
+        $todayNetProfit = $todayGrossProfit - $dailyExpense;
 
-        // 2. Filtered Period Metrics
         $salesQuery = Sale::query();
         $expenseQuery = Expense::query();
-        $purchaseQuery = Purchase::query();
-
         if ($dateFrom) {
             $salesQuery->whereDate('created_at', '>=', $dateFrom);
             $expenseQuery->whereDate('expense_date', '>=', $dateFrom);
-            $purchaseQuery->whereDate('created_at', '>=', $dateFrom);
         }
         if ($dateTo) {
             $salesQuery->whereDate('created_at', '<=', $dateTo);
             $expenseQuery->whereDate('expense_date', '<=', $dateTo);
-            $purchaseQuery->whereDate('created_at', '<=', $dateTo);
         }
-
         $filteredSales = (float) (clone $salesQuery)->sum('total_amount');
         $filteredExpenses = (float) (clone $expenseQuery)->sum('amount');
-        $filteredPurchases = (float) (clone $purchaseQuery)->sum('total_amount');
 
         $filteredItemsQuery = SaleItem::query();
         if ($dateFrom || $dateTo) {
@@ -98,71 +106,82 @@ class DashboardController extends Controller
             });
         }
         $filteredItems = $filteredItemsQuery->with('product')->get();
-
         $filteredCogs = 0;
         foreach ($filteredItems as $item) {
             $qty = $item->base_quantity ?: $item->quantity;
             $cost = $item->product ? (float) $item->product->purchase_price : 0;
             $filteredCogs += ($qty * $cost);
         }
-
         $filteredGrossProfit = $filteredSales - $filteredCogs;
         $filteredNetProfit = $filteredGrossProfit - $filteredExpenses;
         $filteredProfitMargin = $filteredSales > 0 ? ($filteredNetProfit / $filteredSales) * 100 : 0;
 
-        // 3. System Counters & Stock Summary
-        $totalSales = (float) Sale::sum('total_amount');
-        $totalExpenses = (float) Expense::sum('amount');
-        $totalProducts = Product::count();
-        $totalCustomers = Customer::count();
-        $totalVendors = Vendor::count();
-        $totalCategories = Category::count();
+        // Chart Data: Monthly Sales vs Purchases (Last 6 Months)
+        $chartLabels = [];
+        $salesChartData = [];
+        $purchasesChartData = [];
+
+        for ($i = 5; $i >= 0; $i--) {
+            $monthDate = $now->copy()->subMonths($i);
+            $chartLabels[] = $monthDate->format('M Y');
+            $salesChartData[] = (float) Sale::whereYear('created_at', $monthDate->year)
+                ->whereMonth('created_at', $monthDate->month)
+                ->sum('total_amount');
+            $purchasesChartData[] = (float) Purchase::whereYear('created_at', $monthDate->year)
+                ->whereMonth('created_at', $monthDate->month)
+                ->sum('total_amount');
+        }
+
+        // Tab Data
+        $recentExpenses = Expense::with('category')->latest('expense_date')->take(5)->get();
+        $clientDues = Sale::where('due_amount', '>', 0)->with('customer')->latest()->take(5)->get();
+        $amountReceived = Sale::where('paid_amount', '>', 0)->with('customer')->latest()->take(5)->get();
+
+        // Bottom Cards Data
+        $unpaidSaleInvoicesCount = Sale::where('due_amount', '>', 0)->count();
+        $unpaidPurchaseInvoicesCount = Purchase::where('due_amount', '>', 0)->count();
         $lowStockCount = Product::lowStock()->count();
-        $totalStockValue = (float) (Product::selectRaw('SUM(quantity * purchase_price) as val')->value('val') ?? 0);
+        $pendingVouchersCount = Voucher::count();
 
-        $recentSales = Sale::with('customer')
-            ->latest()
-            ->take(5)
-            ->get();
-
-        $recentExpenses = Expense::with('category')
-            ->latest('expense_date')
-            ->take(5)
-            ->get();
-
-        $lowStockProducts = Product::with('category')
-            ->lowStock()
-            ->orderBy('quantity', 'asc')
-            ->take(5)
-            ->get();
+        $quotationsCount = SaleOrder::pending()->count();
+        $saleInvoicesCount = Sale::count();
+        $purchaseInvoicesCount = Purchase::count();
 
         return view('dashboard', compact(
             'presetFilter',
             'dateFrom',
             'dateTo',
-            'todaySales',
-            'todayOrders',
-            'todayExpenses',
+            'totalReceivables',
+            'totalPayables',
+            'cashBalance',
+            'bankBalance',
+            'dailySale',
+            'weeklySale',
+            'monthlySale',
+            'yearlySale',
+            'dailyExpense',
+            'weeklyExpense',
+            'monthlyExpense',
+            'yearlyExpense',
             'todayGrossProfit',
             'todayNetProfit',
             'filteredSales',
             'filteredExpenses',
-            'filteredPurchases',
-            'filteredCogs',
-            'filteredGrossProfit',
             'filteredNetProfit',
             'filteredProfitMargin',
-            'totalSales',
-            'totalExpenses',
-            'totalProducts',
-            'totalCustomers',
-            'totalVendors',
-            'totalCategories',
-            'lowStockCount',
-            'totalStockValue',
-            'recentSales',
+            'chartLabels',
+            'salesChartData',
+            'purchasesChartData',
             'recentExpenses',
-            'lowStockProducts'
+            'clientDues',
+            'amountReceived',
+            'unpaidSaleInvoicesCount',
+            'unpaidPurchaseInvoicesCount',
+            'lowStockCount',
+            'pendingVouchersCount',
+            'quotationsCount',
+            'saleInvoicesCount',
+            'purchaseInvoicesCount'
         ));
     }
 }

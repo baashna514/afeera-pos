@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-5xl mx-auto space-y-6">
+<div class="max-w-6xl mx-auto space-y-6">
     <div class="flex items-center justify-between">
         <div>
             <h2 class="text-2xl font-black text-slate-800">New Sale Invoice</h2>
@@ -53,7 +53,7 @@
                     <div class="flex items-center justify-between mb-2">
                         <label for="customer_id" class="text-xs font-bold uppercase tracking-wider text-slate-600">Customer <span class="text-rose-500">*</span></label>
                         <button type="button" onclick="openQuickCustomerModal()" class="text-[11px] font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1">
-                            <i class="fa-solid fa-plus-circle"></i> + Add New Customer
+                            <i class="fa-solid fa-plus-circle"></i> Add New Customer
                         </button>
                     </div>
                     <select name="customer_id" id="customer_id" required 
@@ -66,6 +66,24 @@
                         @endforeach
                     </select>
                     @error('customer_id')
+                        <p class="text-xs text-rose-500 mt-1 font-medium">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Warehouse / Branch Selection -->
+                <div>
+                    <label for="warehouse_id" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
+                        <i class="fa-solid fa-warehouse text-blue-600 mr-1"></i> Warehouse Location <span class="text-rose-500">*</span>
+                    </label>
+                    <select name="warehouse_id" id="warehouse_id" onchange="onWarehouseChange()" required
+                            class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition font-semibold @error('warehouse_id') border-rose-400 @enderror">
+                        @foreach ($warehouses as $wh)
+                            <option value="{{ $wh->id }}" {{ (old('warehouse_id') == $wh->id || ($loop->first && !old('warehouse_id'))) ? 'selected' : '' }}>
+                                {{ $wh->name }} ({{ $wh->code ?? 'WH-'.$wh->id }}) {{ $wh->is_default ? '[Default]' : '' }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('warehouse_id')
                         <p class="text-xs text-rose-500 mt-1 font-medium">{{ $message }}</p>
                     @enderror
                 </div>
@@ -92,7 +110,7 @@
                 </div>
 
                 <!-- Internal Note -->
-                <div>
+                <div class="md:col-span-3">
                     <label for="note" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Internal Note (Optional)</label>
                     <input type="text" name="note" id="note" value="{{ old('note') }}" placeholder="Internal staff note..."
                            class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition">
@@ -107,7 +125,7 @@
                     <h3 class="text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
                         <i class="fa-solid fa-boxes-stacked text-blue-600"></i> Sold Products
                     </h3>
-                    <p class="text-xs text-slate-400 mt-0.5">Select products, packaging units, and sale price.</p>
+                    <p class="text-xs text-slate-400 mt-0.5">Select products, packaging units, row discounts, and sale price.</p>
                 </div>
                 <button type="button" onclick="addItemRow()" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold rounded-lg border border-blue-200 flex items-center gap-1.5 transition">
                     <i class="fa-solid fa-plus"></i> Add Product
@@ -119,10 +137,12 @@
                 <table class="w-full text-left text-sm" id="itemsTable">
                     <thead class="bg-slate-50 text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">
                         <tr>
-                            <th class="px-3 py-3" style="width: 35%;">Product</th>
-                            <th class="px-3 py-3" style="width: 20%;">Unit / Packaging</th>
-                            <th class="px-3 py-3 text-center" style="width: 15%;">Quantity</th>
-                            <th class="px-3 py-3 text-right" style="width: 15%;">Unit Price (Rs.)</th>
+                            <th class="px-3 py-3" style="width: 25%;">Product</th>
+                            <th class="px-3 py-3" style="width: 15%;">Unit / Packaging</th>
+                            <th class="px-3 py-3 text-center" style="width: 12%;">Quantity</th>
+                            <th class="px-3 py-3 text-right" style="width: 13%;">Price (Rs.)</th>
+                            <th class="px-3 py-3 text-center" style="width: 12%;">Perc disc (%)</th>
+                            <th class="px-3 py-3 text-center" style="width: 13%;">Amount disc (Rs.)</th>
                             <th class="px-3 py-3 text-right" style="width: 10%;">Subtotal</th>
                             <th class="px-2 py-3 text-center" style="width: 5%;"></th>
                         </tr>
@@ -132,8 +152,8 @@
                     </tbody>
                     <tfoot class="bg-slate-50 border-t border-slate-200 font-bold">
                         <tr>
-                            <td colspan="4" class="px-4 py-3.5 text-right text-slate-600">Grand Total:</td>
-                            <td class="px-3 py-3.5 text-right text-slate-900 text-base font-black" id="grandTotalDisplay">Rs. 0.00</td>
+                            <td colspan="6" class="px-4 py-3 text-right text-slate-600 text-xs uppercase tracking-wider">Items Subtotal:</td>
+                            <td class="px-3 py-3 text-right text-slate-800 text-sm font-black" id="itemsSubtotalDisplay">Rs. 0.00</td>
                             <td></td>
                         </tr>
                     </tfoot>
@@ -145,12 +165,59 @@
             @enderror
         </div>
 
-        <!-- Payment & Ledger Settlement Card -->
-        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-4">
-            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
-                <i class="fa-solid fa-wallet text-blue-600"></i> Payment &amp; Khata Settlement
-            </h3>
+        <!-- Invoice Discount & Payment Settlement Card -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-6">
+            <!-- Overall Invoice Discount Section -->
+            <div class="p-4 bg-slate-50/80 rounded-xl border border-slate-200/80 space-y-3">
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center gap-2 cursor-pointer select-none">
+                        <input type="checkbox" name="has_overall_discount" id="has_overall_discount" value="1" onchange="toggleOverallDiscount()" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-700">is discount? (Overall Invoice Discount)</span>
+                    </label>
+                    <span class="text-xs font-semibold text-slate-500">Apply invoice-level discount</span>
+                </div>
 
+                <div id="overallDiscountControls" class="hidden grid-cols-1 sm:grid-cols-3 gap-4 pt-3 border-t border-slate-200/70 items-center">
+                    <div>
+                        <span class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Discount Method</span>
+                        <div class="flex items-center gap-4">
+                            <label class="flex items-center gap-1.5 text-xs font-semibold text-slate-700 cursor-pointer">
+                                <input type="radio" name="overall_discount_type" value="percentage" checked onchange="updateGrandTotal()" class="text-blue-600 focus:ring-blue-500">
+                                <span>Percentage (%)</span>
+                            </label>
+                            <label class="flex items-center gap-1.5 text-xs font-semibold text-slate-700 cursor-pointer">
+                                <input type="radio" name="overall_discount_type" value="fixed" onchange="updateGrandTotal()" class="text-blue-600 focus:ring-blue-500">
+                                <span>Fixed Amount (Rs.)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="overall_discount_value" class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">Discount Value</label>
+                        <input type="number" step="0.01" min="0" name="overall_discount_value" id="overall_discount_value" value="{{ old('overall_discount_value', 0) }}" oninput="updateGrandTotal()"
+                               placeholder="e.g. 10 or 500" class="w-full px-3 py-2 text-xs font-bold bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    </div>
+
+                    <div class="text-right">
+                        <span class="block text-[11px] font-bold uppercase tracking-wider text-slate-400">Calculated Discount Amount</span>
+                        <span class="text-sm font-black text-rose-600" id="overallDiscountAmountDisplay">- Rs. 0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grand Total Summary Banner -->
+            <div class="flex flex-col sm:flex-row items-center justify-between p-4 bg-slate-900 text-white rounded-xl shadow-inner gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="text-slate-400 text-xs uppercase tracking-wider font-bold">
+                        Net Payable Grand Total
+                    </div>
+                </div>
+                <div class="text-2xl font-black text-emerald-400" id="grandTotalDisplay">
+                    Rs. 0.00
+                </div>
+            </div>
+
+            <!-- Payment Settlement Controls -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 bg-slate-50 p-4 rounded-xl border border-slate-200/80">
                 <!-- Payment Method -->
                 <div>
@@ -216,7 +283,20 @@
     const pendingOrdersList = @json($pendingOrders);
     const preselectedSo = @json($selectedSo);
     let rowIndex = 0;
-    let currentGrandTotal = 0;
+    let netGrandTotal = 0;
+
+    function toggleOverallDiscount() {
+        const check = document.getElementById('has_overall_discount');
+        const controls = document.getElementById('overallDiscountControls');
+        if (check && check.checked) {
+            controls.classList.remove('hidden');
+            controls.classList.add('grid');
+        } else {
+            controls.classList.add('hidden');
+            controls.classList.remove('grid');
+        }
+        updateGrandTotal();
+    }
 
     function getProductUnits(productId) {
         const product = availableProducts.find(p => p.id == productId);
@@ -263,23 +343,75 @@
         return list;
     }
 
+    function getWhStockForProduct(productId, warehouseId) {
+        const product = availableProducts.find(p => p.id == productId);
+        if (!product) return 0;
+        if (!warehouseId) return parseInt(product.quantity) || 0;
+
+        const ws = (product.warehouse_stocks || []).find(w => w.warehouse_id == warehouseId);
+        return ws ? parseInt(ws.quantity) || 0 : 0;
+    }
+
+    function getProductOptionsHtml(selectedProductId = null, warehouseId = null) {
+        if (!warehouseId) {
+            const whSelect = document.getElementById('warehouse_id');
+            warehouseId = whSelect ? whSelect.value : null;
+        }
+
+        let productOptions = '<option value="">Select a Product</option>';
+        availableProducts.forEach(p => {
+            const selected = (selectedProductId && selectedProductId == p.id) ? 'selected' : '';
+            const baseUnit = p.unit ? p.unit.short_code : 'pcs';
+            const whStock = getWhStockForProduct(p.id, warehouseId);
+            const stockLabel = whStock > 0 ? `Stock: ${whStock} ${baseUnit}` : `OUT OF STOCK (0 ${baseUnit})`;
+            productOptions += `<option value="${p.id}" data-wh-stock="${whStock}" ${selected}>${p.name} (${stockLabel})</option>`;
+        });
+        return productOptions;
+    }
+
+    function onWarehouseChange() {
+        const whSelect = document.getElementById('warehouse_id');
+        const warehouseId = whSelect ? whSelect.value : null;
+        const whName = whSelect && whSelect.selectedIndex >= 0 ? whSelect.options[whSelect.selectedIndex].text : 'Selected Warehouse';
+
+        document.querySelectorAll('#itemsContainer tr').forEach(row => {
+            const rowId = row.id.replace('row_', '');
+            const productSelect = row.querySelector('.product-select');
+            const currentSelectedProductId = productSelect ? productSelect.value : '';
+
+            if (productSelect) {
+                productSelect.innerHTML = getProductOptionsHtml(currentSelectedProductId, warehouseId);
+                if (currentSelectedProductId) {
+                    const whStock = getWhStockForProduct(currentSelectedProductId, warehouseId);
+                    if (whStock <= 0) {
+                        const product = availableProducts.find(p => p.id == currentSelectedProductId);
+                        alert(`Warning: Product '${product ? product.name : 'Item'}' is out of stock in ${whName}.\nProduct selection will be reset.`);
+                        productSelect.value = '';
+                        row.querySelector('.unit-select').innerHTML = '<option value="">Base Unit</option>';
+                    }
+                }
+            }
+            calculateSubtotal(rowId);
+        });
+    }
+
     function addItemRow(data = null) {
         const container = document.getElementById('itemsContainer');
         const tr = document.createElement('tr');
         tr.id = `row_${rowIndex}`;
         tr.className = 'hover:bg-slate-50/50 transition';
 
-        let productOptions = '<option value="">Select a Product</option>';
-        availableProducts.forEach(p => {
-            const selected = data && data.product_id == p.id ? 'selected' : '';
-            const baseUnit = p.unit ? p.unit.short_code : '';
-            productOptions += `<option value="${p.id}" ${selected}>${p.name} (Stock: ${p.quantity} ${baseUnit})</option>`;
-        });
+        const whSelect = document.getElementById('warehouse_id');
+        const warehouseId = whSelect ? whSelect.value : null;
+        const productOptions = getProductOptionsHtml(data ? data.product_id : null, warehouseId);
+
+        const discPercVal = data && data.discount_percentage !== undefined ? data.discount_percentage : '0.00';
+        const discAmtVal = data && data.discount_amount !== undefined ? data.discount_amount : '0.00';
 
         tr.innerHTML = `
             <td class="p-3">
                 <select name="items[${rowIndex}][product_id]" required onchange="onProductSelect(this, ${rowIndex})"
-                        class="product-select w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white transition">
+                        class="product-select w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white transition font-medium">
                     ${productOptions}
                 </select>
             </td>
@@ -293,11 +425,19 @@
             <td class="p-3">
                 <input type="number" min="1" value="${data ? data.quantity : 1}" name="items[${rowIndex}][quantity]" required oninput="calculateSubtotal(${rowIndex})"
                        class="qty-input w-full px-3 py-2 text-xs font-bold text-center bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white transition">
-                <p class="text-[10px] text-blue-600 font-semibold mt-0.5 text-center unit-hint-${rowIndex}"></p>
+                <p class="text-[10px] font-semibold mt-0.5 text-center unit-hint-${rowIndex}"></p>
             </td>
             <td class="p-3">
                 <input type="number" step="0.01" min="0" value="${data ? parseFloat(data.unit_price).toFixed(2) : '0.00'}" name="items[${rowIndex}][unit_price]" required oninput="calculateSubtotal(${rowIndex})"
                        class="price-input w-full px-3 py-2 text-xs font-bold text-right bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white transition">
+            </td>
+            <td class="p-3">
+                <input type="number" step="0.01" min="0" max="100" value="${discPercVal}" name="items[${rowIndex}][discount_percentage]" oninput="onDiscPercChange(${rowIndex})"
+                       class="disc-perc-input w-full px-2 py-2 text-xs font-bold text-center bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white transition" placeholder="0%">
+            </td>
+            <td class="p-3">
+                <input type="number" step="0.01" min="0" value="${discAmtVal}" name="items[${rowIndex}][discount_amount]" oninput="onDiscAmountChange(${rowIndex})"
+                       class="disc-amount-input w-full px-2 py-2 text-xs font-bold text-right bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white transition" placeholder="0.00">
             </td>
             <td class="p-3 text-right font-black text-slate-800 text-xs" id="subtotal_${rowIndex}">
                 Rs. 0.00
@@ -311,7 +451,6 @@
 
         container.appendChild(tr);
 
-        // Populate unit dropdown if product is pre-selected
         if (data && data.product_id) {
             updateUnitDropdown(rowIndex, data.product_id, data.unit_id);
         }
@@ -342,15 +481,56 @@
         onUnitSelect(unitSelect, id, autoPrice);
     }
 
+    function applyDefaultDiscount(id, product) {
+        const row = document.getElementById(`row_${id}`);
+        if (!row || !product) return;
+
+        const discType = product.default_discount_type || 'percentage';
+        const discVal = parseFloat(product.default_discount_value) || 0;
+
+        const discPercInput = row.querySelector('.disc-perc-input');
+        const discAmtInput = row.querySelector('.disc-amount-input');
+        const qty = parseFloat(row.querySelector('.qty-input')?.value) || 1;
+        const unitPrice = parseFloat(row.querySelector('.price-input')?.value) || 0;
+        const lineGross = qty * unitPrice;
+
+        if (discType === 'percentage') {
+            discPercInput.value = discVal > 0 ? discVal.toFixed(2) : '0.00';
+            const calculatedAmt = (lineGross * discVal) / 100;
+            discAmtInput.value = calculatedAmt > 0 ? calculatedAmt.toFixed(2) : '0.00';
+        } else {
+            discAmtInput.value = discVal > 0 ? discVal.toFixed(2) : '0.00';
+            const calculatedPerc = lineGross > 0 ? (discVal / lineGross) * 100 : 0;
+            discPercInput.value = calculatedPerc > 0 ? calculatedPerc.toFixed(2) : '0.00';
+        }
+    }
+
     function onProductSelect(selectElement, id) {
         const productId = selectElement.value;
+        const whSelect = document.getElementById('warehouse_id');
+        const warehouseId = whSelect ? whSelect.value : null;
+        const whName = whSelect && whSelect.selectedIndex >= 0 ? whSelect.options[whSelect.selectedIndex].text : 'Selected Warehouse';
+
         if (!productId) {
             document.getElementById(`row_${id}`).querySelector('.unit-select').innerHTML = '<option value="">Base Unit</option>';
             calculateSubtotal(id);
             return;
         }
 
+        const whStock = getWhStockForProduct(productId, warehouseId);
+        const product = availableProducts.find(p => p.id == productId);
+
+        if (whStock <= 0) {
+            alert(`Stock Error: '${product ? product.name : 'Product'}' has NO available stock in ${whName}.\n(Available Stock: 0)\n\nPlease select a different product or switch warehouse location.`);
+            selectElement.value = '';
+            document.getElementById(`row_${id}`).querySelector('.unit-select').innerHTML = '<option value="">Base Unit</option>';
+            calculateSubtotal(id);
+            return;
+        }
+
         updateUnitDropdown(id, productId, null, true);
+        applyDefaultDiscount(id, product);
+        calculateSubtotal(id);
     }
 
     function onUnitSelect(unitSelect, id, autoPrice = true) {
@@ -374,6 +554,36 @@
         calculateSubtotal(id);
     }
 
+    function onDiscPercChange(id) {
+        const row = document.getElementById(`row_${id}`);
+        if (!row) return;
+
+        const qty = parseFloat(row.querySelector('.qty-input')?.value) || 0;
+        const price = parseFloat(row.querySelector('.price-input')?.value) || 0;
+        const discPerc = parseFloat(row.querySelector('.disc-perc-input')?.value) || 0;
+        const lineGross = qty * price;
+
+        const discAmt = (lineGross * discPerc) / 100;
+        row.querySelector('.disc-amount-input').value = discAmt > 0 ? discAmt.toFixed(2) : '0.00';
+
+        calculateSubtotal(id);
+    }
+
+    function onDiscAmountChange(id) {
+        const row = document.getElementById(`row_${id}`);
+        if (!row) return;
+
+        const qty = parseFloat(row.querySelector('.qty-input')?.value) || 0;
+        const price = parseFloat(row.querySelector('.price-input')?.value) || 0;
+        const discAmt = parseFloat(row.querySelector('.disc-amount-input')?.value) || 0;
+        const lineGross = qty * price;
+
+        const discPerc = lineGross > 0 ? (discAmt / lineGross) * 100 : 0;
+        row.querySelector('.disc-perc-input').value = discPerc > 0 ? discPerc.toFixed(2) : '0.00';
+
+        calculateSubtotal(id);
+    }
+
     function calculateSubtotal(id) {
         const row = document.getElementById(`row_${id}`);
         if (!row) return;
@@ -381,25 +591,37 @@
         const qtyInput = row.querySelector('.qty-input');
         const priceInput = row.querySelector('.price-input');
         const rateInput = row.querySelector('.conversion-rate-input');
+        const discAmtInput = row.querySelector('.disc-amount-input');
         const subtotalCell = document.getElementById(`subtotal_${id}`);
         const hintEl = row.querySelector(`.unit-hint-${id}`);
+        const productId = row.querySelector('.product-select')?.value;
+        const whSelect = document.getElementById('warehouse_id');
+        const warehouseId = whSelect ? whSelect.value : null;
 
         const qty = parseFloat(qtyInput?.value) || 0;
         const price = parseFloat(priceInput?.value) || 0;
         const rate = parseFloat(rateInput?.value) || 1.0;
-        const subtotal = qty * price;
+        const discAmt = parseFloat(discAmtInput?.value) || 0;
+
+        const gross = qty * price;
+        const subtotal = Math.max(0, gross - discAmt);
 
         if (subtotalCell) {
             subtotalCell.innerText = 'Rs. ' + subtotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
-        if (hintEl) {
-            if (rate > 1) {
-                const baseQty = qty * rate;
-                hintEl.innerText = `≈ ${baseQty.toLocaleString()} base units`;
+        if (hintEl && productId) {
+            const baseQty = qty * rate;
+            const whStock = getWhStockForProduct(productId, warehouseId);
+            if (baseQty > whStock) {
+                hintEl.innerHTML = `<span class="text-rose-600 font-bold"><i class="fa-solid fa-triangle-exclamation"></i> Exceeds stock (avail: ${whStock})</span>`;
+            } else if (rate > 1) {
+                hintEl.innerHTML = `<span class="text-blue-600">≈ ${baseQty.toLocaleString()} base (avail: ${whStock})</span>`;
             } else {
-                hintEl.innerText = '';
+                hintEl.innerHTML = `<span class="text-slate-400">Avail in WH: ${whStock}</span>`;
             }
+        } else if (hintEl) {
+            hintEl.innerText = '';
         }
 
         updateGrandTotal();
@@ -412,23 +634,46 @@
     }
 
     function updateGrandTotal() {
-        let total = 0;
+        let itemsTotal = 0;
         const container = document.getElementById('itemsContainer');
         const rows = container.querySelectorAll('tr');
 
         rows.forEach(r => {
             const qty = parseFloat(r.querySelector('.qty-input')?.value) || 0;
             const price = parseFloat(r.querySelector('.price-input')?.value) || 0;
-            total += qty * price;
+            const discAmt = parseFloat(r.querySelector('.disc-amount-input')?.value) || 0;
+            itemsTotal += Math.max(0, (qty * price) - discAmt);
         });
 
-        currentGrandTotal = total;
-        document.getElementById('grandTotalDisplay').innerText = 'Rs. ' + total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        document.getElementById('itemsSubtotalDisplay').innerText = 'Rs. ' + itemsTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-        // Auto default paid amount to grand total if currently equal or 0
+        // Calculate overall invoice discount
+        let overallDiscAmt = 0;
+        const hasDiscCheck = document.getElementById('has_overall_discount');
+        if (hasDiscCheck && hasDiscCheck.checked) {
+            const discTypeRadio = document.querySelector('input[name="overall_discount_type"]:checked');
+            const discType = discTypeRadio ? discTypeRadio.value : 'percentage';
+            const discVal = parseFloat(document.getElementById('overall_discount_value')?.value) || 0;
+
+            if (discType === 'percentage') {
+                overallDiscAmt = (itemsTotal * discVal) / 100;
+            } else {
+                overallDiscAmt = Math.min(itemsTotal, discVal);
+            }
+        }
+
+        const overallDisplay = document.getElementById('overallDiscountAmountDisplay');
+        if (overallDisplay) {
+            overallDisplay.innerText = '- Rs. ' + overallDiscAmt.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        netGrandTotal = Math.max(0, itemsTotal - overallDiscAmt);
+        document.getElementById('grandTotalDisplay').innerText = 'Rs. ' + netGrandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        // Auto default paid amount to net grand total if currently equal or 0
         const paidInput = document.getElementById('paid_amount');
         if (paidInput && (parseFloat(paidInput.value) === 0 || paidInput.dataset.autoFilled === 'true')) {
-            paidInput.value = total.toFixed(2);
+            paidInput.value = netGrandTotal.toFixed(2);
             paidInput.dataset.autoFilled = 'true';
         }
 
@@ -437,12 +682,12 @@
 
     function calculatePaymentBalance() {
         const paid = parseFloat(document.getElementById('paid_amount')?.value) || 0;
-        const due = Math.max(0, currentGrandTotal - paid);
+        const due = Math.max(0, netGrandTotal - paid);
         
         document.getElementById('dueAmountDisplay').innerText = 'Rs. ' + due.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
         const badge = document.getElementById('statusBadgeDisplay');
-        if (paid >= currentGrandTotal && currentGrandTotal > 0) {
+        if (paid >= netGrandTotal && netGrandTotal > 0) {
             badge.className = 'px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800';
             badge.innerText = 'Paid';
         } else if (paid > 0) {
@@ -469,7 +714,6 @@
         }
         document.getElementById('description').value = `Converted from Sale Order: ${so.so_number}`;
 
-        // Clear existing items and inject SO items
         document.getElementById('itemsContainer').innerHTML = '';
         rowIndex = 0;
 
@@ -485,7 +729,6 @@
         }
     }
 
-    // Initialize with pre-selected SO or 1 empty row
     document.addEventListener('DOMContentLoaded', function() {
         if (preselectedSo && preselectedSo.items && preselectedSo.items.length > 0) {
             onSoSelect(preselectedSo.id);

@@ -12,8 +12,14 @@ class Sale extends Model
     protected $fillable = [
         'company_id',
         'sale_order_id',
+        'warehouse_id',
         'invoice_number',
         'customer_id',
+        'subtotal',
+        'discount_type',
+        'discount_value',
+        'discount_amount',
+        'has_overall_discount',
         'total_amount',
         'paid_amount',
         'due_amount',
@@ -26,11 +32,20 @@ class Sale extends Model
     ];
 
     protected $casts = [
+        'subtotal' => 'decimal:2',
+        'discount_value' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
+        'has_overall_discount' => 'boolean',
         'total_amount' => 'decimal:2',
         'paid_amount' => 'decimal:2',
         'due_amount' => 'decimal:2',
         'change_amount' => 'decimal:2',
     ];
+
+    public function warehouse()
+    {
+        return $this->belongsTo(Warehouse::class);
+    }
 
     public function saleOrder()
     {

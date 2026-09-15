@@ -101,6 +101,45 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'Adjust Stock', 'slug' => 'stock.adjust', 'group' => 'Stock Management', 'description' => 'Can perform physical inventory stock adjustments'],
             ['name' => 'View Stock Movements', 'slug' => 'stock.movements', 'group' => 'Stock Management', 'description' => 'Can audit complete stock movement audit logs'],
 
+            // Brands
+            ['name' => 'View Brands', 'slug' => 'brands.view', 'group' => 'Brands', 'description' => 'Can view product brands list'],
+            ['name' => 'Create Brand', 'slug' => 'brands.create', 'group' => 'Brands', 'description' => 'Can create new product brands'],
+            ['name' => 'Edit Brand', 'slug' => 'brands.edit', 'group' => 'Brands', 'description' => 'Can edit brand details'],
+            ['name' => 'Delete Brand', 'slug' => 'brands.delete', 'group' => 'Brands', 'description' => 'Can delete brands from system'],
+
+            // Warehouses
+            ['name' => 'View Warehouses', 'slug' => 'warehouses.view', 'group' => 'Warehouses', 'description' => 'Can view warehouse/location list'],
+            ['name' => 'Create Warehouse', 'slug' => 'warehouses.create', 'group' => 'Warehouses', 'description' => 'Can create new warehouses or locations'],
+            ['name' => 'Edit Warehouse', 'slug' => 'warehouses.edit', 'group' => 'Warehouses', 'description' => 'Can edit warehouse details'],
+            ['name' => 'Delete Warehouse', 'slug' => 'warehouses.delete', 'group' => 'Warehouses', 'description' => 'Can delete warehouses from system'],
+
+            // Stock Transfers
+            ['name' => 'View Stock Transfers', 'slug' => 'stock_transfers.view', 'group' => 'Stock Transfers', 'description' => 'Can view inter-warehouse stock transfer records'],
+            ['name' => 'Create Stock Transfer', 'slug' => 'stock_transfers.create', 'group' => 'Stock Transfers', 'description' => 'Can initiate stock transfers between warehouses'],
+            ['name' => 'View Stock Transfer Details', 'slug' => 'stock_transfers.show', 'group' => 'Stock Transfers', 'description' => 'Can view individual stock transfer details'],
+
+            // Vouchers (Cash & Payment)
+            ['name' => 'View Vouchers', 'slug' => 'vouchers.view', 'group' => 'Vouchers', 'description' => 'Can view cash receipt and payment vouchers'],
+            ['name' => 'Create Voucher', 'slug' => 'vouchers.create', 'group' => 'Vouchers', 'description' => 'Can create cash receipt and payment vouchers'],
+            ['name' => 'View Voucher Details', 'slug' => 'vouchers.show', 'group' => 'Vouchers', 'description' => 'Can view individual voucher details and print'],
+            ['name' => 'Delete Voucher', 'slug' => 'vouchers.delete', 'group' => 'Vouchers', 'description' => 'Can delete vouchers from system'],
+
+            // Expenses
+            ['name' => 'View Expenses', 'slug' => 'expenses.view', 'group' => 'Expenses', 'description' => 'Can view operating expense records'],
+            ['name' => 'Create Expense', 'slug' => 'expenses.create', 'group' => 'Expenses', 'description' => 'Can record new business expenses'],
+            ['name' => 'Edit Expense', 'slug' => 'expenses.edit', 'group' => 'Expenses', 'description' => 'Can edit expense records'],
+            ['name' => 'Delete Expense', 'slug' => 'expenses.delete', 'group' => 'Expenses', 'description' => 'Can delete expense entries'],
+
+            // Expense Categories
+            ['name' => 'View Expense Categories', 'slug' => 'expense_categories.view', 'group' => 'Expense Categories', 'description' => 'Can view expense category list'],
+            ['name' => 'Create Expense Category', 'slug' => 'expense_categories.create', 'group' => 'Expense Categories', 'description' => 'Can create new expense categories'],
+            ['name' => 'Edit Expense Category', 'slug' => 'expense_categories.edit', 'group' => 'Expense Categories', 'description' => 'Can edit expense categories'],
+            ['name' => 'Delete Expense Category', 'slug' => 'expense_categories.delete', 'group' => 'Expense Categories', 'description' => 'Can delete expense categories'],
+
+            // Day Book / Cash Book
+            ['name' => 'View Day Book', 'slug' => 'day_book.view', 'group' => 'Day Book', 'description' => 'Can view daily cash book and transaction log'],
+            ['name' => 'Set Opening Balance', 'slug' => 'day_book.opening_balance', 'group' => 'Day Book', 'description' => 'Can set opening cash balance in day book'],
+
             // Customers
             ['name' => 'View Customers', 'slug' => 'customers.view', 'group' => 'Customers', 'description' => 'Can view customer directory'],
             ['name' => 'Create Customer', 'slug' => 'customers.create', 'group' => 'Customers', 'description' => 'Can register new customers'],
@@ -283,6 +322,11 @@ class RolePermissionSeeder extends Seeder
             'customers.view',
             'customers.create',
             'products.view',
+            'vouchers.view',
+            'vouchers.create',
+            'vouchers.show',
+            'day_book.view',
+            'expenses.view',
         ])->get();
         $cashierRole->syncPermissions($cashierPermissions);
 
@@ -302,6 +346,15 @@ class RolePermissionSeeder extends Seeder
             'stock.view',
             'stock.adjust',
             'stock.movements',
+            'brands.view',
+            'brands.create',
+            'brands.edit',
+            'warehouses.view',
+            'warehouses.create',
+            'warehouses.edit',
+            'stock_transfers.view',
+            'stock_transfers.create',
+            'stock_transfers.show',
             'purchases.view',
             'purchases.create',
             'purchases.show',
@@ -314,6 +367,11 @@ class RolePermissionSeeder extends Seeder
             'vendors.view',
             'vendors.create',
             'vendors.edit',
+            'expenses.view',
+            'expenses.create',
+            'expense_categories.view',
+            'expense_categories.create',
+            'day_book.view',
         ])->get();
         $inventoryRole->syncPermissions($inventoryPermissions);
 

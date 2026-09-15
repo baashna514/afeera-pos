@@ -18,6 +18,8 @@ class SaleItem extends Model
         'quantity',
         'base_quantity',
         'price',
+        'discount_percentage',
+        'discount_amount',
         'subtotal',
     ];
 
@@ -26,6 +28,8 @@ class SaleItem extends Model
         'conversion_rate' => 'decimal:4',
         'base_quantity' => 'decimal:4',
         'price' => 'decimal:2',
+        'discount_percentage' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
         'subtotal' => 'decimal:2',
     ];
 

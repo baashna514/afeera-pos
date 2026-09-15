@@ -12,6 +12,7 @@ class Purchase extends Model
     protected $fillable = [
         'company_id',
         'purchase_order_id',
+        'warehouse_id',
         'reference_no',
         'vendor_id',
         'purchase_date',
@@ -32,6 +33,11 @@ class Purchase extends Model
         'paid_amount' => 'decimal:2',
         'due_amount' => 'decimal:2',
     ];
+
+    public function warehouse()
+    {
+        return $this->belongsTo(Warehouse::class);
+    }
 
     public function purchaseOrder()
     {

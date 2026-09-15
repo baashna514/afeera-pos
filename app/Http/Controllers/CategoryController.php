@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -30,17 +31,45 @@ class CategoryController extends Controller
         return view('categories.create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:categories,name'],
             'description' => ['nullable', 'string'],
         ]);
 
-        Category::create($validated);
+        $category = Category::create($validated);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Category created successfully.',
+                'category' => $category,
+            ]);
+        }
 
         return redirect()->route('categories.index')
             ->with('success', 'Category created successfully.');
+    }
+
+    public function storeInline(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255', 'unique:categories,name'],
+            'description' => ['nullable', 'string'],
+        ]);
+
+        $category = Category::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Category created successfully',
+            'data' => [
+                'id' => $category->id,
+                'name' => $category->name,
+            ],
+            'category' => $category,
+        ]);
     }
 
     public function edit(Category $category): View

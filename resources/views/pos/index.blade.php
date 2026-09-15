@@ -37,7 +37,20 @@
             </div>
         </div>
 
-        <div class="flex items-center gap-4 text-xs">
+        <div class="flex items-center gap-3 text-xs">
+            <!-- Warehouse Selector -->
+            <div class="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700 shadow-xs">
+                <i class="fa-solid fa-warehouse text-emerald-400"></i>
+                <label for="posWarehouseSelect" class="text-[10px] uppercase font-bold text-slate-400 hidden md:inline">WH:</label>
+                <select id="posWarehouseSelect" onchange="onPosWarehouseChange(this.value)" class="bg-slate-800 text-white text-xs font-bold focus:outline-none cursor-pointer">
+                    @foreach ($warehouses as $wh)
+                        <option value="{{ $wh->id }}" class="bg-slate-900 text-white" {{ $wh->is_default ? 'selected' : '' }}>
+                            {{ $wh->name }} ({{ $wh->code ?? 'WH-'.$wh->id }})
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
             <div class="text-slate-400 hidden sm:block">
                 <i class="fa-regular fa-clock mr-1 text-emerald-400"></i>
                 <span id="posClock"></span>
@@ -116,7 +129,7 @@
                                     <span class="text-[10px] text-slate-400 block -mb-0.5">Price</span>
                                     <span class="font-black text-slate-900 text-sm">Rs. {{ number_format($product->selling_price, 2) }}</span>
                                 </div>
-                                <div>
+                                <div class="stock-badge-container">
                                     @if ($product->quantity <= 0)
                                         <span class="px-2 py-0.5 text-[10px] font-bold rounded bg-rose-100 text-rose-700">Out</span>
                                     @else
@@ -630,12 +643,76 @@
             return list;
         }
 
+        function getProductWhStock(productId, warehouseId = null) {
+            if (!warehouseId) {
+                const whSel = document.getElementById('posWarehouseSelect');
+                warehouseId = whSel ? whSel.value : null;
+            }
+            const p = productsCatalog.find(prod => prod.id === productId);
+            if (!p) return 0;
+            if (!warehouseId) return parseInt(p.quantity) || 0;
+            const ws = (p.warehouse_stocks || []).find(w => w.warehouse_id == warehouseId);
+            return ws ? parseInt(ws.quantity) || 0 : 0;
+        }
+
+        function updateProductCardsStock() {
+            const whSel = document.getElementById('posWarehouseSelect');
+            const warehouseId = whSel ? whSel.value : null;
+
+            document.querySelectorAll('.product-card').forEach(card => {
+                const pId = parseInt(card.getAttribute('data-id'));
+                const whStock = getProductWhStock(pId, warehouseId);
+                const stockBadge = card.querySelector('.stock-badge-container');
+
+                card.setAttribute('data-stock', whStock);
+
+                if (whStock <= 0) {
+                    card.classList.add('opacity-60', 'cursor-not-allowed');
+                    if (stockBadge) {
+                        stockBadge.innerHTML = `<span class="px-2 py-0.5 text-[10px] font-bold rounded bg-rose-100 text-rose-700">Out</span>`;
+                    }
+                } else {
+                    card.classList.remove('opacity-60', 'cursor-not-allowed');
+                    if (stockBadge) {
+                        stockBadge.innerHTML = `<span class="px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 group-hover:bg-emerald-600 group-hover:text-white font-bold text-xs transition flex items-center gap-1"><i class="fa-solid fa-plus text-[10px]"></i><span class="text-[11px]">${whStock}</span></span>`;
+                    }
+                }
+            });
+        }
+
+        function onPosWarehouseChange(whId) {
+            updateProductCardsStock();
+            const whSel = document.getElementById('posWarehouseSelect');
+            const whName = whSel && whSel.selectedIndex >= 0 ? whSel.options[whSel.selectedIndex].text : 'Selected Warehouse';
+
+            let hasOutOfStock = false;
+            cart.forEach(item => {
+                const whStock = getProductWhStock(item.id, whId);
+                item.stock = whStock;
+                const baseRequired = item.quantity * item.conversion_rate;
+                if (baseRequired > whStock) {
+                    hasOutOfStock = true;
+                }
+            });
+
+            if (hasOutOfStock) {
+                alert(`Warehouse switched to: ${whName}.\nSome items in your cart exceed available stock in this warehouse. Please review your cart.`);
+            }
+
+            renderCart();
+        }
+
         function addToCart(productId) {
             const product = productsCatalog.find(p => p.id === productId);
             if (!product) return;
 
-            if (product.quantity <= 0) {
-                alert(`Cannot add '${product.name}'. Product is currently out of stock.`);
+            const whSel = document.getElementById('posWarehouseSelect');
+            const warehouseId = whSel ? whSel.value : null;
+            const whName = whSel && whSel.selectedIndex >= 0 ? whSel.options[whSel.selectedIndex].text : 'selected warehouse';
+            const whStock = getProductWhStock(productId, warehouseId);
+
+            if (whStock <= 0) {
+                alert(`Stock Error: '${product.name}' is out of stock in ${whName}.\n(Available: 0 base units)\n\nPlease select another product or switch warehouse location.`);
                 return;
             }
 
@@ -648,8 +725,8 @@
             if (existingIndex !== -1) {
                 const existing = cart[existingIndex];
                 const newBaseQty = (existing.quantity + 1) * existing.conversion_rate;
-                if (newBaseQty > product.quantity) {
-                    alert(`Cannot add more. Only ${product.quantity} base units available in stock.`);
+                if (newBaseQty > whStock) {
+                    alert(`Cannot add more '${product.name}'. Only ${whStock} base units available in ${whName}.`);
                     return;
                 }
                 existing.quantity++;
@@ -663,7 +740,7 @@
                     unit_code: selectedUnit ? selectedUnit.short_code : 'pc',
                     conversion_rate: selectedUnit ? selectedUnit.conversion_rate : 1.0,
                     price: selectedUnit ? selectedUnit.sale_price : parseFloat(product.selling_price),
-                    stock: product.quantity,
+                    stock: whStock,
                     quantity: 1,
                     available_units: units,
                 });
@@ -1047,6 +1124,7 @@
 
             const payload = {
                 customer_id: document.getElementById('customerSelect').value || null,
+                warehouse_id: document.getElementById('posWarehouseSelect')?.value || null,
                 sale_order_id: currentSaleOrderId,
                 payment_method: selectedPaymentMethod,
                 paid_amount: paid,
@@ -1247,8 +1325,9 @@
             }
         }
 
-        // Auto-load pre-selected Sale Order if provided via query param / controller
+        // Auto-load pre-selected Sale Order and sync warehouse stock on startup
         document.addEventListener('DOMContentLoaded', function() {
+            updateProductCardsStock();
             if (selectedSoData) {
                 loadSaleOrderIntoCart(selectedSoData);
             }

@@ -3,34 +3,6 @@
 @section('content')
 <div class="space-y-6 pb-12">
 
-    <!-- Flash Alerts -->
-    @if(session('success'))
-        <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-emerald-800 flex items-center justify-between shadow-xs">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-xl bg-emerald-500 text-white flex items-center justify-center font-bold">
-                    <i class="fa-solid fa-circle-check"></i>
-                </div>
-                <p class="text-sm font-semibold">{{ session('success') }}</p>
-            </div>
-            <button onclick="this.parentElement.remove()" class="text-emerald-500 hover:text-emerald-700">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
-    @endif
-
-    @if($errors->any())
-        <div class="p-4 bg-rose-50 border border-rose-200 rounded-2xl text-rose-800 shadow-xs">
-            <div class="flex items-center gap-2 font-bold text-sm mb-1 text-rose-900">
-                <i class="fa-solid fa-triangle-exclamation text-rose-500"></i> Please check the following errors:
-            </div>
-            <ul class="list-disc list-inside text-xs space-y-0.5 text-rose-700">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
     <!-- Top Architecture Banner (Matching SaaS Multi-Tenant Diagram) -->
     <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-indigo-900/40 relative overflow-hidden">
         <div class="absolute -right-12 -top-12 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>

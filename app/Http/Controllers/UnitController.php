@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Unit;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -33,20 +34,60 @@ class UnitController extends Controller
         return view('units.create', compact('baseUnits'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:units,name'],
             'short_code' => ['required', 'string', 'max:20', 'unique:units,short_code'],
             'base_unit_id' => ['nullable', 'exists:units,id'],
-            'operator' => ['required', 'in:*,/'],
-            'conversion_factor' => ['required', 'numeric', 'min:0.0001'],
+            'operator' => ['nullable', 'in:*,/'],
+            'conversion_factor' => ['nullable', 'numeric', 'min:0.0001'],
         ]);
 
-        Unit::create($validated);
+        $validated['operator'] = $validated['operator'] ?? '*';
+        $validated['conversion_factor'] = $validated['conversion_factor'] ?? 1.0;
+
+        $unit = Unit::create($validated);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Unit created successfully.',
+                'unit' => $unit,
+            ]);
+        }
 
         return redirect()->route('units.index')
             ->with('success', 'Unit created successfully.');
+    }
+
+    public function storeInline(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'short_code' => ['required', 'string', 'max:50'],
+            'base_unit' => ['nullable', 'integer'],
+            'base_unit_id' => ['nullable', 'integer'],
+        ]);
+
+        $unit = Unit::create([
+            'name' => $validated['name'],
+            'short_code' => $validated['short_code'],
+            'base_unit_id' => $validated['base_unit_id'] ?? $validated['base_unit'] ?? null,
+            'operator' => '*',
+            'conversion_factor' => 1.0,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Unit created successfully',
+            'data' => [
+                'id' => $unit->id,
+                'name' => $unit->name,
+                'short_code' => $unit->short_code,
+            ],
+            'unit' => $unit,
+        ]);
     }
 
     public function edit(Unit $unit): View
