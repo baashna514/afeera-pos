@@ -85,7 +85,7 @@
                     @forelse ($products as $product)
                         <tr class="hover:bg-slate-50/80 transition">
                             <td class="px-5 py-4">
-                                <div class="font-bold text-slate-800">{{ $product->name }}</div>
+                                <a href="{{ route('products.show', $product) }}" class="font-bold text-slate-800 hover:text-emerald-600 hover:underline">{{ $product->name }}</a>
                                 @if ($product->description)
                                     <div class="text-[11px] text-slate-400 truncate max-w-xs">{{ $product->description }}</div>
                                 @endif
@@ -128,6 +128,12 @@
                             </td>
                             <td class="px-5 py-4 text-right">
                                 <div class="flex items-center justify-end gap-1">
+                                    <a href="{{ route('products.printLabels', $product) }}" class="p-2 text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition" title="Print Barcode Labels">
+                                        <i class="fa-solid fa-barcode"></i>
+                                    </a>
+                                    <a href="{{ route('products.show', $product) }}" class="p-2 text-slate-400 hover:text-emerald-600 rounded-lg hover:bg-emerald-50 transition" title="View Stock & Details">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
                                     @if(auth()->user()?->hasPermission('products.edit'))
                                         <a href="{{ route('products.edit', $product) }}" class="p-2 text-slate-400 hover:text-blue-600 rounded-lg hover:bg-blue-50 transition" title="Edit">
                                             <i class="fa-solid fa-pen-to-square"></i>

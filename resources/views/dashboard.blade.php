@@ -2,284 +2,411 @@
 
 @section('content')
 <div class="space-y-6">
-    <!-- Welcome & Quick Action Header -->
-    <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 text-white p-6 md:p-8 rounded-2xl shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div>
-            <div class="flex items-center gap-2 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-2">
-                <i class="fa-solid fa-store"></i> Point of Sale & Inventory System
+    <!-- Today & Filtered Profit Analytics Bar -->
+    <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 text-white p-4 rounded-xl shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg font-bold border border-emerald-500/30">
+                <i class="fa-solid fa-chart-line"></i>
             </div>
-            <h2 class="text-2xl md:text-3xl font-black tracking-tight">SmartPOS Dashboard</h2>
-            <p class="text-slate-300 text-sm mt-1">Real-time overview of sales, stock alerts, purchases, expenses, and profit & loss analytics.</p>
-        </div>
-        <div class="flex flex-wrap items-center gap-3">
-            <a href="{{ route('pos.index') }}" class="px-5 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/30 flex items-center gap-2 transition duration-150 group">
-                <i class="fa-solid fa-cart-plus text-base group-hover:scale-110 transition-transform"></i>
-                <span>Open POS Terminal</span>
-            </a>
-            <a href="{{ route('expenses.create') }}" class="px-4 py-3 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-xl flex items-center gap-2 transition shadow-md shadow-amber-600/20">
-                <i class="fa-solid fa-receipt text-xs"></i>
-                <span>Add Expense</span>
-            </a>
-            <a href="{{ route('purchases.create') }}" class="px-4 py-3 bg-slate-800/80 hover:bg-slate-700 text-slate-100 font-semibold rounded-xl border border-slate-700 flex items-center gap-2 transition">
-                <i class="fa-solid fa-plus text-xs"></i>
-                <span>New Purchase</span>
-            </a>
-        </div>
-    </div>
-
-    <!-- Date Range Filter Bar for Analytics -->
-    <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
-        <!-- Preset Filter Buttons -->
-        <div class="flex flex-wrap items-center gap-1.5">
-            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mr-1">
-                <i class="fa-solid fa-calendar text-emerald-600"></i> Period:
-            </span>
-            <a href="{{ route('dashboard', ['preset_filter' => 'today']) }}"
-               class="px-3 py-1.5 rounded-xl text-xs font-bold transition {{ $presetFilter === 'today' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
-                Today
-            </a>
-            <a href="{{ route('dashboard', ['preset_filter' => 'yesterday']) }}"
-               class="px-3 py-1.5 rounded-xl text-xs font-bold transition {{ $presetFilter === 'yesterday' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
-                Yesterday
-            </a>
-            <a href="{{ route('dashboard', ['preset_filter' => 'this_week']) }}"
-               class="px-3 py-1.5 rounded-xl text-xs font-bold transition {{ $presetFilter === 'this_week' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
-                This Week
-            </a>
-            <a href="{{ route('dashboard', ['preset_filter' => 'this_month']) }}"
-               class="px-3 py-1.5 rounded-xl text-xs font-bold transition {{ $presetFilter === 'this_month' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
-                This Month
-            </a>
-            <a href="{{ route('dashboard', ['preset_filter' => 'all_time']) }}"
-               class="px-3 py-1.5 rounded-xl text-xs font-bold transition {{ $presetFilter === 'all_time' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
-                All Time
-            </a>
-        </div>
-
-        <!-- Custom Date Range Form -->
-        <form action="{{ route('dashboard') }}" method="GET" class="flex flex-wrap items-center gap-2">
-            <input type="hidden" name="preset_filter" value="custom">
-            <input type="date" name="date_from" value="{{ $dateFrom }}" class="px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-            <span class="text-xs text-slate-400 font-bold">to</span>
-            <input type="date" name="date_to" value="{{ $dateTo }}" class="px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-            <button type="submit" class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl transition">
-                Apply Filter
-            </button>
-        </form>
-    </div>
-
-    <!-- Profit & Loss Summary Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <!-- Today's Net Profit -->
-        <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden">
-            <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-emerald-100">Today's Net Profit</span>
-                <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-xs text-white flex items-center justify-center text-lg font-black">
-                    <i class="fa-solid fa-chart-line"></i>
-                </div>
-            </div>
-            <div class="mt-4">
-                <p class="text-3xl font-black">Rs. {{ number_format($todayNetProfit, 2) }}</p>
-                <p class="text-xs text-emerald-100 mt-1">
-                    Sales: <span class="font-bold">Rs. {{ number_format($todaySales, 0) }}</span> | Exp: <span class="font-bold">Rs. {{ number_format($todayExpenses, 0) }}</span>
-                </p>
+            <div>
+                <span class="block text-[11px] font-bold uppercase tracking-wider text-emerald-400">Net Profit Analytics</span>
+                <span class="text-xl font-black text-white">Rs. {{ number_format($filteredNetProfit, 2) }}</span>
+                <span class="text-xs text-slate-400 ml-2">Today Net Profit: <strong class="text-emerald-400">Rs. {{ number_format($todayNetProfit, 2) }}</strong></span>
             </div>
         </div>
-
-        <!-- Filtered Period Net Profit / Loss -->
-        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
-            <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Period Net Profit</span>
-                <div class="w-10 h-10 rounded-xl {{ $filteredNetProfit >= 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600' }} flex items-center justify-center">
-                    <i class="fa-solid {{ $filteredNetProfit >= 0 ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down' }} text-lg"></i>
-                </div>
+        <div class="flex items-center gap-6 text-xs text-slate-300">
+            <div>
+                <span class="block text-[10px] text-slate-400 font-semibold uppercase">Filtered Sales</span>
+                <span class="font-bold text-white">Rs. {{ number_format($filteredSales, 2) }}</span>
             </div>
-            <div class="mt-4">
-                <p class="text-2xl font-black {{ $filteredNetProfit >= 0 ? 'text-emerald-600' : 'text-rose-600' }}">
-                    Rs. {{ number_format($filteredNetProfit, 2) }}
-                </p>
-                <p class="text-xs text-slate-500 mt-1">
-                    Margin: <span class="font-bold text-slate-700">{{ number_format($filteredProfitMargin, 1) }}%</span> (Gross: Rs. {{ number_format($filteredGrossProfit, 0) }})
-                </p>
+            <div>
+                <span class="block text-[10px] text-slate-400 font-semibold uppercase">Filtered Expenses</span>
+                <span class="font-bold text-amber-400">Rs. {{ number_format($filteredExpenses, 2) }}</span>
             </div>
-        </div>
-
-        <!-- Period Total Sales -->
-        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
-            <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Period Sales</span>
-                <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-                    <i class="fa-solid fa-sack-dollar text-lg"></i>
-                </div>
-            </div>
-            <div class="mt-4">
-                <p class="text-2xl font-black text-slate-800">Rs. {{ number_format($filteredSales, 2) }}</p>
-                <p class="text-xs text-slate-500 mt-1">
-                    COGS Cost: <span class="font-bold text-slate-700">Rs. {{ number_format($filteredCogs, 0) }}</span>
-                </p>
-            </div>
-        </div>
-
-        <!-- Period Expenses -->
-        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
-            <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Period Expenses</span>
-                <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-                    <i class="fa-solid fa-receipt text-lg"></i>
-                </div>
-            </div>
-            <div class="mt-4">
-                <p class="text-2xl font-black text-amber-600">Rs. {{ number_format($filteredExpenses, 2) }}</p>
-                <p class="text-xs text-slate-500 mt-1">
-                    <a href="{{ route('expenses.index') }}" class="text-amber-600 hover:underline font-semibold">
-                        View expense log &rarr;
-                    </a>
-                </p>
+            <div>
+                <span class="block text-[10px] text-slate-400 font-semibold uppercase">Net Profit Margin</span>
+                <span class="font-bold text-emerald-400">{{ number_format($filteredProfitMargin, 1) }}%</span>
             </div>
         </div>
     </div>
 
-    <!-- Secondary Summary Row -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div class="bg-white p-5 rounded-xl border border-slate-200/80 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl font-black">
-                <i class="fa-solid fa-users"></i>
+    <!-- Top Row 1: Financial Overview Cards (4 Grid Cards) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Total Receivables -->
+        <div class="bg-amber-400 text-slate-900 p-4 rounded-xl shadow-xs flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-white/30 flex items-center justify-center text-slate-900 text-xl font-bold">
+                    <i class="fa-solid fa-money-bill-wave"></i>
+                </div>
+                <div>
+                    <span class="block text-xs font-bold uppercase tracking-wider text-slate-800">Total Receivables</span>
+                    <span class="text-xl font-black">Rs. {{ number_format($totalReceivables, 2) }}</span>
+                    <span class="block text-[10px] text-slate-700 font-medium">This Month</span>
+                </div>
             </div>
-            <div>
-                <p class="text-xs text-slate-400 font-semibold uppercase">Customers</p>
-                <p class="text-lg font-black text-slate-800">{{ number_format($totalCustomers) }}</p>
-            </div>
-            <a href="{{ route('customers.index') }}" class="ml-auto text-xs text-indigo-600 font-semibold hover:underline">Manage</a>
         </div>
 
-        <div class="bg-white p-5 rounded-xl border border-slate-200/80 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl font-black">
-                <i class="fa-solid fa-truck-moving"></i>
+        <!-- Total Payables -->
+        <div class="bg-cyan-500 text-white p-4 rounded-xl shadow-xs flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-white/25 flex items-center justify-center text-white text-xl font-bold">
+                    <i class="fa-solid fa-hand-holding-dollar"></i>
+                </div>
+                <div>
+                    <span class="block text-xs font-bold uppercase tracking-wider text-cyan-100">Total Payables</span>
+                    <span class="text-xl font-black">Rs. {{ number_format($totalPayables, 2) }}</span>
+                    <span class="block text-[10px] text-cyan-100 font-medium">This Month</span>
+                </div>
             </div>
-            <div>
-                <p class="text-xs text-slate-400 font-semibold uppercase">Vendors</p>
-                <p class="text-lg font-black text-slate-800">{{ number_format($totalVendors) }}</p>
-            </div>
-            <a href="{{ route('vendors.index') }}" class="ml-auto text-xs text-emerald-600 font-semibold hover:underline">Manage</a>
         </div>
 
-        <div class="bg-white p-5 rounded-xl border border-slate-200/80 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl font-black">
-                <i class="fa-solid fa-triangle-exclamation"></i>
+        <!-- Cash Balance -->
+        <div class="bg-rose-600 text-white p-4 rounded-xl shadow-xs flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-white/25 flex items-center justify-center text-white text-2xl font-black">
+                    $
+                </div>
+                <div>
+                    <span class="block text-xs font-bold uppercase tracking-wider text-rose-100">Cash Balance</span>
+                    <span class="text-xl font-black">Rs. {{ number_format($cashBalance, 2) }}</span>
+                    <span class="block text-[10px] text-rose-100 font-medium">This Month</span>
+                </div>
             </div>
-            <div>
-                <p class="text-xs text-slate-400 font-semibold uppercase">Low Stock</p>
-                <p class="text-lg font-black text-rose-600">{{ number_format($lowStockCount) }}</p>
-            </div>
-            <a href="{{ route('stock.index', ['status' => 'low_stock']) }}" class="ml-auto text-xs text-rose-600 font-semibold hover:underline">Stock</a>
         </div>
 
-        <div class="bg-white p-5 rounded-xl border border-slate-200/80 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center text-xl font-black">
-                <i class="fa-solid fa-boxes-stacked"></i>
+        <!-- Bank Balance -->
+        <div class="bg-emerald-500 text-white p-4 rounded-xl shadow-xs flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-white/25 flex items-center justify-center text-white text-2xl font-black">
+                    $
+                </div>
+                <div>
+                    <span class="block text-xs font-bold uppercase tracking-wider text-emerald-100">Bank Balance</span>
+                    <span class="text-xl font-black">Rs. {{ number_format($bankBalance, 2) }}</span>
+                    <span class="block text-[10px] text-emerald-100 font-medium">This Month</span>
+                </div>
             </div>
-            <div>
-                <p class="text-xs text-slate-400 font-semibold uppercase">Stock Valuation</p>
-                <p class="text-lg font-black text-slate-800">Rs. {{ number_format($totalStockValue, 0) }}</p>
-            </div>
-            <a href="{{ route('stock.index') }}" class="ml-auto text-xs text-teal-600 font-semibold hover:underline">Stock</a>
         </div>
     </div>
 
-    <!-- Data Tables Grid: Recent Sales & Recent Expenses -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Recent Sales -->
-        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden flex flex-col">
-            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-receipt text-emerald-600"></i>
-                    <h3 class="font-bold text-slate-800">Recent Sales Invoices</h3>
+    <!-- Top Row 2: Sales Timeframe Breakdown Cards (4 Grid Cards) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Daily Sale -->
+        <div class="bg-emerald-500 text-white p-4 rounded-xl shadow-xs flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-white/25 flex items-center justify-center text-white text-xl font-bold">
+                    <i class="fa-solid fa-money-bill-1"></i>
                 </div>
-                <a href="{{ route('sales.index') }}" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700">View All &rarr;</a>
+                <div>
+                    <span class="block text-xs font-bold uppercase tracking-wider text-emerald-100">Daily Sale</span>
+                    <span class="text-xl font-black">Rs. {{ number_format($dailySale, 2) }}</span>
+                </div>
             </div>
-            <div class="flex-1 overflow-x-auto">
-                <table class="w-full text-left text-xs text-slate-600">
-                    <thead class="bg-slate-50 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">
+        </div>
+
+        <!-- Weekly Sale -->
+        <div class="bg-rose-600 text-white p-4 rounded-xl shadow-xs flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-white/25 flex items-center justify-center text-white text-xl font-bold">
+                    <i class="fa-solid fa-money-bill-1"></i>
+                </div>
+                <div>
+                    <span class="block text-xs font-bold uppercase tracking-wider text-rose-100">Weekly Sale</span>
+                    <span class="text-xl font-black">Rs. {{ number_format($weeklySale, 2) }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Sale -->
+        <div class="bg-cyan-500 text-white p-4 rounded-xl shadow-xs flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-white/25 flex items-center justify-center text-white text-2xl font-black">
+                    $
+                </div>
+                <div>
+                    <span class="block text-xs font-bold uppercase tracking-wider text-cyan-100">Monthly Sale</span>
+                    <span class="text-xl font-black">Rs. {{ number_format($monthlySale, 2) }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Yearly Sale -->
+        <div class="bg-amber-400 text-slate-900 p-4 rounded-xl shadow-xs flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-white/30 flex items-center justify-center text-slate-900 text-2xl font-black">
+                    $
+                </div>
+                <div>
+                    <span class="block text-xs font-bold uppercase tracking-wider text-slate-800">Yearly Sale</span>
+                    <span class="text-xl font-black">Rs. {{ number_format($yearlySale, 2) }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Row 3: Expense Timeframe Breakdown Cards (4 Grid Cards) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Daily Expense -->
+        <div class="bg-amber-400 text-slate-900 p-4 rounded-xl shadow-xs flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-white/30 flex items-center justify-center text-slate-900 text-xl font-bold">
+                    <i class="fa-solid fa-money-bill-wave"></i>
+                </div>
+                <div>
+                    <span class="block text-xs font-bold uppercase tracking-wider text-slate-800">Daily Expense</span>
+                    <span class="text-xl font-black">Rs. {{ number_format($dailyExpense, 2) }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weekly Expense -->
+        <div class="bg-cyan-500 text-white p-4 rounded-xl shadow-xs flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-white/25 flex items-center justify-center text-white text-xl font-bold">
+                    <i class="fa-solid fa-money-bill-wave"></i>
+                </div>
+                <div>
+                    <span class="block text-xs font-bold uppercase tracking-wider text-cyan-100">Weekly Expense</span>
+                    <span class="text-xl font-black">Rs. {{ number_format($weeklyExpense, 2) }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Expense -->
+        <div class="bg-rose-600 text-white p-4 rounded-xl shadow-xs flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-white/25 flex items-center justify-center text-white text-2xl font-black">
+                    $
+                </div>
+                <div>
+                    <span class="block text-xs font-bold uppercase tracking-wider text-rose-100">Monthly Expense</span>
+                    <span class="text-xl font-black">Rs. {{ number_format($monthlyExpense, 2) }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Yearly Expense -->
+        <div class="bg-emerald-500 text-white p-4 rounded-xl shadow-xs flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-white/25 flex items-center justify-center text-white text-2xl font-black">
+                    $
+                </div>
+                <div>
+                    <span class="block text-xs font-bold uppercase tracking-wider text-emerald-100">Yearly Expense</span>
+                    <span class="text-xl font-black">Rs. {{ number_format($yearlyExpense, 2) }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Middle Section: Left Quick Actions Grid + Right Tabbed Analytics -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+        <!-- Left Quick Actions Red Button Grid (4 cols out of 12) -->
+        <div class="lg:col-span-4 bg-white p-4.5 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+            <div class="grid grid-cols-2 gap-2.5">
+                <!-- Add Customer -->
+                <a href="{{ route('customers.create') }}" class="px-3 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold rounded-xl shadow-xs flex items-center justify-between gap-1 transition">
+                    <span>Add Customer</span>
+                    <i class="fa-solid fa-user-plus text-xs"></i>
+                </a>
+
+                <!-- Add Vendor -->
+                <a href="{{ route('vendors.create') }}" class="px-3 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold rounded-xl shadow-xs flex items-center justify-between gap-1 transition">
+                    <span>Add Vendor</span>
+                    <i class="fa-solid fa-user-tie text-xs"></i>
+                </a>
+
+                <!-- Add Product -->
+                <a href="{{ route('products.create') }}" class="px-3 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold rounded-xl shadow-xs flex items-center justify-between gap-1 transition">
+                    <span>Add Product</span>
+                    <i class="fa-solid fa-box text-xs"></i>
+                </a>
+
+                <!-- Add Brand -->
+                <a href="{{ route('brands.create') }}" class="px-3 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold rounded-xl shadow-xs flex items-center justify-between gap-1 transition">
+                    <span>Add Brand</span>
+                    <i class="fa-solid fa-copyright text-xs"></i>
+                </a>
+
+                <!-- New Sale -->
+                <a href="{{ route('sales.create') }}" class="px-3 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold rounded-xl shadow-xs flex items-center justify-between gap-1 transition">
+                    <span>New Sale</span>
+                    <i class="fa-solid fa-file-invoice text-xs"></i>
+                </a>
+
+                <!-- New Purchase -->
+                <a href="{{ route('purchases.create') }}" class="px-3 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold rounded-xl shadow-xs flex items-center justify-between gap-1 transition">
+                    <span>New Purchase</span>
+                    <i class="fa-solid fa-cart-shopping text-xs"></i>
+                </a>
+
+                <!-- Cash Receipt -->
+                <a href="{{ route('vouchers.create', ['type' => 'receipt']) }}" class="px-3 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold rounded-xl shadow-xs flex items-center justify-between gap-1 transition">
+                    <span>Cash Receipt</span>
+                    <i class="fa-solid fa-circle-plus text-xs"></i>
+                </a>
+
+                <!-- Cash Payment -->
+                <a href="{{ route('vouchers.create', ['type' => 'payment']) }}" class="px-3 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold rounded-xl shadow-xs flex items-center justify-between gap-1 transition">
+                    <span>Cash Payment</span>
+                    <i class="fa-solid fa-circle-minus text-xs"></i>
+                </a>
+
+                <!-- Add Warehouse -->
+                <a href="{{ route('warehouses.create') }}" class="px-3 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold rounded-xl shadow-xs flex items-center justify-between gap-1 transition">
+                    <span>Add Warehouse</span>
+                    <i class="fa-solid fa-warehouse text-xs"></i>
+                </a>
+
+                <!-- Add Category -->
+                <a href="{{ route('categories.create') }}" class="px-3 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold rounded-xl shadow-xs flex items-center justify-between gap-1 transition">
+                    <span>Add Category</span>
+                    <i class="fa-solid fa-tags text-xs"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Right Tabbed Panel (8 cols out of 12) -->
+        <div class="lg:col-span-8 bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 flex flex-col justify-between" x-data="{ activeTab: 'chart' }">
+            <!-- Tabs Navigation -->
+            <div class="flex items-center gap-6 border-b border-slate-200 pb-3">
+                <button @click="activeTab = 'chart'" :class="activeTab === 'chart' ? 'text-rose-600 border-b-2 border-rose-600 font-bold' : 'text-slate-500 font-semibold hover:text-slate-800'" class="text-xs pb-2 transition">
+                    Sales/Purchases
+                </button>
+                <button @click="activeTab = 'expenses'" :class="activeTab === 'expenses' ? 'text-rose-600 border-b-2 border-rose-600 font-bold' : 'text-slate-500 font-semibold hover:text-slate-800'" class="text-xs pb-2 transition">
+                    Recent Expenses
+                </button>
+                <button @click="activeTab = 'due'" :class="activeTab === 'due' ? 'text-rose-600 border-b-2 border-rose-600 font-bold' : 'text-slate-500 font-semibold hover:text-slate-800'" class="text-xs pb-2 transition">
+                    Client Due
+                </button>
+                <button @click="activeTab = 'received'" :class="activeTab === 'received' ? 'text-rose-600 border-b-2 border-rose-600 font-bold' : 'text-slate-500 font-semibold hover:text-slate-800'" class="text-xs pb-2 transition">
+                    Amount Received
+                </button>
+            </div>
+
+            <!-- Tab 1: Sales/Purchases Chart -->
+            <div x-show="activeTab === 'chart'" class="pt-4 flex-1">
+                <div class="relative h-64 w-full">
+                    <canvas id="salesPurchasesChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Tab 2: Recent Expenses -->
+            <div x-show="activeTab === 'expenses'" class="pt-4 flex-1 overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-50 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                         <tr>
-                            <th class="px-5 py-3">Invoice</th>
-                            <th class="px-5 py-3">Customer</th>
-                            <th class="px-5 py-3">Total</th>
-                            <th class="px-5 py-3 text-right">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100">
-                        @forelse ($recentSales as $sale)
-                            <tr class="hover:bg-slate-50/80 transition">
-                                <td class="px-5 py-3 font-semibold text-slate-800">
-                                    <a href="{{ route('sales.show', $sale) }}" class="text-emerald-600 hover:underline font-mono">
-                                        {{ $sale->invoice_number }}
-                                    </a>
-                                    <span class="block text-[10px] text-slate-400">{{ $sale->created_at->diffForHumans() }}</span>
-                                </td>
-                                <td class="px-5 py-3 text-slate-600">
-                                    {{ $sale->customer_display_name }}
-                                </td>
-                                <td class="px-5 py-3 font-bold text-slate-800">
-                                    Rs. {{ number_format($sale->total_amount, 2) }}
-                                </td>
-                                <td class="px-5 py-3 text-right">
-                                    <a href="{{ route('sales.show', $sale) }}" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-md text-[11px]">
-                                        View
-                                    </a>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="px-5 py-6 text-center text-slate-400 text-xs">No recent sales found.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Recent Expenses -->
-        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden flex flex-col">
-            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-wallet text-amber-600"></i>
-                    <h3 class="font-bold text-slate-800">Recent Operating Expenses</h3>
-                </div>
-                <a href="{{ route('expenses.index') }}" class="text-xs font-semibold text-amber-600 hover:text-amber-700">View All &rarr;</a>
-            </div>
-            <div class="flex-1 overflow-x-auto">
-                <table class="w-full text-left text-xs text-slate-600">
-                    <thead class="bg-slate-50 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">
-                        <tr>
-                            <th class="px-5 py-3">Date</th>
-                            <th class="px-5 py-3">Category</th>
-                            <th class="px-5 py-3 text-right">Amount</th>
+                            <th class="px-3 py-2">Date</th>
+                            <th class="px-3 py-2">Category</th>
+                            <th class="px-3 py-2 text-right">Amount</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
                         @forelse ($recentExpenses as $exp)
-                            <tr class="hover:bg-slate-50/80 transition">
-                                <td class="px-5 py-3 font-mono text-slate-600">
-                                    {{ $exp->expense_date->format('d M Y') }}
-                                </td>
-                                <td class="px-5 py-3 font-bold text-slate-800">
-                                    <span class="px-2 py-0.5 rounded-full text-[11px] bg-amber-50 text-amber-800 border border-amber-100">
-                                        {{ $exp->category->name ?? 'General' }}
-                                    </span>
-                                </td>
-                                <td class="px-5 py-3 text-right font-black text-rose-600">
-                                    Rs. {{ number_format($exp->amount, 2) }}
-                                </td>
+                            <tr>
+                                <td class="px-3 py-2 text-slate-600 font-mono">{{ $exp->expense_date->format('d M Y') }}</td>
+                                <td class="px-3 py-2 font-bold text-slate-800">{{ $exp->category->name ?? 'General' }}</td>
+                                <td class="px-3 py-2 text-right font-bold text-rose-600">Rs. {{ number_format($exp->amount, 2) }}</td>
                             </tr>
                         @empty
-                            <tr>
-                                <td colspan="3" class="px-5 py-6 text-center text-slate-400 text-xs">No recent expenses logged.</td>
-                            </tr>
+                            <tr><td colspan="3" class="px-3 py-4 text-center text-slate-400">No expenses recorded.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
-        </div>
+
+            <!-- Tab 3: Client Due -->
+            <div x-show="activeTab === 'due'" class="pt-4 flex-1 overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-50 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                        <tr>
+                            <th class="px-3 py-2">Invoice</th>
+                            <th class="px-3 py-2">Customer</th>
+                            <th class="px-3 py-2 text-right">Due Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @forelse ($clientDues as $due)
+                            <tr>
+                                <td class="px-3 py-2 font-mono font-bold text-emerald-600">{{ $due->invoice_number }}</td>
+                                <td class="px-3 py-2 text-slate-800 font-semibold">{{ $due->customer_display_name }}</td>
+                                <td class="px-3 py-2 text-right font-black text-rose-600">Rs. {{ number_format($due->due_amount, 2) }}</td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="3" class="px-3 py-4 text-center text-slate-400">No client dues pending.</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Tab 4: Amount Received -->
+            <div x-show="activeTab === 'received'" class="pt-4 flex-1 overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-50 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                        <tr>
+                            <th class="px-3 py-2">Invoice</th>
+                            <th class="px-3 py-2">Customer</th>
+                            <th class="px-3 py-2 text-right">Paid Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @forelse ($amountReceived as $rec)
+                            <tr>
+                                <td class="px-3 py-2 font-mono font-bold text-emerald-600">{{ $rec->invoice_number }}</td>
+                                <td class="px-3 py-2 text-slate-800 font-semibold">{{ $rec->customer_display_name }}</td>
+                                <td class="px-3 py-2 text-right font-black text-emerald-600">Rs. {{ number_format($rec->paid_amount, 2) }}</td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="3" class="px-3 py-4 text-center text-slate-400">No recent payment receipts.</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
     </div>
 </div>
+
+<!-- Chart.js Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('salesPurchasesChart');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: @json($chartLabels),
+                    datasets: [
+                        {
+                            label: 'Sales (Rs.)',
+                            data: @json($salesChartData),
+                            backgroundColor: '#ef4444',
+                            borderRadius: 4,
+                        },
+                        {
+                            label: 'Purchases (Rs.)',
+                            data: @json($purchasesChartData),
+                            backgroundColor: '#94a3b8',
+                            borderRadius: 4,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#f1f5f9' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
 @endsection

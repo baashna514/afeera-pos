@@ -71,7 +71,7 @@ class SaleController extends Controller
     public function create(Request $request): View
     {
         $customers = Customer::orderBy('name')->get();
-        $products = Product::where('quantity', '>', 0)->with('secondaryUnits.unit')->orderBy('name')->get();
+        $products = Product::with(['unit', 'secondaryUnits.unit', 'warehouseStocks'])->orderBy('name')->get();
         $warehouses = Warehouse::where('is_active', true)->orderBy('name')->get();
 
         $pendingOrders = SaleOrder::with(['customer', 'items.product'])
@@ -96,6 +96,9 @@ class SaleController extends Controller
             'sale_date' => ['nullable', 'date'],
             'paid_amount' => ['nullable', 'numeric', 'min:0'],
             'payment_method' => ['nullable', 'string', 'in:cash,card,bank_transfer,cheque,online'],
+            'has_overall_discount' => ['nullable', 'boolean'],
+            'overall_discount_type' => ['nullable', 'string'],
+            'overall_discount_value' => ['nullable', 'numeric', 'min:0'],
             'note' => ['nullable', 'string'],
             'description' => ['nullable', 'string'],
             'extra_field_one' => ['nullable', 'string'],
@@ -105,6 +108,8 @@ class SaleController extends Controller
             'items.*.conversion_rate' => ['nullable', 'numeric', 'min:0.0001'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
             'items.*.unit_price' => ['required', 'numeric', 'min:0'],
+            'items.*.discount_percentage' => ['nullable', 'numeric', 'min:0'],
+            'items.*.discount_amount' => ['nullable', 'numeric', 'min:0'],
         ]);
 
         $companyId = Auth::user()?->company_id;
@@ -117,7 +122,7 @@ class SaleController extends Controller
             }
         }
 
-        // Check stock availability in base units
+        // Check stock availability in base units (overall and in selected warehouse)
         foreach ($validated['items'] as $item) {
             $conversionRate = isset($item['conversion_rate']) ? (float) $item['conversion_rate'] : 1.0;
             $baseRequired = $item['quantity'] * $conversionRate;
@@ -126,19 +131,67 @@ class SaleController extends Controller
             if ($product && $product->quantity < $baseRequired) {
                 return back()->withInput()->with('error', "Insufficient stock for '{$product->name}'. Available: {$product->quantity} base units, Requested: {$baseRequired} base units.");
             }
+
+            if ($warehouseId && $product) {
+                $whStock = WarehouseStock::where('company_id', $companyId)
+                    ->where('warehouse_id', $warehouseId)
+                    ->where('product_id', $product->id)
+                    ->first();
+                $availableInWh = $whStock ? (int) $whStock->quantity : 0;
+                if ($availableInWh < $baseRequired) {
+                    $whName = Warehouse::find($warehouseId)?->name ?? 'selected warehouse';
+
+                    return back()->withInput()->with('error', "Insufficient stock for '{$product->name}' in {$whName}. Available: {$availableInWh} base units, Requested: {$baseRequired} base units.");
+                }
+            }
         }
 
         $sale = DB::transaction(function () use ($validated, $companyId, $warehouseId) {
-            $totalAmount = 0;
+            $itemsSubtotalSum = 0;
+            $processedItems = [];
+
             foreach ($validated['items'] as $item) {
-                $totalAmount += $item['quantity'] * $item['unit_price'];
+                $qty = (int) $item['quantity'];
+                $unitPrice = (float) $item['unit_price'];
+                $grossRowSubtotal = $qty * $unitPrice;
+
+                $discPerc = isset($item['discount_percentage']) ? (float) $item['discount_percentage'] : 0.0;
+                $discAmt = isset($item['discount_amount']) ? (float) $item['discount_amount'] : 0.0;
+
+                if ($discAmt <= 0 && $discPerc > 0) {
+                    $discAmt = ($grossRowSubtotal * $discPerc) / 100;
+                }
+
+                $rowNetSubtotal = max(0, $grossRowSubtotal - $discAmt);
+                $itemsSubtotalSum += $rowNetSubtotal;
+
+                $processedItems[] = array_merge($item, [
+                    'disc_perc' => $discPerc,
+                    'disc_amt' => $discAmt,
+                    'net_subtotal' => $rowNetSubtotal,
+                ]);
             }
 
+            $hasOverallDisc = ! empty($validated['has_overall_discount']);
+            $overallDiscType = $validated['overall_discount_type'] ?? 'percentage';
+            $overallDiscVal = isset($validated['overall_discount_value']) ? (float) $validated['overall_discount_value'] : 0.0;
+            $overallDiscAmt = 0.0;
+
+            if ($hasOverallDisc && $overallDiscVal > 0) {
+                if (in_array($overallDiscType, ['percentage', 'perc', 'percent'])) {
+                    $overallDiscAmt = ($itemsSubtotalSum * $overallDiscVal) / 100;
+                } else {
+                    $overallDiscAmt = min($itemsSubtotalSum, $overallDiscVal);
+                }
+            }
+
+            $grandTotal = max(0, $itemsSubtotalSum - $overallDiscAmt);
+
             $paidAmount = isset($validated['paid_amount']) ? (float) $validated['paid_amount'] : 0.0;
-            $actualPaid = min($paidAmount, $totalAmount);
-            $changeAmount = max(0, $paidAmount - $totalAmount);
-            $dueAmount = max(0, $totalAmount - $paidAmount);
-            $paymentStatus = Sale::computePaymentStatus($paidAmount, $totalAmount);
+            $actualPaid = min($paidAmount, $grandTotal);
+            $changeAmount = max(0, $paidAmount - $grandTotal);
+            $dueAmount = max(0, $grandTotal - $paidAmount);
+            $paymentStatus = Sale::computePaymentStatus($paidAmount, $grandTotal);
             $invoiceNumber = 'SI-'.date('Ymd').'-'.strtoupper(Str::random(4));
 
             $sale = Sale::create([
@@ -147,7 +200,12 @@ class SaleController extends Controller
                 'warehouse_id' => $warehouseId,
                 'invoice_number' => $invoiceNumber,
                 'customer_id' => $validated['customer_id'],
-                'total_amount' => $totalAmount,
+                'subtotal' => $itemsSubtotalSum,
+                'discount_type' => $overallDiscType,
+                'discount_value' => $overallDiscVal,
+                'discount_amount' => $overallDiscAmt,
+                'has_overall_discount' => $hasOverallDisc,
+                'total_amount' => $grandTotal,
                 'paid_amount' => $actualPaid,
                 'due_amount' => $dueAmount,
                 'change_amount' => $changeAmount,
@@ -158,24 +216,25 @@ class SaleController extends Controller
                 'extra_field_one' => $validated['extra_field_one'] ?? null,
             ]);
 
-            foreach ($validated['items'] as $item) {
-                $subtotal = $item['quantity'] * $item['unit_price'];
-                $conversionRate = isset($item['conversion_rate']) ? (float) $item['conversion_rate'] : 1.0;
-                $baseQuantity = $item['quantity'] * $conversionRate;
+            foreach ($processedItems as $pItem) {
+                $conversionRate = isset($pItem['conversion_rate']) ? (float) $pItem['conversion_rate'] : 1.0;
+                $baseQuantity = $pItem['quantity'] * $conversionRate;
 
                 SaleItem::create([
                     'sale_id' => $sale->id,
-                    'product_id' => $item['product_id'],
-                    'unit_id' => $item['unit_id'] ?? null,
+                    'product_id' => $pItem['product_id'],
+                    'unit_id' => $pItem['unit_id'] ?? null,
                     'conversion_rate' => $conversionRate,
-                    'quantity' => $item['quantity'],
+                    'quantity' => $pItem['quantity'],
                     'base_quantity' => $baseQuantity,
-                    'price' => $item['unit_price'],
-                    'subtotal' => $subtotal,
+                    'price' => $pItem['unit_price'],
+                    'discount_percentage' => $pItem['disc_perc'],
+                    'discount_amount' => $pItem['disc_amt'],
+                    'subtotal' => $pItem['net_subtotal'],
                 ]);
 
                 // Reduce inventory in BASE UNITS
-                $product = Product::lockForUpdate()->find($item['product_id']);
+                $product = Product::lockForUpdate()->find($pItem['product_id']);
                 if ($product) {
                     $beforeQty = $product->quantity;
                     $product->decrement('quantity', $baseQuantity);

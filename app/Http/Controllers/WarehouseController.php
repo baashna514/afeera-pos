@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Warehouse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +26,7 @@ class WarehouseController extends Controller
         return view('warehouses.create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -42,18 +43,58 @@ class WarehouseController extends Controller
             Warehouse::where('company_id', $companyId)->update(['is_default' => false]);
         }
 
-        Warehouse::create([
+        $warehouse = Warehouse::create([
             'company_id' => $companyId,
             'name' => $validated['name'],
-            'code' => $validated['code'] ?? 'WH-'.rand(100, 999),
+            'code' => ! empty($validated['code']) ? $validated['code'] : 'WH-'.rand(100, 999),
             'phone' => $validated['phone'] ?? null,
             'address' => $validated['address'] ?? null,
             'is_active' => $request->has('is_active') ? (bool) $request->is_active : true,
             'is_default' => $request->has('is_default') ? (bool) $request->is_default : false,
         ]);
 
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Warehouse created successfully.',
+                'warehouse' => $warehouse,
+            ]);
+        }
+
         return redirect()->route('warehouses.index')
             ->with('success', 'Warehouse created successfully.');
+    }
+
+    public function storeInline(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'code' => ['nullable', 'string', 'max:50'],
+            'address' => ['nullable', 'string'],
+            'phone' => ['nullable', 'string'],
+        ]);
+
+        $companyId = Auth::user()?->company_id;
+
+        $warehouse = Warehouse::create([
+            'company_id' => $companyId,
+            'name' => $validated['name'],
+            'code' => ! empty($validated['code']) ? $validated['code'] : 'WH-'.rand(100, 999),
+            'phone' => $validated['phone'] ?? null,
+            'address' => $validated['address'] ?? null,
+            'is_active' => true,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Warehouse created successfully',
+            'data' => [
+                'id' => $warehouse->id,
+                'name' => $warehouse->name,
+                'code' => $warehouse->code,
+            ],
+            'warehouse' => $warehouse,
+        ]);
     }
 
     public function edit(Warehouse $warehouse): View

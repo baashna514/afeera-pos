@@ -30,7 +30,7 @@ class PosController extends Controller
         $categories = Category::withCount('products')->orderBy('name')->get();
         $customers = Customer::orderBy('name')->get();
         $warehouses = Warehouse::where('is_active', true)->orderBy('name')->get();
-        $products = Product::with(['category', 'unit', 'secondaryUnits.unit'])
+        $products = Product::with(['category', 'unit', 'secondaryUnits.unit', 'warehouseStocks'])
             ->orderBy('name')
             ->get();
 
@@ -46,7 +46,7 @@ class PosController extends Controller
                 ->find($soId);
         }
 
-        return view('pos.index', compact('categories', 'customers', 'products', 'pendingSaleOrders', 'selectedSo'));
+        return view('pos.index', compact('categories', 'customers', 'products', 'pendingSaleOrders', 'selectedSo', 'warehouses'));
     }
 
     /**
@@ -56,7 +56,7 @@ class PosController extends Controller
     {
         $query = $request->query('q');
 
-        $products = Product::with(['category', 'unit', 'secondaryUnits.unit'])
+        $products = Product::with(['category', 'unit', 'secondaryUnits.unit', 'warehouseStocks'])
             ->when($query, function ($q) use ($query) {
                 return $q->where('name', 'like', "%{$query}%")
                     ->orWhere('barcode', 'like', "%{$query}%");
@@ -133,6 +133,21 @@ class PosController extends Controller
                     throw ValidationException::withMessages([
                         'items' => ["Insufficient stock for '{$product->name}'. Available: {$product->quantity} base units, Requested: {$baseQuantity} base units ({$item['quantity']} packaging units)."],
                     ]);
+                }
+
+                if ($warehouseId) {
+                    $whStock = WarehouseStock::where('company_id', $userCompanyId)
+                        ->where('warehouse_id', $warehouseId)
+                        ->where('product_id', $product->id)
+                        ->first();
+                    $availableInWh = $whStock ? (int) $whStock->quantity : 0;
+                    if ($availableInWh < $baseQuantity) {
+                        $whModel = Warehouse::find($warehouseId);
+                        $whName = $whModel ? $whModel->name : 'selected warehouse';
+                        throw ValidationException::withMessages([
+                            'items' => ["Insufficient stock for '{$product->name}' in {$whName}. Available: {$availableInWh} base units, Requested: {$baseQuantity} base units."],
+                        ]);
+                    }
                 }
 
                 // Determine price

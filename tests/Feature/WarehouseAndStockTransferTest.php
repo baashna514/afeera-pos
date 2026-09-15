@@ -189,3 +189,89 @@ test('stock transfer fails if source warehouse quantity is insufficient', functi
 
     expect($mainStock->quantity)->toBe(100);
 });
+
+test('product show page displays detail and warehouse stock tabs', function () {
+    $response = $this->actingAs($this->admin)
+        ->get(route('products.show', $this->product));
+
+    $response->assertOk()
+        ->assertSee('Detail')
+        ->assertSee('Stock')
+        ->assertSee($this->warehouseMain->name)
+        ->assertSee('100');
+});
+
+test('product can be created with multi warehouse stocks repeater', function () {
+    $response = $this->actingAs($this->admin)
+        ->post(route('products.store'), [
+            'name' => 'Cordless Screwdriver',
+            'barcode' => '998877665544',
+            'category_id' => $this->category->id,
+            'purchase_price' => 1200,
+            'selling_price' => 2000,
+            'quantity' => 0,
+            'alert_quantity' => 5,
+            'warehouse_stocks' => [
+                ['warehouse_id' => $this->warehouseMain->id, 'quantity' => 30],
+                ['warehouse_id' => $this->warehouseNorth->id, 'quantity' => 20],
+            ],
+        ]);
+
+    $response->assertRedirect(route('products.index'))
+        ->assertSessionHas('success');
+
+    $newProd = Product::where('barcode', '998877665544')->first();
+    expect($newProd)->not->toBeNull()
+        ->and($newProd->quantity)->toBe(50);
+
+    $wsMain = WarehouseStock::where('product_id', $newProd->id)->where('warehouse_id', $this->warehouseMain->id)->first();
+    $wsNorth = WarehouseStock::where('product_id', $newProd->id)->where('warehouse_id', $this->warehouseNorth->id)->first();
+
+    expect($wsMain?->quantity)->toBe(30)
+        ->and($wsNorth?->quantity)->toBe(20);
+});
+
+test('sale fails if product has insufficient stock in selected warehouse', function () {
+    $customer = Customer::create([
+        'company_id' => $this->company->id,
+        'name' => 'Retail Buyer',
+    ]);
+
+    // Product has 0 stock in warehouseNorth
+    $response = $this->actingAs($this->admin)
+        ->post(route('sales.store'), [
+            'customer_id' => $customer->id,
+            'warehouse_id' => $this->warehouseNorth->id,
+            'paid_amount' => 3500,
+            'payment_method' => 'cash',
+            'items' => [
+                [
+                    'product_id' => $this->product->id,
+                    'quantity' => 5,
+                    'unit_price' => 3500,
+                ],
+            ],
+        ]);
+
+    $response->assertSessionHas('error');
+});
+
+test('pos checkout fails if product has insufficient stock in selected warehouse', function () {
+    // Product has 0 stock in warehouseNorth
+    $response = $this->actingAs($this->admin)
+        ->postJson(route('pos.checkout'), [
+            'warehouse_id' => $this->warehouseNorth->id,
+            'payment_method' => 'cash',
+            'paid_amount' => 3500,
+            'items' => [
+                [
+                    'id' => $this->product->id,
+                    'quantity' => 5,
+                    'price' => 3500,
+                ],
+            ],
+        ]);
+
+    $response->assertStatus(422)
+        ->assertJsonValidationErrors(['items']);
+});

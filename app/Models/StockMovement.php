@@ -13,6 +13,7 @@ class StockMovement extends Model
 
     protected $fillable = [
         'company_id',
+        'warehouse_id',
         'product_id',
         'type',
         'quantity',
@@ -27,6 +28,11 @@ class StockMovement extends Model
         'before_quantity' => 'integer',
         'after_quantity' => 'integer',
     ];
+
+    public function warehouse(): BelongsTo
+    {
+        return $this->belongsTo(Warehouse::class);
+    }
 
     public function product(): BelongsTo
     {

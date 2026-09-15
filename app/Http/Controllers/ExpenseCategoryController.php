@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ExpenseCategory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,7 +29,7 @@ class ExpenseCategoryController extends Controller
         return view('expense-categories.create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -36,12 +37,20 @@ class ExpenseCategoryController extends Controller
             'is_active' => ['boolean'],
         ]);
 
-        ExpenseCategory::create([
+        $category = ExpenseCategory::create([
             'company_id' => Auth::user()?->company_id,
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
             'is_active' => $request->boolean('is_active', true),
         ]);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Expense category created successfully.',
+                'category' => $category,
+            ]);
+        }
 
         return redirect()->route('expense-categories.index')
             ->with('success', 'Expense category created successfully.');

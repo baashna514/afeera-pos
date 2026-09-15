@@ -25,8 +25,13 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">From Warehouse (Source) *</label>
-                    <select name="from_warehouse_id" required class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium">
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">From Warehouse (Source) *</label>
+                        <button type="button" onclick="openQuickWarehouseModal()" class="text-[11px] font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1">
+                            <i class="fa-solid fa-plus-circle"></i> New Warehouse
+                        </button>
+                    </div>
+                    <select name="from_warehouse_id" id="from_warehouse_id" required class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium">
                         <option value="">-- Select Source Warehouse --</option>
                         @foreach($warehouses as $wh)
                             <option value="{{ $wh->id }}" {{ old('from_warehouse_id') == $wh->id ? 'selected' : '' }}>
@@ -37,8 +42,13 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">To Warehouse (Destination) *</label>
-                    <select name="to_warehouse_id" required class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium">
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">To Warehouse (Destination) *</label>
+                        <button type="button" onclick="openQuickWarehouseModal()" class="text-[11px] font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1">
+                            <i class="fa-solid fa-plus-circle"></i> New Warehouse
+                        </button>
+                    </div>
+                    <select name="to_warehouse_id" id="to_warehouse_id" required class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium">
                         <option value="">-- Select Target Warehouse --</option>
                         @foreach($warehouses as $wh)
                             <option value="{{ $wh->id }}" {{ old('to_warehouse_id') == $wh->id ? 'selected' : '' }}>
@@ -117,7 +127,112 @@
     </form>
 </div>
 
+<!-- Quick Add Warehouse Modal -->
+<div id="quickWarehouseModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden p-6 space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                <i class="fa-solid fa-warehouse text-emerald-600"></i> Quick Add Warehouse
+            </h3>
+            <button type="button" onclick="closeQuickWarehouseModal()" class="text-slate-400 hover:text-slate-600 p-1">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <form onsubmit="saveQuickWarehouse(event)" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Warehouse Name <span class="text-rose-500">*</span></label>
+                <input type="text" id="qc_wh_name" required placeholder="e.g. Main Godown, North Branch..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Code</label>
+                    <input type="text" id="qc_wh_code" placeholder="e.g. WH-02" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none font-mono">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Phone</label>
+                    <input type="text" id="qc_wh_phone" placeholder="Contact number..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Address</label>
+                <input type="text" id="qc_wh_address" placeholder="Physical location..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+            </div>
+            <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                <button type="button" onclick="closeQuickWarehouseModal()" class="px-3 py-1.5 text-xs text-slate-600 font-semibold hover:text-slate-900">Cancel</button>
+                <button type="submit" id="qc_wh_submit" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg shadow-xs transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-check"></i> Save &amp; Select
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
+    function openQuickWarehouseModal() {
+        const modal = document.getElementById('quickWarehouseModal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.getElementById('qc_wh_name').focus();
+        }
+    }
+
+    function closeQuickWarehouseModal() {
+        const modal = document.getElementById('quickWarehouseModal');
+        if (modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.getElementById('qc_wh_name').value = '';
+            document.getElementById('qc_wh_code').value = '';
+            document.getElementById('qc_wh_phone').value = '';
+            document.getElementById('qc_wh_address').value = '';
+        }
+    }
+
+    async function saveQuickWarehouse(e) {
+        e.preventDefault();
+        const name = document.getElementById('qc_wh_name').value.trim();
+        const code = document.getElementById('qc_wh_code').value.trim();
+        const phone = document.getElementById('qc_wh_phone').value.trim();
+        const address = document.getElementById('qc_wh_address').value.trim();
+        if (!name) return;
+
+        const btn = document.getElementById('qc_wh_submit');
+        btn.disabled = true;
+
+        try {
+            const res = await fetch("{{ route('warehouses.store') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                },
+                body: JSON.stringify({ name, code, phone, address }),
+            });
+
+            const data = await res.json();
+            if (data.success && data.warehouse) {
+                ['from_warehouse_id', 'to_warehouse_id'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        const optName = `${data.warehouse.name} (${data.warehouse.code || 'WH-' + data.warehouse.id})`;
+                        const opt = new Option(optName, data.warehouse.id);
+                        el.add(opt);
+                    }
+                });
+                closeQuickWarehouseModal();
+            } else {
+                alert(data.message || 'Could not save warehouse.');
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Error creating warehouse.');
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         let rowIdx = 1;
         const tbody = document.getElementById('itemsTbody');

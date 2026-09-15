@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CustomerController;
@@ -114,29 +115,38 @@ Route::middleware(['auth'])->group(function () {
     Route::get('products', [ProductController::class, 'index'])->name('products.index')->middleware('permission:products.view');
     Route::get('products/create', [ProductController::class, 'create'])->name('products.create')->middleware('permission:products.create');
     Route::post('products', [ProductController::class, 'store'])->name('products.store')->middleware('permission:products.create');
+    Route::get('products/{product}', [ProductController::class, 'show'])->name('products.show')->middleware('permission:products.view');
     Route::get('products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit')->middleware('permission:products.edit');
     Route::put('products/{product}', [ProductController::class, 'update'])->name('products.update')->middleware('permission:products.edit');
     Route::delete('products/{product}', [ProductController::class, 'destroy'])->name('products.destroy')->middleware('permission:products.delete');
     Route::get('products/{product}/barcode', [ProductController::class, 'barcode'])->name('products.barcode')->middleware('permission:products.barcode,products.view');
     Route::get('products/{product}/print-barcode', [ProductController::class, 'printBarcode'])->name('products.printBarcode')->middleware('permission:products.barcode,products.view');
+    Route::get('products/{product}/print-labels', [ProductController::class, 'printLabels'])->name('products.printLabels')->middleware('permission:products.barcode,products.view');
 
     // Inventory: Categories
     Route::get('categories', [CategoryController::class, 'index'])->name('categories.index')->middleware('permission:categories.view');
     Route::get('categories/create', [CategoryController::class, 'create'])->name('categories.create')->middleware('permission:categories.create');
     Route::post('categories', [CategoryController::class, 'store'])->name('categories.store')->middleware('permission:categories.create');
+    Route::post('categories/store-inline', [CategoryController::class, 'storeInline'])->name('categories.store.inline')->middleware('permission:categories.create');
     Route::get('categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit')->middleware('permission:categories.edit');
     Route::put('categories/{category}', [CategoryController::class, 'update'])->name('categories.update')->middleware('permission:categories.edit');
     Route::delete('categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy')->middleware('permission:categories.delete');
+
+    // Inventory: Brands
+    Route::resource('brands', BrandController::class)->middleware('permission:categories.view,categories.create');
+    Route::post('brands/store-inline', [BrandController::class, 'storeInline'])->name('brands.store.inline')->middleware('permission:categories.create');
 
     // Inventory: Units
     Route::get('units', [UnitController::class, 'index'])->name('units.index')->middleware('permission:units.view');
     Route::get('units/create', [UnitController::class, 'create'])->name('units.create')->middleware('permission:units.create');
     Route::post('units', [UnitController::class, 'store'])->name('units.store')->middleware('permission:units.create');
+    Route::post('units/store-inline', [UnitController::class, 'storeInline'])->name('units.store.inline')->middleware('permission:units.create');
     Route::get('units/{unit}/edit', [UnitController::class, 'edit'])->name('units.edit')->middleware('permission:units.edit');
     Route::put('units/{unit}', [UnitController::class, 'update'])->name('units.update')->middleware('permission:units.edit');
     Route::delete('units/{unit}', [UnitController::class, 'destroy'])->name('units.destroy')->middleware('permission:units.delete');
 
     // Warehouses CRUD & Multi-location Management
+    Route::post('warehouses/store-inline', [WarehouseController::class, 'storeInline'])->name('warehouses.store.inline')->middleware('permission:warehouses.create');
     Route::resource('warehouses', WarehouseController::class)->middleware('permission:warehouses.view,warehouses.create');
 
     // Stock Management & Internal Transfers

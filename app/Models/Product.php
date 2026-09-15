@@ -15,6 +15,7 @@ class Product extends Model
         'barcode',
         'sku',
         'category_id',
+        'brand_id',
         'unit_id',
         'default_sale_unit_id',
         'default_purchase_unit_id',
@@ -22,12 +23,15 @@ class Product extends Model
         'selling_price',
         'quantity',
         'alert_quantity',
+        'default_discount_type',
+        'default_discount_value',
         'description',
     ];
 
     protected $casts = [
         'purchase_price' => 'decimal:2',
         'selling_price' => 'decimal:2',
+        'default_discount_value' => 'decimal:2',
         'quantity' => 'integer',
         'alert_quantity' => 'integer',
     ];
@@ -35,6 +39,11 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
     }
 
     public function unit()
