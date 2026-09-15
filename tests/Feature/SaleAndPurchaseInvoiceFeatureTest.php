@@ -7,6 +7,7 @@ use App\Models\Sale;
 use App\Models\SaleOrder;
 use App\Models\SaleOrderItem;
 use App\Models\Unit;
+use App\Models\Voucher;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -150,4 +151,110 @@ test('it updates customer ledger when partial sale invoice is created', function
         ->assertSee('Payment Received')
         ->assertSee('500')
         ->assertSee('200');
+});
+
+test('sales index displays separate total, paid, and due amount columns', function () {
+    $customer = Customer::create(['name' => 'Rashid Khan', 'phone' => '0312-9988776']);
+    $unit = Unit::create(['name' => 'Piece', 'short_code' => 'pc', 'conversion_factor' => 1]);
+    $category = Category::create(['name' => 'General', 'slug' => 'gen-item']);
+    $product = Product::create([
+        'name' => 'Test Item',
+        'sku' => 'TI-01',
+        'barcode' => 'BC-TI-01',
+        'purchase_price' => 10000,
+        'selling_price' => 26000,
+        'quantity' => 10,
+        'alert_quantity' => 2,
+        'category_id' => $category->id,
+        'unit_id' => $unit->id,
+    ]);
+
+    // Create invoice for 52,000 total, 25,000 paid, 27,000 due
+    $this->post(route('sales.store'), [
+        'customer_id' => $customer->id,
+        'paid_amount' => 25000,
+        'payment_method' => 'cash',
+        'items' => [
+            [
+                'product_id' => $product->id,
+                'unit_id' => $unit->id,
+                'conversion_rate' => 1.0,
+                'quantity' => 2,
+                'unit_price' => 26000,
+            ],
+        ],
+    ]);
+
+    $response = $this->get(route('sales.index'));
+    $response->assertOk()
+        ->assertSee('Total (Rs.)')
+        ->assertSee('Paid (Rs.)')
+        ->assertSee('Due (Rs.)')
+        ->assertSee('52,000.00')
+        ->assertSee('25,000.00')
+        ->assertSee('27,000.00');
+});
+
+test('customer ledger sorts entries strictly in ascending chronological order', function () {
+    $customer = Customer::create(['name' => 'Zaman Khan', 'phone' => '0300-7766554']);
+    $unit = Unit::create(['name' => 'Piece', 'short_code' => 'pc', 'conversion_factor' => 1]);
+    $category = Category::create(['name' => 'Sport', 'slug' => 'sport']);
+    $product = Product::create([
+        'name' => 'Ball',
+        'sku' => 'BALL-01',
+        'barcode' => 'BC-BALL-01',
+        'purchase_price' => 500,
+        'selling_price' => 1000,
+        'quantity' => 100,
+        'alert_quantity' => 10,
+        'category_id' => $category->id,
+        'unit_id' => $unit->id,
+    ]);
+
+    // Transaction 1 (Earlier): Sale of 51,500 total with 20,000 paid
+    $sale1 = Sale::create([
+        'customer_id' => $customer->id,
+        'invoice_number' => 'SI-EARLY-01',
+        'total_amount' => 51500,
+        'paid_amount' => 20000,
+        'due_amount' => 31500,
+        'payment_status' => 'partially_paid',
+        'payment_method' => 'cash',
+        'created_at' => now()->subHours(5),
+    ]);
+
+    // Transaction 2 (Middle): Sale of 52,000 total with 25,000 paid
+    $sale2 = Sale::create([
+        'customer_id' => $customer->id,
+        'invoice_number' => 'SI-MID-02',
+        'total_amount' => 52000,
+        'paid_amount' => 25000,
+        'due_amount' => 27000,
+        'payment_status' => 'partially_paid',
+        'payment_method' => 'cash',
+        'created_at' => now()->subHours(2),
+    ]);
+
+    // Transaction 3 (Latest): Voucher payment of 5,000 recorded last
+    Voucher::create([
+        'customer_id' => $customer->id,
+        'voucher_number' => 'VCH-LATEST-03',
+        'type' => 'receipt',
+        'amount' => 5000,
+        'payment_method' => 'cash',
+        'voucher_date' => date('Y-m-d'),
+        'created_at' => now()->subMinutes(10),
+    ]);
+
+    $response = $this->get(route('ledgers.customer', ['customer_id' => $customer->id]));
+    $response->assertOk();
+
+    // Verify SI-EARLY-01 appears before SI-MID-02, and VCH-LATEST-03 appears at the bottom
+    $content = $response->getContent();
+    $pos1 = strpos($content, 'SI-EARLY-01');
+    $pos2 = strpos($content, 'SI-MID-02');
+    $pos3 = strpos($content, 'VCH-LATEST-03');
+
+    expect($pos1)->toBeLessThan($pos2);
+    expect($pos2)->toBeLessThan($pos3);
 });

@@ -143,29 +143,46 @@
 
             <!-- Payment Summary -->
             <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm">
-                <div class="px-5 py-4 border-b border-slate-100">
+                <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
                     <h3 class="text-sm font-bold text-slate-700 flex items-center gap-2">
                         <i class="fa-solid fa-credit-card text-emerald-500"></i>
                         Payment Summary
                     </h3>
+                    <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded-md border {{ $sale->payment_status_badge_class }}">
+                        {{ $sale->payment_status_label }}
+                    </span>
                 </div>
-                <div class="px-5 py-4 space-y-3 text-sm text-slate-600">
-                    <div class="flex justify-between">
-                        <span>Subtotal</span>
-                        <span class="font-semibold text-slate-800">Rs. {{ number_format($sale->total_amount, 2) }}</span>
+                <div class="px-5 py-4 space-y-2.5 text-sm text-slate-600">
+                    <div class="flex justify-between text-xs">
+                        <span>Items Subtotal</span>
+                        <span class="font-semibold text-slate-800">Rs. {{ number_format($sale->subtotal, 2) }}</span>
                     </div>
-                    <div class="flex justify-between">
-                        <span>Paid Amount</span>
-                        <span class="font-semibold text-slate-800">Rs. {{ number_format($sale->paid_amount, 2) }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span>Change Given</span>
-                        <span class="font-semibold text-slate-800">Rs. {{ number_format($sale->change_amount, 2) }}</span>
-                    </div>
+                    @if($sale->has_overall_discount && $sale->discount_amount > 0)
+                        <div class="flex justify-between text-xs text-rose-600 font-medium">
+                            <span>Discount ({{ $sale->discount_type === 'percentage' ? number_format($sale->discount_value, 1).'%' : 'Fixed' }})</span>
+                            <span>- Rs. {{ number_format($sale->discount_amount, 2) }}</span>
+                        </div>
+                    @endif
                     <div class="pt-2 border-t border-slate-100 flex justify-between font-bold">
-                        <span class="text-base text-slate-800">Total</span>
-                        <span class="text-xl text-emerald-600">Rs. {{ number_format($sale->total_amount, 2) }}</span>
+                        <span class="text-sm text-slate-800">Total Invoice</span>
+                        <span class="text-base text-slate-900">Rs. {{ number_format($sale->total_amount, 2) }}</span>
                     </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="font-medium text-emerald-700">Paid Amount</span>
+                        <span class="font-bold text-emerald-600">Rs. {{ number_format($sale->paid_amount, 2) }}</span>
+                    </div>
+                    @if($sale->due_amount > 0)
+                        <div class="flex justify-between text-xs text-rose-600 font-bold bg-rose-50 px-2 py-1.5 rounded-lg border border-rose-100">
+                            <span>Remaining Due</span>
+                            <span>Rs. {{ number_format($sale->due_amount, 2) }}</span>
+                        </div>
+                    @endif
+                    @if($sale->change_amount > 0)
+                        <div class="flex justify-between text-xs text-slate-500">
+                            <span>Change Returned</span>
+                            <span class="font-semibold">Rs. {{ number_format($sale->change_amount, 2) }}</span>
+                        </div>
+                    @endif
                 </div>
             </div>
 
