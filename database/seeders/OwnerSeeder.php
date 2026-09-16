@@ -231,33 +231,22 @@ class OwnerSeeder extends Seeder
 
         // 4. Create Level 1 System Owner User (Not attached to any company)
         $owner = User::updateOrCreate(
-            ['email' => 'owner@saasplatform.com'],
+            ['email' => 'owner@gmail.com'],
             [
                 'name' => 'System Owner',
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('password'),
                 'company_id' => null, // Owner has no company_id (Level 1)
                 'is_active' => true,
             ]
         );
         $owner->syncRoles([$ownerRole]);
 
-        $ownerAlias = User::updateOrCreate(
-            ['email' => 'owner@smartpos.com'],
-            [
-                'name' => 'System Owner',
-                'password' => Hash::make('password123'),
-                'company_id' => null,
-                'is_active' => true,
-            ]
-        );
-        $ownerAlias->syncRoles([$ownerRole]);
-
         // 5. Create Default Level 2 Tenant Company
         $defaultCompany = Company::firstOrCreate(
-            ['name' => 'Smart POS General Trading LLC'],
+            ['name' => 'Baashna Technologies'],
             [
                 'code' => 'COMP-001',
-                'email' => 'contact@smartpos.com',
+                'email' => 'contact@baashna.com',
                 'phone' => '+92 300 1234567',
                 'address' => 'Main Commercial Boulevard, Suite 100',
                 'currency' => 'PKR',
@@ -278,11 +267,11 @@ class OwnerSeeder extends Seeder
 
         // 6. Create Level 2 Super Admin User (Belongs to Company 1)
         $superAdmin = User::updateOrCreate(
-            ['email' => 'admin@smartpos.com'],
+            ['email' => 'superadmin@gmail.com'],
             [
                 'name' => 'Super Admin',
                 'company_id' => $defaultCompany->id,
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('password'),
                 'is_active' => true,
             ]
         );
@@ -290,11 +279,11 @@ class OwnerSeeder extends Seeder
 
         // 7. Create Company Cashier User (Belongs to Company 1)
         $cashier = User::updateOrCreate(
-            ['email' => 'cashier@smartpos.com'],
+            ['email' => 'cashier@gmail.com'],
             [
                 'name' => 'Afeera Cashier',
                 'company_id' => $defaultCompany->id,
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('password'),
                 'is_active' => true,
             ]
         );
