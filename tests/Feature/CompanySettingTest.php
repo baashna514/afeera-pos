@@ -4,6 +4,9 @@ use App\Models\Company;
 use App\Models\Product;
 use App\Models\Unit;
 use App\Services\CompanySettingService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $company = Company::firstOrCreate(
