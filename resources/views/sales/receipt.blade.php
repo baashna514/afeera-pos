@@ -1,3 +1,17 @@
+@php
+    $company = $sale->company ?? auth()->user()?->company;
+    $paperSize = company_setting('receipt.paper_size', '80mm');
+    $containerWidth = match($paperSize) {
+        '58mm' => '56mm',
+        'a4' => '100%',
+        default => '78mm',
+    };
+    $containerMaxWidth = match($paperSize) {
+        '58mm' => '260px',
+        'a4' => '780px',
+        default => '320px',
+    };
+@endphp
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +23,7 @@
 
         body {
             font-family: 'Courier New', Courier, monospace, -apple-system, sans-serif;
-            font-size: 11px;
+            font-size: {{ $paperSize === 'a4' ? '12px' : '11px' }};
             color: #000;
             background: #e2e8f0;
             display: flex;
@@ -21,9 +35,9 @@
 
         .receipt-container {
             background: #fff;
-            width: 78mm;
-            max-width: 320px;
-            padding: 12px 10px;
+            width: {{ $containerWidth }};
+            max-width: {{ $containerMaxWidth }};
+            padding: 14px 12px;
             border-radius: 4px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
@@ -35,17 +49,17 @@
         .uppercase { text-transform: uppercase; }
 
         .brand-name {
-            font-size: 16px;
+            font-size: {{ $paperSize === 'a4' ? '18px' : '15px' }};
             font-weight: 900;
             letter-spacing: 0.5px;
             margin-bottom: 2px;
         }
 
         .tagline {
-            font-size: 9px;
+            font-size: 9.5px;
             font-style: italic;
             color: #333;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
         .branch-address {
@@ -106,7 +120,7 @@
         }
 
         .net-total-row {
-            font-size: 13px;
+            font-size: {{ $paperSize === 'a4' ? '14px' : '12px' }};
             font-weight: 900;
             border-top: 1px dashed #000;
             border-bottom: 1px dashed #000;
@@ -121,7 +135,7 @@
         }
 
         .policy-title {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 900;
             text-align: center;
             margin-bottom: 3px;
@@ -139,43 +153,50 @@
         .action-buttons {
             display: flex;
             gap: 10px;
+            margin-top: 16px;
             justify-content: center;
-            margin-top: 15px;
+            flex-wrap: wrap;
         }
 
         .btn {
             padding: 8px 16px;
+            border-radius: 6px;
             font-size: 12px;
-            font-weight: 600;
-            border-radius: 4px;
+            font-weight: bold;
             cursor: pointer;
-            text-decoration: none;
             border: none;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
         }
 
         .btn-print {
-            background: #0f172a;
+            background: #059669;
             color: #fff;
         }
+        .btn-print:hover { background: #047857; }
 
         .btn-back {
-            background: #e2e8f0;
-            color: #1e293b;
+            background: #475569;
+            color: #fff;
         }
+        .btn-back:hover { background: #334155; }
 
         @media print {
             body {
                 background: #fff;
                 padding: 0;
+                min-height: auto;
             }
             .receipt-container {
                 box-shadow: none;
+                border-radius: 0;
+                padding: 4px 2px;
                 width: 100%;
                 max-width: 100%;
-                padding: 2mm;
             }
             .action-buttons {
-                display: none;
+                display: none !important;
             }
             @page {
                 margin: 0;
@@ -189,10 +210,19 @@
         <div class="receipt-container" id="thermalReceipt">
             <!-- Store Header -->
             <div class="text-center">
-                <div class="brand-name">🏪 SMART POS SYSTEM</div>
-                <div class="tagline">Quality is our Priority</div>
-                <div class="branch-address">Main Commercial Market, Model Town</div>
-                <div class="phone-numbers">Mob # 0300-8527070 , 0345-0876111</div>
+                @if(company_setting('receipt.show_logo', true))
+                    <div style="font-size: 22px; margin-bottom: 2px;">🏪</div>
+                @endif
+                <div class="brand-name">{{ $company->name ?? 'SMART POS SYSTEM' }}</div>
+                @if($headerText = company_setting('receipt.header_text'))
+                    <div class="tagline">{{ $headerText }}</div>
+                @endif
+                @if($company?->address)
+                    <div class="branch-address">{{ $company->address }}</div>
+                @endif
+                @if($company?->phone)
+                    <div class="phone-numbers">Mob #: {{ $company->phone }}</div>
+                @endif
             </div>
 
             <div class="dashed-line"></div>
@@ -202,10 +232,18 @@
                 <span class="font-bold">No . {{ $sale->invoice_number }}</span>
                 <span>{{ $sale->created_at->format('d/m/Y H:i:s') }}</span>
             </div>
-            <div class="info-row">
-                <span class="font-bold">M/s: </span>
-                <span class="uppercase">{{ $sale->customer ? $sale->customer->name : 'CASH SALES CUSTOMER' }}</span>
-            </div>
+            @if(company_setting('receipt.show_customer_name', true))
+                <div class="info-row">
+                    <span class="font-bold">Customer: </span>
+                    <span class="uppercase">{{ $sale->customer ? $sale->customer->name : 'Walk-in Customer' }}</span>
+                </div>
+            @endif
+            @if(company_setting('receipt.show_cashier_name', true))
+                <div class="info-row">
+                    <span class="font-bold">Cashier: </span>
+                    <span>{{ auth()->user()->name ?? 'Cashier Staff' }}</span>
+                </div>
+            @endif
             <div class="meta-row">
                 <span>Remarks: {{ $sale->description ?: ($sale->note ?: '-') }}</span>
                 <span>Ref.: {{ $sale->extra_field_one ?: '-' }}</span>
@@ -230,6 +268,9 @@
                                 {{ $item->product->name ?? 'Deleted Item' }}
                                 @if($item->unit)
                                     <span style="font-weight:normal; font-size:8.5px; color:#333;">({{ $item->unit->short_code }})</span>
+                                @endif
+                                @if(company_setting('receipt.show_sku', false) && !empty($item->product?->sku))
+                                    <div style="font-size:8px; font-weight:normal; color:#555;">SKU: {{ $item->product->sku }}</div>
                                 @endif
                             </td>
                             <td class="text-center">{{ $item->quantity }}</td>
@@ -262,14 +303,20 @@
                     <td class="text-right font-bold" style="color:#b91c1c;">{{ number_format($sale->due_amount, 2) }}</td>
                 </tr>
                 @endif
+                @if(company_setting('receipt.show_tax_breakdown', false))
+                <tr>
+                    <td class="text-right" style="color:#555;">Sales Tax Included :</td>
+                    <td class="text-right" style="color:#555;">0.00</td>
+                </tr>
+                @endif
             </table>
 
             <div class="dashed-line"></div>
 
-            <!-- Net Total & Cashier -->
+            <!-- Net Total -->
             <div class="meta-row net-total-row">
-                <span class="uppercase">CASHIER / ADMIN</span>
-                <span class="text-right">Net Total. {{ number_format($sale->total_amount, 2) }}</span>
+                <span class="uppercase">TOTAL PAYABLE</span>
+                <span class="text-right">Rs. {{ number_format($sale->total_amount, 2) }}</span>
             </div>
 
             <!-- Status & Method -->
@@ -278,21 +325,43 @@
                 <span>Status: <strong class="uppercase">{{ $sale->payment_status_label }}</strong></span>
             </div>
 
+            @if(company_setting('receipt.show_barcode', false))
+                <div class="text-center" style="margin: 8px 0;">
+                    <div style="font-family: monospace; letter-spacing: 4px; font-size: 10px; background: #eee; padding: 2px 6px; display: inline-block;">
+                        ||||| ||||||| |||| ||||||| |||
+                    </div>
+                    <div style="font-size: 8px; color: #555;">{{ $sale->invoice_number }}</div>
+                </div>
+            @endif
+
+            @if(company_setting('receipt.show_qr_code', false))
+                <div class="text-center" style="margin: 6px 0;">
+                    <div style="font-size: 8px; color: #555;">[ QR CODE: {{ $sale->invoice_number }} ]</div>
+                </div>
+            @endif
+
             <!-- Return & Exchange Policy -->
             <div class="dashed-line"></div>
             <div class="policy-section">
-                <div class="text-center" style="font-weight:bold; margin-bottom:2px;">Thank you for shopping with us!</div>
-                <div class="policy-title">Return & Exchange Policy.</div>
-                <div>• Garments may be exchanged for garments items only within 4 days if unused, tagged, and accompanied by the original bill.</div>
-                <div>• Other items may be exchanged within 3 days.</div>
-                <div>• Sales items, Food, and hygiene items are non-exchangeable.</div>
-                <div>• No cash refunds. Remaining balance adjusted in customer ledger.</div>
-                <div>• We value your understanding and continued trust in our store.</div>
+                @if($footerText = company_setting('receipt.footer_text'))
+                    <div class="text-center" style="font-weight:bold; margin-bottom:3px;">{{ $footerText }}</div>
+                @else
+                    <div class="text-center" style="font-weight:bold; margin-bottom:3px;">Thank you for shopping with us!</div>
+                @endif
+
+                @if($policy = company_setting('receipt.return_policy'))
+                    <div class="policy-title">Return & Exchange Policy</div>
+                    <div style="white-space: pre-line;">{{ $policy }}</div>
+                @else
+                    <div class="policy-title">Return & Exchange Policy.</div>
+                    <div>• Items may be exchanged within 7 days with original receipt.</div>
+                    <div>• Damaged or used items cannot be returned.</div>
+                @endif
             </div>
 
             <!-- Credit Footer -->
             <div class="software-credit">
-                (Computer Software developed by SmartPOS Systems)
+                Powered by SmartPOS System
             </div>
         </div>
 

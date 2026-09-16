@@ -38,7 +38,7 @@ class UserController extends Controller
         }
 
         $users = $query->paginate(15)->withQueryString();
-        $roles = Role::orderBy('name')->get();
+        $roles = Role::where('slug', '!=', 'owner')->orderBy('name')->get();
         $companies = Company::orderBy('name')->get();
 
         return view('users.index', compact('users', 'roles', 'companies'));
@@ -46,7 +46,7 @@ class UserController extends Controller
 
     public function create(): View
     {
-        $roles = Role::orderBy('name')->get();
+        $roles = Role::where('slug', '!=', 'owner')->orderBy('name')->get();
         $companies = Company::where('is_active', true)->orderBy('name')->get();
 
         return view('users.create', compact('roles', 'companies'));
@@ -93,7 +93,7 @@ class UserController extends Controller
 
     public function edit(User $user): View
     {
-        $roles = Role::orderBy('name')->get();
+        $roles = Role::where('slug', '!=', 'owner')->orderBy('name')->get();
         $companies = Company::orderBy('name')->get();
 
         return view('users.edit', compact('user', 'roles', 'companies'));

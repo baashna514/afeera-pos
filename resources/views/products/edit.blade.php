@@ -42,6 +42,7 @@
                 </div>
 
                 <!-- Category -->
+                @if(company_has_feature('categories'))
                 <div>
                     <div class="flex items-center justify-between mb-2">
                         <label for="category_id" class="text-xs font-bold uppercase tracking-wider text-slate-600">Category <span class="text-rose-500">*</span></label>
@@ -62,6 +63,7 @@
                         <p class="text-xs text-rose-500 mt-1 font-medium">{{ $message }}</p>
                     @enderror
                 </div>
+                @endif
 
                 <!-- Base Unit -->
                 <div>
@@ -86,6 +88,7 @@
                 </div>
 
                 <!-- Brand -->
+                @if(company_has_feature('brands'))
                 <div>
                     <div class="flex items-center justify-between mb-2">
                         <label for="brand_id" class="text-xs font-bold uppercase tracking-wider text-slate-600">Brand</label>
@@ -106,6 +109,7 @@
                         <p class="text-xs text-rose-500 mt-1 font-medium">{{ $message }}</p>
                     @enderror
                 </div>
+                @endif
 
                 <!-- Purchase Price -->
                 <div>

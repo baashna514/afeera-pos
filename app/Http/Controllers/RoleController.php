@@ -14,7 +14,7 @@ class RoleController extends Controller
 {
     public function index(): View
     {
-        $roles = Role::withCount(['users', 'permissions'])->orderBy('id')->get();
+        $roles = Role::where('slug', '!=', 'owner')->withCount(['users', 'permissions'])->orderBy('id')->get();
 
         return view('roles.index', compact('roles'));
     }

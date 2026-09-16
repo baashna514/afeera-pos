@@ -234,6 +234,10 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'Add Build', 'slug' => 'build.create', 'group' => 'Build', 'description' => 'Create builds'],
             ['name' => 'Edit Build', 'slug' => 'build.edit', 'group' => 'Build', 'description' => 'Edit builds'],
             ['name' => 'Delete Build', 'slug' => 'build.delete', 'group' => 'Build', 'description' => 'Delete builds'],
+
+            // Company & System Settings
+            ['name' => 'View Settings', 'slug' => 'settings.view', 'group' => 'Settings', 'description' => 'Can view company settings and features'],
+            ['name' => 'Edit Settings', 'slug' => 'settings.edit', 'group' => 'Settings', 'description' => 'Can update company settings, feature toggles, and receipt template'],
         ];
 
         $permissionModels = [];

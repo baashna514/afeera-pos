@@ -161,7 +161,7 @@
                                 </span>
                             </td>
                             <td class="px-4 py-4 text-xs text-slate-500">
-                                {{ $sale->created_at->format('d M Y') }}
+                                {{ \Carbon\Carbon::parse($sale->sale_date)->format('d M Y') }}
                                 <span class="block text-[10px] text-slate-400">{{ $sale->created_at->format('h:i A') }}</span>
                             </td>
                             <td class="px-4 py-4 text-right">

@@ -52,10 +52,10 @@ class SaleController extends Controller
                 return $q->where('customer_id', $cId);
             })
             ->when($dateFrom, function ($q, $from) {
-                return $q->whereDate('created_at', '>=', $from);
+                return $q->whereDate('sale_date', '>=', $from);
             })
             ->when($dateTo, function ($q, $to) {
-                return $q->whereDate('created_at', '<=', $to);
+                return $q->whereDate('sale_date', '<=', $to);
             });
 
         $sales = $query->latest()->paginate(15)->withQueryString();
@@ -198,6 +198,7 @@ class SaleController extends Controller
                 'company_id' => $companyId,
                 'sale_order_id' => $validated['sale_order_id'] ?? null,
                 'warehouse_id' => $warehouseId,
+                'sale_date' => $validated['sale_date'] ?? date('Y-m-d'),
                 'invoice_number' => $invoiceNumber,
                 'customer_id' => $validated['customer_id'],
                 'subtotal' => $itemsSubtotalSum,
