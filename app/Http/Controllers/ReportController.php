@@ -195,16 +195,19 @@ class ReportController extends Controller
 
                 // 11. Current Stock
             case 'current_stock':
-                $query = Product::with(['category', 'brand']);
+                $query = Product::with(['category', 'brand', 'unit', 'secondaryUnits.unit', 'warehouseStocks.warehouse']);
                 if ($productId) {
                     $query->where('id', $productId);
+                }
+                if ($warehouseId) {
+                    $query->whereHas('warehouseStocks', fn ($q) => $q->where('warehouse_id', $warehouseId));
                 }
                 $data['products'] = $query->orderBy('name')->get();
                 break;
 
                 // 12. Stock Ledger
             case 'stock_ledger':
-                $query = StockMovement::with(['product', 'warehouse'])
+                $query = StockMovement::with(['product.unit', 'warehouse'])
                     ->whereBetween('created_at', [$startDateTime, $endDateTime]);
 
                 if ($productId) {
@@ -214,7 +217,7 @@ class ReportController extends Controller
                     $query->where('warehouse_id', $warehouseId);
                 }
 
-                $data['movements'] = $query->latest()->get();
+                $data['movements'] = $query->latest('created_at')->latest('id')->get();
                 break;
 
                 // 13. Stock Movement Aggregate
@@ -275,9 +278,11 @@ class ReportController extends Controller
 
                 // 15. Low / Out-of-Stock
             case 'low_stock':
-                $data['products'] = Product::with(['category', 'brand'])
-                    ->whereColumn('quantity', '<=', 'min_stock_alert')
-                    ->orWhere('quantity', '<=', 0)
+                $data['products'] = Product::with(['category', 'brand', 'unit', 'secondaryUnits.unit', 'warehouseStocks.warehouse'])
+                    ->where(function ($q) {
+                        $q->whereColumn('quantity', '<=', 'alert_quantity')
+                            ->orWhere('quantity', '<=', 0);
+                    })
                     ->orderBy('quantity', 'asc')
                     ->get();
                 break;

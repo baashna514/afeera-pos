@@ -59,11 +59,11 @@
                     <i class="fa-solid fa-chevron-down text-[10px]"></i>
                 </button>
                 <div x-show="open" @click.away="open = false" class="absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-30">
-                    <a href="{{ route('reports.index', ['type' => 'current_stock', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-700">Current Stock</a>
-                    <a href="{{ route('reports.index', ['type' => 'stock_ledger', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-700">Stock Ledger Audit</a>
-                    <a href="{{ route('reports.index', ['type' => 'stock_movement', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-700">Stock Movement</a>
+                    <a href="{{ route('reports.index', ['type' => 'current_stock', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-700">Current Stock (Alerts & Warehouses)</a>
+                    <a href="{{ route('reports.index', ['type' => 'stock_ledger', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-700">Stock Ledger & Flow Audit</a>
+                    <a href="{{ route('reports.index', ['type' => 'stock_movement', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-700">Stock Movement Analysis</a>
                     <a href="{{ route('reports.index', ['type' => 'stock_valuation', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-700">Stock Valuation</a>
-                    <a href="{{ route('reports.index', ['type' => 'low_stock', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-700">Low / Out-of-Stock</a>
+                    <a href="{{ route('reports.index', ['type' => 'low_stock', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-700">Low / Out-of-Stock Alerts</a>
                 </div>
             </div>
 
@@ -133,13 +133,25 @@
             </div>
             @endif
 
-            @if(in_array($type, ['sales_summary', 'sales_detail', 'sales_by_warehouse', 'purchase_summary', 'stock_ledger', 'stock_movement']))
+            @if(in_array($type, ['sales_summary', 'sales_detail', 'sales_by_warehouse', 'purchase_summary', 'current_stock', 'stock_ledger', 'stock_movement']))
             <div>
                 <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">Filter Warehouse</label>
                 <select name="warehouse_id" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-500">
                     <option value="">All Warehouses</option>
                     @foreach($warehouses as $w)
                         <option value="{{ $w->id }}" {{ $warehouseId == $w->id ? 'selected' : '' }}>{{ $w->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            @endif
+
+            @if(in_array($type, ['sales_by_product', 'purchase_by_product', 'current_stock', 'stock_ledger']))
+            <div>
+                <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">Filter Product</label>
+                <select name="product_id" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-500">
+                    <option value="">All Products</option>
+                    @foreach($products as $p)
+                        <option value="{{ $p->id }}" {{ $productId == $p->id ? 'selected' : '' }}>{{ $p->name }} ({{ $p->code ?? $p->sku }})</option>
                     @endforeach
                 </select>
             </div>
@@ -206,6 +218,248 @@
                             @endforeach
                         </tbody>
                     </table>
+                </div>
+            </div>
+
+        @elseif($type === 'current_stock' || $type === 'low_stock')
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-base font-bold text-slate-800">{{ $type === 'low_stock' ? 'Low Stock & Out-of-Stock Alerts Report' : 'Current Stock Inventory Report' }}</h3>
+                        <p class="text-xs text-slate-500">Units-wise conversions, alert indicators, and warehouse-wise stock levels</p>
+                    </div>
+                </div>
+
+                <!-- Stock Summary Metrics -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <span class="text-xs font-bold text-slate-500 uppercase block">Total Products</span>
+                        <span class="text-xl font-black text-slate-800">{{ $products->count() }}</span>
+                    </div>
+                    <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+                        <span class="text-xs font-bold text-emerald-700 uppercase block">Total Physical Units</span>
+                        <span class="text-xl font-black text-emerald-900">{{ number_format($products->sum('quantity')) }}</span>
+                    </div>
+                    <div class="p-4 bg-amber-50 rounded-xl border border-amber-100">
+                        <span class="text-xs font-bold text-amber-700 uppercase block">Low Stock Alert Items</span>
+                        <span class="text-xl font-black text-amber-900">{{ $products->filter(fn($p) => $p->quantity > 0 && $p->quantity <= ($p->alert_quantity ?? 5))->count() }}</span>
+                    </div>
+                    <div class="p-4 bg-rose-50 rounded-xl border border-rose-100">
+                        <span class="text-xs font-bold text-rose-700 uppercase block">Out of Stock Items</span>
+                        <span class="text-xl font-black text-rose-900">{{ $products->filter(fn($p) => $p->quantity <= 0)->count() }}</span>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-100 uppercase tracking-wider text-slate-500 font-bold">
+                                <th class="p-3">Product Info</th>
+                                <th class="p-3">Category & Brand</th>
+                                <th class="p-3">Units & Conversions</th>
+                                <th class="p-3">Warehouse Breakdown</th>
+                                <th class="p-3 text-right">Total Qty</th>
+                                <th class="p-3 text-center">Stock Alert Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @foreach($products as $p)
+                                <tr class="hover:bg-slate-50/50 transition">
+                                    <td class="p-3 font-medium">
+                                        <div class="font-bold text-slate-800 text-sm">{{ $p->name }}</div>
+                                        <span class="font-mono text-[11px] text-slate-400">Code: {{ $p->code ?? $p->sku ?? 'N/A' }}</span>
+                                    </td>
+                                    <td class="p-3 text-slate-600">
+                                        <span class="font-semibold block">{{ $p->category->name ?? 'General' }}</span>
+                                        <span class="text-[10px] text-slate-400">{{ $p->brand->name ?? 'No Brand' }}</span>
+                                    </td>
+                                    <td class="p-3 text-slate-700">
+                                        <span class="inline-block px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded font-bold text-[11px]">
+                                            Base: {{ $p->unit->name ?? 'Pcs' }} ({{ $p->unit->short_code ?? 'Pcs' }})
+                                        </span>
+                                        @if($p->secondaryUnits->count() > 0)
+                                            <div class="mt-1 space-y-0.5">
+                                                @foreach($p->secondaryUnits as $su)
+                                                    <span class="block text-[10px] text-slate-500">
+                                                        • 1 {{ $su->unit->name ?? 'Unit' }} = {{ $su->conversion_rate }} {{ $p->unit->short_code ?? 'Pcs' }}
+                                                    </span>
+                                                @endforeach
+                                            </div>
+                                        @endif
+                                    </td>
+                                    <td class="p-3">
+                                        @if($p->warehouseStocks->count() > 0)
+                                            <div class="flex flex-wrap gap-1">
+                                                @foreach($p->warehouseStocks as $ws)
+                                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-slate-100 border border-slate-200 rounded text-[10px] text-slate-700 font-medium">
+                                                        <i class="fa-solid fa-warehouse text-slate-400 text-[9px]"></i>
+                                                        <strong>{{ $ws->warehouse->name ?? 'Whs' }}:</strong> {{ number_format($ws->quantity) }}
+                                                    </span>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <span class="text-[11px] text-slate-400 italic">Main Stock Only</span>
+                                        @endif
+                                    </td>
+                                    <td class="p-3 text-right font-mono font-black text-sm text-slate-900">
+                                        {{ number_format($p->quantity) }} <span class="text-xs font-normal text-slate-500">{{ $p->unit->short_code ?? '' }}</span>
+                                    </td>
+                                    <td class="p-3 text-center">
+                                        @if($p->quantity <= 0)
+                                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200 inline-flex items-center gap-1">
+                                                <i class="fa-solid fa-triangle-exclamation"></i> Out of Stock
+                                            </span>
+                                        @elseif($p->quantity <= ($p->alert_quantity ?? 5))
+                                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200 inline-flex items-center gap-1">
+                                                <i class="fa-solid fa-bell"></i> Low Stock (Alert <= {{ $p->alert_quantity ?? 5 }})
+                                            </span>
+                                        @else
+                                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 inline-flex items-center gap-1">
+                                                <i class="fa-solid fa-circle-check"></i> In Stock
+                                            </span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        @elseif($type === 'stock_ledger')
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-base font-bold text-slate-800">Stock History & Transaction Flow Ledger</h3>
+                    <p class="text-xs text-slate-500">Audit trail showing exact before quantity, transaction in/out flow, and running stock balance after every movement.</p>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-100 uppercase tracking-wider text-slate-500 font-bold">
+                                <th class="p-3">Date & Time</th>
+                                <th class="p-3">Product Name</th>
+                                <th class="p-3">Warehouse</th>
+                                <th class="p-3">Movement Type</th>
+                                <th class="p-3">Reference / Note</th>
+                                <th class="p-3 text-right">Before Qty</th>
+                                <th class="p-3 text-right">Stock Flow (+/-)</th>
+                                <th class="p-3 text-right">After Qty (Running)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @foreach($movements as $m)
+                                @php
+                                    $isInflow = in_array($m->type, ['purchase', 'adjustment_add', 'transfer_in', 'return_in']);
+                                @endphp
+                                <tr class="hover:bg-slate-50/50 transition">
+                                    <td class="p-3 font-mono text-slate-500">
+                                        {{ \Carbon\Carbon::parse($m->created_at)->format('d M Y') }}
+                                        <span class="block text-[10px] text-slate-400">{{ \Carbon\Carbon::parse($m->created_at)->format('h:i A') }}</span>
+                                    </td>
+                                    <td class="p-3">
+                                        <span class="font-bold text-slate-800">{{ $m->product->name ?? 'Product' }}</span>
+                                        <span class="block text-[10px] font-mono text-slate-400">{{ $m->product->code ?? '' }}</span>
+                                    </td>
+                                    <td class="p-3 font-semibold text-slate-700">
+                                        {{ $m->warehouse->name ?? 'Main Warehouse' }}
+                                    </td>
+                                    <td class="p-3">
+                                        @if($m->type === 'sale')
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200">
+                                                <i class="fa-solid fa-cart-shopping mr-1"></i> Cash Sale
+                                            </span>
+                                        @elseif($m->type === 'purchase')
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                                <i class="fa-solid fa-truck-ramp-box mr-1"></i> Purchase In
+                                            </span>
+                                        @elseif(Str::startsWith($m->type, 'transfer'))
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-200">
+                                                <i class="fa-solid fa-right-left mr-1"></i> Stock Transfer
+                                            </span>
+                                        @elseif(Str::startsWith($m->type, 'adjustment'))
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800 border border-purple-200">
+                                                <i class="fa-solid fa-sliders mr-1"></i> Adjustment
+                                            </span>
+                                        @else
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                                                <i class="fa-solid fa-arrow-rotate-left mr-1"></i> Return
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td class="p-3 text-slate-600 font-mono">
+                                        <span class="font-bold">{{ $m->reference ?? '-' }}</span>
+                                        @if($m->notes)
+                                            <span class="block text-[10px] font-sans text-slate-400">{{ $m->notes }}</span>
+                                        @endif
+                                    </td>
+                                    <td class="p-3 text-right font-mono text-slate-500 font-semibold">
+                                        {{ number_format($m->before_quantity) }}
+                                    </td>
+                                    <td class="p-3 text-right font-mono font-black text-sm {{ $isInflow ? 'text-emerald-600' : 'text-rose-600' }}">
+                                        {{ $isInflow ? '+' : '-' }}{{ number_format($m->quantity) }}
+                                    </td>
+                                    <td class="p-3 text-right font-mono font-black text-slate-900 bg-slate-50">
+                                        {{ number_format($m->after_quantity) }} <span class="text-[10px] font-normal text-slate-400">{{ $m->product->unit->short_code ?? '' }}</span>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        @elseif($type === 'stock_movement')
+            <div class="space-y-4">
+                <h3 class="text-base font-bold text-slate-800">Stock Movement Aggregate Summary</h3>
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-100 uppercase tracking-wider text-slate-500 font-bold">
+                            <th class="p-3">Product Name</th>
+                            <th class="p-3">Category</th>
+                            <th class="p-3 text-right">Total In (+)</th>
+                            <th class="p-3 text-right">Total Out (-)</th>
+                            <th class="p-3 text-right">Net Change</th>
+                            <th class="p-3 text-right">Current Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @foreach($stockMovements as $sm)
+                            <tr>
+                                <td class="p-3 font-bold text-slate-800">{{ $sm['product']->name ?? 'Product' }}</td>
+                                <td class="p-3 text-slate-500">{{ $sm['product']->category->name ?? '-' }}</td>
+                                <td class="p-3 text-right font-mono font-bold text-emerald-600">+{{ number_format($sm['total_in']) }}</td>
+                                <td class="p-3 text-right font-mono font-bold text-rose-600">-{{ number_format($sm['total_out']) }}</td>
+                                <td class="p-3 text-right font-mono font-bold {{ $sm['net_change'] >= 0 ? 'text-emerald-600' : 'text-rose-600' }}">
+                                    {{ $sm['net_change'] >= 0 ? '+' : '' }}{{ number_format($sm['net_change']) }}
+                                </td>
+                                <td class="p-3 text-right font-mono font-black text-slate-900">{{ number_format($sm['current_stock']) }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+        @elseif($type === 'stock_valuation')
+            <div class="space-y-6">
+                <h3 class="text-base font-bold text-slate-800">Stock Valuation & Profitability Summary</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <span class="text-xs font-bold text-slate-500 uppercase block">Total Physical Inventory</span>
+                        <span class="text-xl font-black text-slate-800">{{ number_format($totalUnits) }} Units</span>
+                    </div>
+                    <div class="p-4 bg-blue-50 rounded-xl border border-blue-100">
+                        <span class="text-xs font-bold text-blue-700 uppercase block">Valuation at Cost</span>
+                        <span class="text-xl font-black text-blue-900">Rs. {{ number_format($totalCostValuation, 2) }}</span>
+                    </div>
+                    <div class="p-4 bg-purple-50 rounded-xl border border-purple-100">
+                        <span class="text-xs font-bold text-purple-700 uppercase block">Valuation at Selling Price</span>
+                        <span class="text-xl font-black text-purple-900">Rs. {{ number_format($totalRetailValuation, 2) }}</span>
+                    </div>
+                    <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+                        <span class="text-xs font-bold text-emerald-700 uppercase block">Potential Profit Margin</span>
+                        <span class="text-xl font-black text-emerald-900">Rs. {{ number_format($potentialProfit, 2) }}</span>
+                    </div>
                 </div>
             </div>
 
@@ -366,7 +620,7 @@
             </div>
 
         @else
-            <!-- Generic fallback view for all other reports (Current Stock, Stock Ledger, Aging, etc.) -->
+            <!-- Generic fallback view for all other reports (Aging, Party Ledger, etc.) -->
             <div class="space-y-4">
                 <h3 class="text-base font-bold text-slate-800">{{ str_replace('_', ' ', strtoupper($type)) }} Report</h3>
                 <div class="p-6 bg-slate-50 rounded-xl border border-slate-200 text-center">
