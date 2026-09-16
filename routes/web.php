@@ -22,6 +22,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\SaleOrderController;
 use App\Http\Controllers\SaleReturnController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\StockTransferController;
 use App\Http\Controllers\UnitController;
@@ -234,4 +235,12 @@ Route::middleware(['auth'])->group(function () {
 
     // Analytics & Reports
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index')->middleware('permission:reports.view');
+
+    // System & Company Settings
+    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index')->middleware('permission:settings.view');
+    Route::post('/settings/general', [SettingController::class, 'updateGeneral'])->name('settings.general.update')->middleware('permission:settings.edit');
+    Route::post('/settings/features', [SettingController::class, 'updateFeatures'])->name('settings.features.update')->middleware('permission:settings.edit');
+    Route::post('/settings/receipt', [SettingController::class, 'updateReceipt'])->name('settings.receipt.update')->middleware('permission:settings.edit');
+    Route::post('/settings/defaults', [SettingController::class, 'updateDefaults'])->name('settings.defaults.update')->middleware('permission:settings.edit');
+    Route::post('/settings/branding', [SettingController::class, 'updateBranding'])->name('settings.branding.update')->middleware('permission:settings.edit');
 });

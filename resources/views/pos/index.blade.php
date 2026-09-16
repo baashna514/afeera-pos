@@ -39,6 +39,7 @@
 
         <div class="flex items-center gap-3 text-xs">
             <!-- Warehouse Selector -->
+            @if(company_has_feature('warehouses'))
             <div class="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700 shadow-xs">
                 <i class="fa-solid fa-warehouse text-emerald-400"></i>
                 <label for="posWarehouseSelect" class="text-[10px] uppercase font-bold text-slate-400 hidden md:inline">WH:</label>
@@ -50,15 +51,18 @@
                     @endforeach
                 </select>
             </div>
+            @endif
 
             <div class="text-slate-400 hidden sm:block">
                 <i class="fa-regular fa-clock mr-1 text-emerald-400"></i>
                 <span id="posClock"></span>
             </div>
+            @if(company_has_feature('day_book'))
             <a href="{{ route('day-book.index') }}" target="_blank" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition flex items-center gap-1.5 font-medium" title="Day Book / Daily Cash Drawer Summary">
                 <i class="fa-solid fa-cash-register text-emerald-400"></i>
                 <span>Day Book</span>
             </a>
+            @endif
             <a href="{{ route('sales.index') }}" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition flex items-center gap-1.5 font-medium">
                 <i class="fa-solid fa-receipt text-emerald-400"></i>
                 <span>Sales History</span>
@@ -85,6 +89,7 @@
                 </div>
 
                 <!-- Category Tabs -->
+                @if(company_has_feature('categories'))
                 <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs font-bold" id="categoryTabs">
                     <button type="button" onclick="filterCategory('all')" 
                             class="cat-tab active px-3.5 py-1.5 rounded-lg bg-slate-900 text-white shadow-sm transition whitespace-nowrap" data-cat="all">
@@ -97,6 +102,7 @@
                         </button>
                     @endforeach
                 </div>
+                @endif
             </div>
 
             <!-- Products Grid -->

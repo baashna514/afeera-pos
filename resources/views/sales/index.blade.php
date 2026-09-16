@@ -113,44 +113,58 @@
             <table class="w-full text-left text-sm text-slate-600">
                 <thead class="bg-slate-50 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-200">
                     <tr>
-                        <th class="px-5 py-3.5">Invoice #</th>
-                        <th class="px-5 py-3.5">Customer</th>
-                        <th class="px-5 py-3.5">Items</th>
-                        <th class="px-5 py-3.5">Total Paid</th>
-                        <th class="px-5 py-3.5">Payment</th>
-                        <th class="px-5 py-3.5">Date</th>
-                        <th class="px-5 py-3.5 text-right">Actions</th>
+                        <th class="px-4 py-3.5">Invoice #</th>
+                        <th class="px-4 py-3.5">Customer</th>
+                        <th class="px-3 py-3.5 text-center">Items</th>
+                        <th class="px-4 py-3.5 text-right">Total (Rs.)</th>
+                        <th class="px-4 py-3.5 text-right">Paid (Rs.)</th>
+                        <th class="px-4 py-3.5 text-right">Due (Rs.)</th>
+                        <th class="px-3 py-3.5 text-center">Status</th>
+                        <th class="px-3 py-3.5 text-center">Method</th>
+                        <th class="px-4 py-3.5">Date</th>
+                        <th class="px-4 py-3.5 text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse ($sales as $sale)
                         <tr class="hover:bg-slate-50/80 transition">
-                            <td class="px-5 py-4">
+                            <td class="px-4 py-4">
                                 <a href="{{ route('sales.show', $sale) }}" class="font-bold text-emerald-600 hover:underline font-mono text-xs">
                                     {{ $sale->invoice_number }}
                                 </a>
                             </td>
-                            <td class="px-5 py-4 font-medium text-slate-700">
+                            <td class="px-4 py-4 font-medium text-slate-700">
                                 {{ $sale->customer_display_name }}
                             </td>
-                            <td class="px-5 py-4 text-xs">
+                            <td class="px-3 py-4 text-xs text-center">
                                 <span class="px-2 py-0.5 rounded-md bg-slate-100 font-semibold text-slate-600">
-                                    {{ $sale->items->count() }} items
+                                    {{ $sale->items->count() }}
                                 </span>
                             </td>
-                            <td class="px-5 py-4 font-black text-slate-800">
+                            <td class="px-4 py-4 text-right font-bold text-slate-900">
                                 Rs. {{ number_format($sale->total_amount, 2) }}
                             </td>
-                            <td class="px-5 py-4">
+                            <td class="px-4 py-4 text-right font-bold text-emerald-600">
+                                Rs. {{ number_format($sale->paid_amount, 2) }}
+                            </td>
+                            <td class="px-4 py-4 text-right font-bold {{ $sale->due_amount > 0 ? 'text-rose-600' : 'text-slate-400' }}">
+                                {{ $sale->due_amount > 0 ? 'Rs. '.number_format($sale->due_amount, 2) : '-' }}
+                            </td>
+                            <td class="px-3 py-4 text-center">
+                                <span class="px-2.5 py-0.5 text-[10px] font-bold uppercase rounded-md border {{ $sale->payment_status_badge_class }}">
+                                    {{ $sale->payment_status_label }}
+                                </span>
+                            </td>
+                            <td class="px-3 py-4 text-center">
                                 <span class="px-2.5 py-0.5 text-[10px] font-bold uppercase rounded-md {{ $sale->payment_method === 'cash' ? 'bg-emerald-100 text-emerald-700' : ($sale->payment_method === 'card' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700') }}">
                                     {{ str_replace('_', ' ', $sale->payment_method) }}
                                 </span>
                             </td>
-                            <td class="px-5 py-4 text-xs text-slate-500">
-                                {{ $sale->created_at->format('d M Y') }}
+                            <td class="px-4 py-4 text-xs text-slate-500">
+                                {{ \Carbon\Carbon::parse($sale->sale_date)->format('d M Y') }}
                                 <span class="block text-[10px] text-slate-400">{{ $sale->created_at->format('h:i A') }}</span>
                             </td>
-                            <td class="px-5 py-4 text-right">
+                            <td class="px-4 py-4 text-right">
                                 <div class="flex items-center justify-end gap-1">
                                     <a href="{{ route('sales.show', $sale) }}" class="p-2 text-slate-400 hover:text-emerald-600 rounded-lg hover:bg-emerald-50 transition" title="Invoice Detail">
                                         <i class="fa-solid fa-eye text-sm"></i>
@@ -163,7 +177,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-12 text-center text-slate-400">
+                            <td colspan="10" class="px-6 py-12 text-center text-slate-400">
                                 <div class="flex flex-col items-center justify-center">
                                     <i class="fa-solid fa-receipt text-4xl text-slate-200 mb-3"></i>
                                     <p class="font-medium text-sm">No sales transactions found.</p>

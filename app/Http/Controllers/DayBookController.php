@@ -29,7 +29,7 @@ class DayBookController extends Controller
 
         // 2. Cash Inflows (+)
         // A. Cash Sales
-        $cashSales = Sale::whereDate('created_at', $date)
+        $cashSales = Sale::whereDate('sale_date', $date)
             ->where('payment_method', 'cash')
             ->where('paid_amount', '>', 0)
             ->with('customer')
@@ -70,7 +70,7 @@ class DayBookController extends Controller
 
         // 3. Cash Outflows (-)
         // C. Cash Purchases
-        $cashPurchases = Purchase::whereDate('created_at', $date)
+        $cashPurchases = Purchase::whereDate('purchase_date', $date)
             ->where('payment_method', 'cash')
             ->where('paid_amount', '>', 0)
             ->with('vendor')

@@ -63,11 +63,13 @@ class ProductController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        $isCategoryRequired = company_has_feature('categories');
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'barcode' => ['nullable', 'string', 'max:255', 'unique:products,barcode'],
             'sku' => ['nullable', 'string', 'max:100'],
-            'category_id' => ['required', 'exists:categories,id'],
+            'category_id' => [$isCategoryRequired ? 'required' : 'nullable', 'exists:categories,id'],
             'brand_id' => ['nullable', 'exists:brands,id'],
             'unit_id' => ['nullable', 'exists:units,id'],
             'default_sale_unit_id' => ['nullable', 'exists:units,id'],
@@ -171,11 +173,13 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product): RedirectResponse
     {
+        $isCategoryRequired = company_has_feature('categories');
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'barcode' => ['nullable', 'string', 'max:255', 'unique:products,barcode,'.$product->id],
             'sku' => ['nullable', 'string', 'max:100'],
-            'category_id' => ['required', 'exists:categories,id'],
+            'category_id' => [$isCategoryRequired ? 'required' : 'nullable', 'exists:categories,id'],
             'brand_id' => ['nullable', 'exists:brands,id'],
             'unit_id' => ['nullable', 'exists:units,id'],
             'default_sale_unit_id' => ['nullable', 'exists:units,id'],

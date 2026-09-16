@@ -9,6 +9,7 @@ use App\Models\Sale;
 use App\Models\SaleReturn;
 use App\Models\Vendor;
 use App\Models\Voucher;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -36,11 +37,16 @@ class LedgerController extends Controller
             $sales = Sale::where('customer_id', $selectedCustomer->id)
                 ->when($dateFrom, fn ($q) => $q->whereDate('created_at', '>=', $dateFrom))
                 ->when($dateTo, fn ($q) => $q->whereDate('created_at', '<=', $dateTo))
+                ->orderBy('created_at')
+                ->orderBy('id')
                 ->get()
                 ->flatMap(function ($sale) {
                     $records = [];
                     // Billed amount (Customer owes this -> Debit)
                     $records[] = [
+                        'timestamp' => $sale->created_at,
+                        'sort_order' => 1,
+                        'id' => $sale->id,
                         'date' => $sale->created_at,
                         'type' => 'Sale Invoice',
                         'type_badge' => 'bg-emerald-100 text-emerald-800',
@@ -54,6 +60,9 @@ class LedgerController extends Controller
                     // Payment received at sale (Payment reduces debt -> Credit)
                     if ($sale->paid_amount > 0) {
                         $records[] = [
+                            'timestamp' => $sale->created_at,
+                            'sort_order' => 2,
+                            'id' => $sale->id,
                             'date' => $sale->created_at,
                             'type' => 'Payment Received',
                             'type_badge' => 'bg-blue-100 text-blue-800',
@@ -72,10 +81,15 @@ class LedgerController extends Controller
             $returns = SaleReturn::where('customer_id', $selectedCustomer->id)
                 ->when($dateFrom, fn ($q) => $q->whereDate('return_date', '>=', $dateFrom))
                 ->when($dateTo, fn ($q) => $q->whereDate('return_date', '<=', $dateTo))
+                ->orderBy('created_at')
+                ->orderBy('id')
                 ->get()
                 ->map(function ($ret) {
                     return [
-                        'date' => $ret->return_date,
+                        'timestamp' => $ret->created_at ?? Carbon::parse($ret->return_date),
+                        'sort_order' => 3,
+                        'id' => $ret->id,
+                        'date' => $ret->created_at ?? $ret->return_date,
                         'type' => 'Sale Return',
                         'type_badge' => 'bg-amber-100 text-amber-800',
                         'reference' => $ret->return_number,
@@ -91,10 +105,15 @@ class LedgerController extends Controller
                 ->where('type', 'receipt')
                 ->when($dateFrom, fn ($q) => $q->whereDate('voucher_date', '>=', $dateFrom))
                 ->when($dateTo, fn ($q) => $q->whereDate('voucher_date', '<=', $dateTo))
+                ->orderBy('created_at')
+                ->orderBy('id')
                 ->get()
                 ->map(function ($vch) {
                     return [
-                        'date' => $vch->voucher_date,
+                        'timestamp' => $vch->created_at ?? Carbon::parse($vch->voucher_date),
+                        'sort_order' => 4,
+                        'id' => $vch->id,
+                        'date' => $vch->created_at ?? $vch->voucher_date,
                         'type' => 'Receipt Voucher',
                         'type_badge' => 'bg-emerald-100 text-emerald-800 border border-emerald-300',
                         'reference' => $vch->voucher_number,
@@ -105,10 +124,14 @@ class LedgerController extends Controller
                     ];
                 });
 
-            // Merge & sort chronologically
-            $ledgerEntries = $sales->concat($returns)->concat($vouchers)->sortBy('date')->values();
+            // Merge & sort strictly chronologically ascending (oldest first, newest last)
+            $ledgerEntries = $sales->concat($returns)->concat($vouchers)->sortBy(function ($entry) {
+                $ts = $entry['timestamp'] instanceof Carbon ? $entry['timestamp']->getTimestamp() : strtotime((string) $entry['timestamp']);
 
-            // Calculate running balance
+                return sprintf('%012d_%02d_%010d', $ts, $entry['sort_order'], $entry['id'] ?? 0);
+            })->values();
+
+            // Calculate running balance row by row
             $runningBalance = 0;
             $ledgerEntries = $ledgerEntries->map(function ($entry) use (&$runningBalance, &$totalDebit, &$totalCredit) {
                 $totalDebit += $entry['debit'];
@@ -147,12 +170,17 @@ class LedgerController extends Controller
             $purchases = Purchase::where('vendor_id', $selectedVendor->id)
                 ->when($dateFrom, fn ($q) => $q->whereDate('purchase_date', '>=', $dateFrom))
                 ->when($dateTo, fn ($q) => $q->whereDate('purchase_date', '<=', $dateTo))
+                ->orderBy('created_at')
+                ->orderBy('id')
                 ->get()
                 ->flatMap(function ($purchase) {
                     $records = [];
                     // Billed amount (We owe vendor -> Credit)
                     $records[] = [
-                        'date' => $purchase->purchase_date,
+                        'timestamp' => $purchase->created_at ?? Carbon::parse($purchase->purchase_date),
+                        'sort_order' => 1,
+                        'id' => $purchase->id,
+                        'date' => $purchase->created_at ?? $purchase->purchase_date,
                         'type' => 'Purchase Invoice',
                         'type_badge' => 'bg-emerald-100 text-emerald-800',
                         'reference' => $purchase->reference_no,
@@ -165,7 +193,10 @@ class LedgerController extends Controller
                     // Payment made to vendor at purchase (Payment reduces payable -> Debit)
                     if ($purchase->paid_amount > 0) {
                         $records[] = [
-                            'date' => $purchase->purchase_date,
+                            'timestamp' => $purchase->created_at ?? Carbon::parse($purchase->purchase_date),
+                            'sort_order' => 2,
+                            'id' => $purchase->id,
+                            'date' => $purchase->created_at ?? $purchase->purchase_date,
                             'type' => 'Payment Made',
                             'type_badge' => 'bg-blue-100 text-blue-800',
                             'reference' => $purchase->reference_no,
@@ -183,10 +214,15 @@ class LedgerController extends Controller
             $returns = PurchaseReturn::where('vendor_id', $selectedVendor->id)
                 ->when($dateFrom, fn ($q) => $q->whereDate('return_date', '>=', $dateFrom))
                 ->when($dateTo, fn ($q) => $q->whereDate('return_date', '<=', $dateTo))
+                ->orderBy('created_at')
+                ->orderBy('id')
                 ->get()
                 ->map(function ($ret) {
                     return [
-                        'date' => $ret->return_date,
+                        'timestamp' => $ret->created_at ?? Carbon::parse($ret->return_date),
+                        'sort_order' => 3,
+                        'id' => $ret->id,
+                        'date' => $ret->created_at ?? $ret->return_date,
                         'type' => 'Purchase Return',
                         'type_badge' => 'bg-amber-100 text-amber-800',
                         'reference' => $ret->return_number,
@@ -202,10 +238,15 @@ class LedgerController extends Controller
                 ->where('type', 'payment')
                 ->when($dateFrom, fn ($q) => $q->whereDate('voucher_date', '>=', $dateFrom))
                 ->when($dateTo, fn ($q) => $q->whereDate('voucher_date', '<=', $dateTo))
+                ->orderBy('created_at')
+                ->orderBy('id')
                 ->get()
                 ->map(function ($vch) {
                     return [
-                        'date' => $vch->voucher_date,
+                        'timestamp' => $vch->created_at ?? Carbon::parse($vch->voucher_date),
+                        'sort_order' => 4,
+                        'id' => $vch->id,
+                        'date' => $vch->created_at ?? $vch->voucher_date,
                         'type' => 'Payment Voucher',
                         'type_badge' => 'bg-blue-100 text-blue-800 border border-blue-300',
                         'reference' => $vch->voucher_number,
@@ -216,8 +257,12 @@ class LedgerController extends Controller
                     ];
                 });
 
-            // Merge & sort chronologically
-            $ledgerEntries = $purchases->concat($returns)->concat($vouchers)->sortBy('date')->values();
+            // Merge & sort strictly chronologically ascending (oldest first, newest last)
+            $ledgerEntries = $purchases->concat($returns)->concat($vouchers)->sortBy(function ($entry) {
+                $ts = $entry['timestamp'] instanceof Carbon ? $entry['timestamp']->getTimestamp() : strtotime((string) $entry['timestamp']);
+
+                return sprintf('%012d_%02d_%010d', $ts, $entry['sort_order'], $entry['id'] ?? 0);
+            })->values();
 
             // Calculate running balance (Credit is payable, Debit reduces payable)
             $runningBalance = 0;
