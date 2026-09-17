@@ -17,8 +17,8 @@
     </div>
 
     <!-- Category Nav Tabs -->
-    <div class="bg-white p-3 rounded-2xl shadow-xs border border-slate-200 no-print overflow-x-auto">
-        <div class="flex items-center gap-2 min-w-max">
+    <div class="bg-white p-3 rounded-2xl shadow-xs border border-slate-200 no-print">
+        <div class="flex items-center gap-2 flex-wrap">
             <!-- Sales Reports Dropdown/Tab Group -->
             <div x-data="{ open: false }" class="relative">
                 <button @click="open = !open" class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 {{ Str::startsWith($type, 'sales') ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-50 text-slate-700 hover:bg-slate-100' }}">

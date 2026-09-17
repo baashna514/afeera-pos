@@ -15,6 +15,7 @@ class ProductUnit extends Model
         'company_id',
         'product_id',
         'unit_id',
+        'operator',
         'conversion_rate',
         'sale_price',
         'purchase_price',

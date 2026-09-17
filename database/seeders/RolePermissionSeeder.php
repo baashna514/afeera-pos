@@ -381,8 +381,9 @@ class RolePermissionSeeder extends Seeder
 
         // 4. Seed Default Tenant Company
         $defaultCompany = Company::firstOrCreate(
-            ['name' => 'Smart POS General Trading LLC'],
+            ['code' => 'COMP-001'],
             [
+                'name' => 'Baashna Technologies',
                 'code' => 'COMP-001',
                 'email' => 'contact@smartpos.com',
                 'phone' => '+92 300 1234567',
@@ -421,33 +422,33 @@ class RolePermissionSeeder extends Seeder
 
         // 5. Create System Owner, Super Admin & Demo Cashier Users
         $ownerUser = User::updateOrCreate(
-            ['email' => 'owner@smartpos.com'],
+            ['email' => 'owner@gmail.com'],
             [
                 'name' => 'System Owner',
                 'company_id' => null,
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('password'),
                 'is_active' => true,
             ]
         );
         $ownerUser->syncRoles([$ownerRole]);
 
         $adminUser = User::updateOrCreate(
-            ['email' => 'admin@smartpos.com'],
+            ['email' => 'superadmin@gmail.com'],
             [
                 'name' => 'Super Admin',
                 'company_id' => $defaultCompany->id,
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('password'),
                 'is_active' => true,
             ]
         );
         $adminUser->syncRoles([$superAdminRole]);
 
         $cashierUser = User::updateOrCreate(
-            ['email' => 'cashier@smartpos.com'],
+            ['email' => 'cashier@gmail.com'],
             [
                 'name' => 'Afeera Cashier',
                 'company_id' => $defaultCompany->id,
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('password'),
                 'is_active' => true,
             ]
         );

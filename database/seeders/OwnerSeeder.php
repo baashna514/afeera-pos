@@ -243,9 +243,9 @@ class OwnerSeeder extends Seeder
 
         // 5. Create Default Level 2 Tenant Company
         $defaultCompany = Company::firstOrCreate(
-            ['name' => 'Baashna Technologies'],
+            ['code' => 'COMP-001'],
             [
-                'code' => 'COMP-001',
+                'name' => 'Baashna Technologies',
                 'email' => 'contact@baashna.com',
                 'phone' => '+92 300 1234567',
                 'address' => 'Main Commercial Boulevard, Suite 100',

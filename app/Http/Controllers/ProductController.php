@@ -83,6 +83,7 @@ class ProductController extends Controller
             'description' => ['nullable', 'string'],
             'secondary_units' => ['nullable', 'array'],
             'secondary_units.*.unit_id' => ['required', 'exists:units,id'],
+            'secondary_units.*.operator' => ['required', 'string', 'in:multiply,divide'],
             'secondary_units.*.conversion_rate' => ['required', 'numeric', 'min:0.0001'],
             'secondary_units.*.sale_price' => ['nullable', 'numeric', 'min:0'],
             'secondary_units.*.purchase_price' => ['nullable', 'numeric', 'min:0'],
@@ -110,6 +111,7 @@ class ProductController extends Controller
 
                 $product->secondaryUnits()->create([
                     'unit_id' => $su['unit_id'],
+                    'operator' => $su['operator'],
                     'conversion_rate' => $su['conversion_rate'],
                     'sale_price' => ! empty($su['sale_price']) ? $su['sale_price'] : null,
                     'purchase_price' => ! empty($su['purchase_price']) ? $su['purchase_price'] : null,
@@ -193,6 +195,7 @@ class ProductController extends Controller
             'description' => ['nullable', 'string'],
             'secondary_units' => ['nullable', 'array'],
             'secondary_units.*.unit_id' => ['required', 'exists:units,id'],
+            'secondary_units.*.operator' => ['required', 'string', 'in:multiply,divide'],
             'secondary_units.*.conversion_rate' => ['required', 'numeric', 'min:0.0001'],
             'secondary_units.*.sale_price' => ['nullable', 'numeric', 'min:0'],
             'secondary_units.*.purchase_price' => ['nullable', 'numeric', 'min:0'],
@@ -223,6 +226,7 @@ class ProductController extends Controller
 
                 $product->secondaryUnits()->create([
                     'unit_id' => $su['unit_id'],
+                    'operator' => $su['operator'],
                     'conversion_rate' => $su['conversion_rate'],
                     'sale_price' => ! empty($su['sale_price']) ? $su['sale_price'] : null,
                     'purchase_price' => ! empty($su['purchase_price']) ? $su['purchase_price'] : null,

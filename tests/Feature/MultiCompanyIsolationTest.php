@@ -9,7 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 test('system owner can view companies index and register a new company', function () {
-    $owner = User::where('email', 'owner@smartpos.com')->first();
+    $owner = User::where('email', 'owner@gmail.com')->first();
 
     $this->actingAs($owner)
         ->get(route('companies.index'))
@@ -190,7 +190,7 @@ test('pos product search isolates inventory by company', function () {
 });
 
 test('system owner has global visibility over all companies data', function () {
-    $owner = User::where('email', 'owner@smartpos.com')->first();
+    $owner = User::where('email', 'owner@gmail.com')->first();
 
     $this->actingAs($owner)
         ->get(route('products.index'))
@@ -200,5 +200,5 @@ test('system owner has global visibility over all companies data', function () {
     $this->actingAs($owner)
         ->get(route('companies.index'))
         ->assertOk()
-        ->assertSee('Smart POS General Trading LLC');
+        ->assertSee('Baashna Technologies');
 });

@@ -9,7 +9,7 @@ beforeEach(function () {
 });
 
 test('system owner can access owner dashboard with platform statistics', function () {
-    $owner = User::where('email', 'owner@saasplatform.com')->first();
+    $owner = User::where('email', 'owner@gmail.com')->first();
 
     $this->actingAs($owner)
         ->get(route('owner.dashboard'))
@@ -19,7 +19,7 @@ test('system owner can access owner dashboard with platform statistics', functio
 });
 
 test('system owner can create new tenant company and auto-provision super admin from owner dashboard', function () {
-    $owner = User::where('email', 'owner@saasplatform.com')->first();
+    $owner = User::where('email', 'owner@gmail.com')->first();
 
     $response = $this->actingAs($owner)
         ->post(route('owner.companies.store'), [
