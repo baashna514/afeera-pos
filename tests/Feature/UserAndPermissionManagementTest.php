@@ -12,7 +12,7 @@ beforeEach(function () {
 });
 
 test('super admin can access all management modules by default', function () {
-    $superAdmin = User::where('email', 'admin@smartpos.com')->first();
+    $superAdmin = User::where('email', 'superadmin@gmail.com')->first();
 
     $this->actingAs($superAdmin)
         ->get(route('dashboard'))
@@ -32,7 +32,7 @@ test('super admin can access all management modules by default', function () {
 });
 
 test('super admin can create custom permission and it is auto-assigned to super admin', function () {
-    $superAdmin = User::where('email', 'admin@smartpos.com')->first();
+    $superAdmin = User::where('email', 'superadmin@gmail.com')->first();
 
     $response = $this->actingAs($superAdmin)
         ->post(route('permissions.store'), [
@@ -53,7 +53,7 @@ test('super admin can create custom permission and it is auto-assigned to super 
 });
 
 test('super admin can create a custom role like Developer with specific permissions', function () {
-    $superAdmin = User::where('email', 'admin@smartpos.com')->first();
+    $superAdmin = User::where('email', 'superadmin@gmail.com')->first();
 
     $allowedPerm = Permission::where('slug', 'products.view')->first();
 
@@ -114,7 +114,7 @@ test('user with restricted role is forbidden from unpermitted modules but can ac
 });
 
 test('logged in user cannot delete or deactivate own account', function () {
-    $superAdmin = User::where('email', 'admin@smartpos.com')->first();
+    $superAdmin = User::where('email', 'superadmin@gmail.com')->first();
 
     $response = $this->actingAs($superAdmin)
         ->delete(route('users.destroy', $superAdmin));
@@ -124,7 +124,7 @@ test('logged in user cannot delete or deactivate own account', function () {
 });
 
 test('super admin can update role permissions and assign role to user', function () {
-    $superAdmin = User::where('email', 'admin@smartpos.com')->first();
+    $superAdmin = User::where('email', 'superadmin@gmail.com')->first();
 
     $role = Role::create([
         'name' => 'Support Agent',
@@ -167,7 +167,7 @@ test('super admin can update role permissions and assign role to user', function
 });
 
 test('cashier can access POS and view sales but is forbidden from creating products or viewing users', function () {
-    $cashier = User::where('email', 'cashier@smartpos.com')->first();
+    $cashier = User::where('email', 'cashier@gmail.com')->first();
 
     $this->actingAs($cashier)
         ->get(route('pos.index'))
@@ -192,7 +192,7 @@ test('cashier can access POS and view sales but is forbidden from creating produ
 });
 
 test('categories index renders and destroy route is defined', function () {
-    $superAdmin = User::where('email', 'admin@smartpos.com')->first();
+    $superAdmin = User::where('email', 'superadmin@gmail.com')->first();
     $category = Category::create([
         'company_id' => $superAdmin->company_id,
         'name' => 'Test Cat',
@@ -212,7 +212,7 @@ test('categories index renders and destroy route is defined', function () {
 });
 
 test('cashier role with dashboard.view can access dashboard, and root redirects smoothly', function () {
-    $cashier = User::where('email', 'cashier@smartpos.com')->first();
+    $cashier = User::where('email', 'cashier@gmail.com')->first();
 
     $this->actingAs($cashier)
         ->get(route('dashboard'))

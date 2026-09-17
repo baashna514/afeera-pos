@@ -11,7 +11,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $company = Company::firstOrCreate(
         ['code' => 'COMP-001'],
-        ['name' => 'Smart POS General Trading LLC', 'currency' => 'PKR']
+        ['name' => 'Baashna Technologies', 'currency' => 'PKR']
     );
     if (auth()->check()) {
         auth()->user()->update(['company_id' => $company->id]);

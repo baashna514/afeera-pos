@@ -245,8 +245,8 @@
                         <thead class="bg-slate-100 text-[11px] font-bold text-slate-600 uppercase tracking-wider border-b border-slate-200">
                             <tr>
                                 <th class="px-3 py-2.5" style="width: 35%;">Packaging Unit</th>
-                                <th class="px-3 py-2.5" style="width: 30%;">Conversion Rate <span class="text-slate-400 font-normal">(= ? Base Units)</span></th>
-                                <th class="px-3 py-2.5" style="width: 30%;">Calculated Prices (Base × Rate)</th>
+                                <th class="px-3 py-2.5" style="width: 30%;">Operator & Rate</th>
+                                <th class="px-3 py-2.5" style="width: 30%;">Calculated Prices (Base ×/÷ Rate)</th>
                                 <th class="px-2 py-2.5 text-center" style="width: 5%;"></th>
                             </tr>
                         </thead>
@@ -525,13 +525,15 @@
 
         document.querySelectorAll('#secondaryUnitsContainer tr').forEach(row => {
             const rateInput = row.querySelector('.rate-input');
+            const operatorSelect = row.querySelector('.operator-select');
             const previewEl = row.querySelector('.price-preview');
             if (rateInput && previewEl) {
                 const rate = parseFloat(rateInput.value) || 0;
+                const op = operatorSelect ? operatorSelect.value : 'multiply';
                 if (rate > 0) {
-                    const sPrice = (baseSale * rate).toFixed(2);
-                    const bPrice = (baseBuy * rate).toFixed(2);
-                    previewEl.innerHTML = `<span class="text-emerald-700 font-bold">Sell: Rs. ${Number(sPrice).toLocaleString()}</span> <span class="text-slate-300 mx-1">|</span> <span class="text-slate-600">Buy: Rs. ${Number(bPrice).toLocaleString()}</span>`;
+                    const sPrice = op === 'multiply' ? (baseSale * rate) : (baseSale / rate);
+                    const bPrice = op === 'multiply' ? (baseBuy * rate) : (baseBuy / rate);
+                    previewEl.innerHTML = `<span class="text-emerald-700 font-bold">Sell: Rs. ${Number(sPrice.toFixed(2)).toLocaleString()}</span> <span class="text-slate-300 mx-1">|</span> <span class="text-slate-600">Buy: Rs. ${Number(bPrice.toFixed(2)).toLocaleString()}</span>`;
                 } else {
                     previewEl.innerHTML = `<span class="text-slate-400 italic">Enter rate to preview</span>`;
                 }
@@ -558,6 +560,7 @@
         });
 
         const conversion = data ? data.conversion_rate : '';
+        const operator = data && data.operator ? data.operator : 'multiply';
 
         tr.innerHTML = `
             <td class="p-2.5">
@@ -567,9 +570,15 @@
                 </select>
             </td>
             <td class="p-2.5">
-                <input type="number" step="0.0001" min="0.0001" name="secondary_units[${secondaryUnitIndex}][conversion_rate]" value="${conversion}" required placeholder="e.g. 12"
-                       oninput="updateAllUnitPricePreviews()"
-                       class="rate-input w-full px-2.5 py-1.5 text-xs font-bold text-center bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                <div class="flex items-center gap-1">
+                    <select name="secondary_units[${secondaryUnitIndex}][operator]" onchange="updateAllUnitPricePreviews()" class="operator-select px-2 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none w-14">
+                        <option value="multiply" ${operator === 'multiply' ? 'selected' : ''}>×</option>
+                        <option value="divide" ${operator === 'divide' ? 'selected' : ''}>÷</option>
+                    </select>
+                    <input type="number" step="0.0001" min="0.0001" name="secondary_units[${secondaryUnitIndex}][conversion_rate]" value="${conversion}" required placeholder="e.g. 12"
+                           oninput="updateAllUnitPricePreviews()"
+                           class="rate-input w-full px-2.5 py-1.5 text-xs font-bold text-center bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
             </td>
             <td class="p-2.5">
                 <div class="price-preview text-xs text-slate-700 bg-slate-100/80 px-2.5 py-1.5 rounded-lg border border-slate-200/80 flex items-center">

@@ -632,7 +632,10 @@
             if (product.secondary_units && product.secondary_units.length > 0) {
                 product.secondary_units.forEach(su => {
                     if (su.unit) {
-                        const conv = parseFloat(su.conversion_rate) || 1.0;
+                        let conv = parseFloat(su.conversion_rate) || 1.0;
+                        if (su.operator === 'divide') {
+                            conv = 1.0 / conv;
+                        }
                         const price = su.sale_price !== null ? parseFloat(su.sale_price) : (parseFloat(product.selling_price) * conv);
                         list.push({
                             unit_id: su.unit.id,

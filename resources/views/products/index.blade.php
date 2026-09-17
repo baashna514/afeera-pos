@@ -35,6 +35,7 @@
             </div>
 
             <!-- Category Filter -->
+            @if(company_has_feature('categories'))
             <div>
                 <select name="category_id" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
                     <option value="">All Categories</option>
@@ -45,6 +46,7 @@
                     @endforeach
                 </select>
             </div>
+            @endif
 
             <!-- Stock Status Filter -->
             <div class="flex items-center gap-2">
@@ -73,7 +75,9 @@
                     <tr>
                         <th class="px-5 py-3.5">Product</th>
                         <th class="px-5 py-3.5">Barcode</th>
+                        @if(company_has_feature('categories'))
                         <th class="px-5 py-3.5">Category</th>
+                        @endif
                         <th class="px-5 py-3.5">Cost Price</th>
                         <th class="px-5 py-3.5">Selling Price</th>
                         <th class="px-5 py-3.5">Stock</th>
@@ -94,11 +98,13 @@
                                 <img src="{{ route('products.barcode', $product) }}" alt="Barcode" class="h-12 inline-block mr-2" />
                                 <span>{{ $product->barcode }}</span>
                             </td>
+                            @if(company_has_feature('categories'))
                             <td class="px-5 py-4">
                                 <span class="px-2.5 py-0.5 text-xs font-semibold rounded-md bg-slate-100 text-slate-700">
                                     {{ $product->category->name ?? 'Unassigned' }}
                                 </span>
                             </td>
+                            @endif
                             <td class="px-5 py-4 text-slate-500 font-medium">
                                 Rs. {{ number_format($product->purchase_price, 2) }}
                             </td>

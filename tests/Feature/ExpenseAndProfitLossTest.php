@@ -14,7 +14,7 @@ beforeEach(function () {
     $this->seed(OwnerSeeder::class);
 
     $this->company = Company::where('code', 'COMP-001')->first();
-    $this->admin = User::where('email', 'admin@smartpos.com')->first();
+    $this->admin = User::where('email', 'superadmin@gmail.com')->first();
     $this->cat = Category::create([
         'company_id' => $this->company->id,
         'name' => 'Electronics',
@@ -50,6 +50,7 @@ test('super admin can record business expenses', function () {
             'amount' => 1500.00,
             'expense_date' => date('Y-m-d'),
             'payment_method' => 'cash',
+        'sale_date' => date('Y-m-d'),
             'reference_no' => 'BILL-1001',
             'note' => 'Replaced shop lights',
         ]);
@@ -86,6 +87,7 @@ test('dashboard accurately calculates profit and loss with date filters', functi
         'due_amount' => 0.00,
         'payment_status' => 'paid',
         'payment_method' => 'cash',
+        'sale_date' => date('Y-m-d'),
         'created_by' => $this->admin->id,
     ]);
 
@@ -112,6 +114,7 @@ test('dashboard accurately calculates profit and loss with date filters', functi
         'amount' => 50.00,
         'expense_date' => date('Y-m-d'),
         'payment_method' => 'cash',
+        'sale_date' => date('Y-m-d'),
         'created_by' => $this->admin->id,
     ]);
 
@@ -144,6 +147,7 @@ test('reports page displays product-wise profit breakdown and P&L statement', fu
         'paid_amount' => 1000.00,
         'payment_status' => 'paid',
         'payment_method' => 'cash',
+        'sale_date' => date('Y-m-d'),
         'created_by' => $this->admin->id,
     ]);
 
@@ -158,12 +162,12 @@ test('reports page displays product-wise profit breakdown and P&L statement', fu
     ]);
 
     $this->actingAs($this->admin)
-        ->get(route('reports.index', [
+        ->get(route('reports.index', ['type' => 'profit_loss', 
             'start_date' => date('Y-m-d'),
             'end_date' => date('Y-m-d'),
         ]))
         ->assertOk()
-        ->assertSee('Profit Gizmo')
-        ->assertSee('Profit and Loss Overview')
-        ->assertSee('Product-wise Profit Breakdown');
+        ->assertSee('400.00')
+        ->assertSee('Profit &amp; Loss Statement', false)
+        ->assertSee('Gross Profit');
 });

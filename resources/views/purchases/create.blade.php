@@ -16,6 +16,7 @@
         @csrf
         <input type="hidden" name="purchase_order_id" id="purchase_order_id" value="{{ $selectedPo ? $selectedPo->id : old('purchase_order_id') }}">
 
+        @if(company_has_feature('purchase_orders'))
         <!-- PO Converter Card (Optional) -->
         <div class="bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/5 rounded-2xl border border-emerald-200/80 p-5">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -40,6 +41,7 @@
                 </div>
             </div>
         </div>
+        @endif
 
         <!-- Vendor & General Details Card -->
         <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6">
@@ -60,7 +62,7 @@
                             class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition @error('vendor_id') border-rose-400 @enderror">
                         <option value="">Select Vendor</option>
                         @foreach ($vendors as $vendor)
-                            <option value="{{ $vendor->id }}" {{ (old('vendor_id', $selectedPo?->vendor_id) == $vendor->id) ? 'selected' : '' }}>
+                            <option value="{{ $vendor->id }}" {{ (old('vendor_id', $selectedPo?->vendor_id ?? company_setting('default_vendor_id')) == $vendor->id) ? 'selected' : '' }}>
                                 {{ $vendor->name }} ({{ $vendor->phone ?? 'No phone' }})
                             </option>
                         @endforeach
@@ -269,7 +271,10 @@
         if (product.secondary_units && product.secondary_units.length > 0) {
             product.secondary_units.forEach(su => {
                 if (su.unit) {
-                    const conv = parseFloat(su.conversion_rate) || 1.0;
+                    let conv = parseFloat(su.conversion_rate) || 1.0;
+                    if (su.operator === 'divide') {
+                        conv = 1.0 / conv;
+                    }
                     const price = su.purchase_price !== null ? parseFloat(su.purchase_price) : (parseFloat(product.purchase_price) * conv);
                     list.push({
                         unit_id: su.unit.id,

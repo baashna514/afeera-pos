@@ -15,7 +15,7 @@ beforeEach(function () {
     $this->seed(OwnerSeeder::class);
 
     $this->company = Company::where('code', 'COMP-001')->first();
-    $this->admin = User::where('email', 'admin@smartpos.com')->first();
+    $this->admin = User::where('email', 'superadmin@gmail.com')->first();
     $this->warehouseMain = Warehouse::where('company_id', $this->company->id)->where('is_default', true)->first();
 
     $this->category = Category::create([
