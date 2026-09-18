@@ -22,7 +22,7 @@
     <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-3">
         <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
-                <i class="fa-solid fa-book-bookmark text-emerald-600"></i> Select Customer &amp; Date Range
+                <i class="fa-solid fa-book-bookmark text-brand-600"></i> Select Customer &amp; Date Range
             </h3>
             @if ($customerId || $dateFrom || $dateTo)
                 <a href="{{ route('ledgers.customer') }}" class="text-xs font-semibold text-rose-600 hover:text-rose-700 flex items-center gap-1 transition">
@@ -35,7 +35,7 @@
             <!-- Customer Dropdown -->
             <div>
                 <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">Customer <span class="text-rose-500">*</span></label>
-                <select name="customer_id" required class="w-full px-3 py-2 text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                <select name="customer_id" required class="w-full px-3 py-2 text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                     <option value="">-- Select Customer --</option>
                     @foreach ($customers as $c)
                         <option value="{{ $c->id }}" {{ $customerId == $c->id ? 'selected' : '' }}>
@@ -49,19 +49,19 @@
             <div>
                 <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">From Date</label>
                 <input type="date" name="date_from" value="{{ $dateFrom ?? '' }}"
-                       class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                       class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
             </div>
 
             <!-- To Date -->
             <div>
                 <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">To Date</label>
                 <input type="date" name="date_to" value="{{ $dateTo ?? '' }}"
-                       class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                       class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
             </div>
 
             <!-- Submit -->
             <div>
-                <button type="submit" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer">
+                <button type="submit" class="w-full py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer">
                     <i class="fa-solid fa-calculator text-xs"></i>
                     <span>Generate Ledger</span>
                 </button>
@@ -85,8 +85,8 @@
             </div>
 
             <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
-                <p class="text-[11px] font-bold uppercase text-emerald-600">Total Paid/Credited</p>
-                <p class="text-xl font-black text-emerald-600 mt-1">Rs. {{ number_format($totalCredit, 2) }}</p>
+                <p class="text-[11px] font-bold uppercase text-brand-600">Total Paid/Credited</p>
+                <p class="text-xl font-black text-brand-600 mt-1">Rs. {{ number_format($totalCredit, 2) }}</p>
                 <p class="text-[10px] text-slate-400">Received &amp; returns</p>
             </div>
 
@@ -104,7 +104,7 @@
         <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
             <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
                 <h3 class="text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
-                    <i class="fa-solid fa-list-check text-emerald-600"></i> Account Activity Log
+                    <i class="fa-solid fa-list-check text-brand-600"></i> Account Activity Log
                 </h3>
                 <span class="text-xs text-slate-400 font-mono">{{ $ledgerEntries->count() }} transactions found</span>
             </div>
@@ -135,7 +135,7 @@
                                 </td>
                                 <td class="px-5 py-4 font-mono text-xs font-bold">
                                     @if ($entry['url'])
-                                        <a href="{{ $entry['url'] }}" class="text-emerald-600 hover:underline">
+                                        <a href="{{ $entry['url'] }}" class="text-brand-600 hover:underline">
                                             {{ $entry['reference'] }}
                                         </a>
                                     @else
@@ -148,7 +148,7 @@
                                 <td class="px-5 py-4 text-right font-semibold text-slate-800">
                                     {{ $entry['debit'] > 0 ? number_format($entry['debit'], 2) : '-' }}
                                 </td>
-                                <td class="px-5 py-4 text-right font-semibold text-emerald-600">
+                                <td class="px-5 py-4 text-right font-semibold text-brand-600">
                                     {{ $entry['credit'] > 0 ? number_format($entry['credit'], 2) : '-' }}
                                 </td>
                                 <td class="px-5 py-4 text-right font-black {{ $entry['running_balance'] > 0 ? 'text-amber-600' : 'text-slate-800' }}">
@@ -169,7 +169,7 @@
                             <tr>
                                 <td colspan="4" class="px-5 py-3 text-right uppercase text-slate-600">Totals:</td>
                                 <td class="px-5 py-3 text-right text-slate-900">Rs. {{ number_format($totalDebit, 2) }}</td>
-                                <td class="px-5 py-3 text-right text-emerald-600">Rs. {{ number_format($totalCredit, 2) }}</td>
+                                <td class="px-5 py-3 text-right text-brand-600">Rs. {{ number_format($totalCredit, 2) }}</td>
                                 <td class="px-5 py-3 text-right {{ $closingBalance > 0 ? 'text-amber-600' : 'text-slate-900' }}">
                                     Rs. {{ number_format($closingBalance, 2) }}
                                 </td>
@@ -181,7 +181,7 @@
         </div>
     @else
         <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-16 text-center space-y-3">
-            <div class="w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl mx-auto shadow-xs">
+            <div class="w-16 h-16 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center text-2xl mx-auto shadow-xs">
                 <i class="fa-solid fa-user-check"></i>
             </div>
             <h3 class="text-base font-bold text-slate-800">Select a Customer to View Ledger</h3>

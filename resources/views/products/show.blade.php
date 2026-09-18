@@ -17,7 +17,7 @@
         </div>
 
         <div class="flex items-center gap-3">
-            <a href="{{ route('products.create') }}" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-2">
+            <a href="{{ route('products.create') }}" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-plus"></i> New Product
             </a>
             <a href="{{ route('products.edit', $product) }}" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-2">
@@ -31,12 +31,12 @@
         <!-- Tab Headers -->
         <div class="flex border-b border-slate-200 bg-slate-50/50 px-6 pt-4 gap-4">
             <button @click="activeTab = 'detail'"
-                    :class="activeTab === 'detail' ? 'border-emerald-600 text-emerald-600 font-bold border-b-2' : 'text-slate-500 font-medium hover:text-slate-700'"
+                    :class="activeTab === 'detail' ? 'border-brand-600 text-brand-600 font-bold border-b-2' : 'text-slate-500 font-medium hover:text-slate-700'"
                     class="pb-3 text-xs uppercase tracking-wider transition">
                 <i class="fa-solid fa-circle-info mr-1.5"></i> Detail
             </button>
             <button @click="activeTab = 'stock'"
-                    :class="activeTab === 'stock' ? 'border-emerald-600 text-emerald-600 font-bold border-b-2' : 'text-slate-500 font-medium hover:text-slate-700'"
+                    :class="activeTab === 'stock' ? 'border-brand-600 text-brand-600 font-bold border-b-2' : 'text-slate-500 font-medium hover:text-slate-700'"
                     class="pb-3 text-xs uppercase tracking-wider transition">
                 <i class="fa-solid fa-boxes-stacked mr-1.5"></i> Stock Overview
             </button>
@@ -51,11 +51,26 @@
                 </div>
                 <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
                     <span class="text-[10px] font-bold uppercase text-slate-400">Selling / Retail Price</span>
-                    <p class="text-lg font-black text-emerald-600">Rs. {{ number_format($product->selling_price, 2) }}</p>
+                    <p class="text-lg font-black text-brand-600">Rs. {{ number_format($product->selling_price, 2) }}</p>
                 </div>
                 <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
                     <span class="text-[10px] font-bold uppercase text-slate-400">Total System Stock</span>
                     <p class="text-lg font-black text-indigo-900">{{ number_format($product->quantity) }} {{ $product->unit->short_code ?? 'pcs' }}</p>
+                    @if($product->secondaryUnits->count() > 0)
+                        <div class="text-[11px] text-slate-500 font-semibold pt-0.5">
+                            @foreach($product->secondaryUnits as $su)
+                                @php
+                                    $rate = (float) $su->conversion_rate;
+                                    // divide: 1 Box = 10 Strips → 5 Boxes = 5 × 10 = 50 Strips
+                                    // multiply: 1 Carton = 10 Boxes → 5 Boxes = 5 / 10 = 0.5 Cartons
+                                    $converted = ($su->operator === 'divide')
+                                        ? ((float) $product->quantity * $rate)
+                                        : ($rate > 0 ? (float) $product->quantity / $rate : 0);
+                                @endphp
+                                <span>= {{ number_format($converted, $converted == (int)$converted ? 0 : 2) }} {{ $su->unit?->short_code ?? 'unit' }}</span>{{ !$loop->last ? ' • ' : '' }}
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
             </div>
 
@@ -75,16 +90,30 @@
                             <thead class="bg-slate-100 text-slate-700 font-bold">
                                 <tr>
                                     <th class="p-3 border-b">Unit Name</th>
-                                    <th class="p-3 border-b">Conversion Rate</th>
-                                    <th class="p-3 border-b">Calculated Selling Price</th>
+                                    <th class="p-3 border-b">Conversion Ratio</th>
+                                    <th class="p-3 border-b">Selling Price</th>
+                                    <th class="p-3 border-b text-right">Available Stock</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100">
                                 @foreach($product->secondaryUnits as $su)
+                                    @php
+                                        $rate = (float) $su->conversion_rate;
+                                        if ($su->operator === 'divide') {
+                                            $calcPrice = $su->sale_price !== null ? (float)$su->sale_price : ($rate > 0 ? ((float) $product->selling_price / $rate) : 0);
+                                            $rateText = "1 {$product->unit?->short_code} = ".($rate == (int) $rate ? (int) $rate : $rate)." {$su->unit?->short_code}";
+                                            $equivalentStock = (float) $product->quantity * $rate;
+                                        } else {
+                                            $calcPrice = $su->sale_price !== null ? (float)$su->sale_price : ((float) $product->selling_price * $rate);
+                                            $rateText = "1 {$su->unit?->short_code} = ".($rate == (int) $rate ? (int) $rate : $rate)." {$product->unit?->short_code}";
+                                            $equivalentStock = $rate > 0 ? (float) $product->quantity / $rate : 0;
+                                        }
+                                    @endphp
                                     <tr>
                                         <td class="p-3 font-bold text-slate-800">{{ $su->unit->name ?? 'Unit' }} ({{ $su->unit->short_code ?? '' }})</td>
-                                        <td class="p-3 font-mono">1 {{ $su->unit->short_code ?? 'Unit' }} = {{ $su->conversion_rate }} {{ $product->unit->short_code ?? 'base units' }}</td>
-                                        <td class="p-3 font-mono font-bold text-emerald-600">Rs. {{ number_format($product->selling_price * $su->conversion_rate, 2) }}</td>
+                                        <td class="p-3 font-mono text-slate-600">{{ $rateText }}</td>
+                                        <td class="p-3 font-mono font-bold text-[#da1705]">Rs. {{ number_format($calcPrice, 2) }}</td>
+                                        <td class="p-3 font-mono font-bold text-slate-800 text-right">{{ number_format($equivalentStock, $equivalentStock == (int)$equivalentStock ? 0 : 2) }} {{ $su->unit?->short_code }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -112,9 +141,9 @@
                             <tr class="hover:bg-slate-50/70 transition">
                                 <td class="p-4 font-mono font-bold text-slate-500">{{ $index + 1 }}</td>
                                 <td class="p-4 font-bold text-slate-800">
-                                    <span class="text-emerald-700">{{ $ws->warehouse->name ?? 'Default Warehouse' }}</span>
+                                    <span class="text-[#da1705]">{{ $ws->warehouse->name ?? 'Default Warehouse' }}</span>
                                     @if($ws->warehouse?->is_default)
-                                        <span class="ml-2 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200">Default</span>
+                                        <span class="ml-2 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-red-100 text-red-800 border border-red-200">Default</span>
                                     @endif
                                 </td>
                                 <td class="p-4 font-mono text-slate-500">-</td>
@@ -132,11 +161,20 @@
 
                                         @foreach($product->secondaryUnits as $su)
                                             @php
-                                                $convertedQty = $su->conversion_rate > 0 ? $ws->quantity / $su->conversion_rate : 0;
+                                                $rate = (float) $su->conversion_rate;
+                                                if ($rate > 0) {
+                                                    if ($su->operator === 'divide') {
+                                                        $convertedQty = (float) $ws->quantity * $rate;
+                                                    } else {
+                                                        $convertedQty = (float) $ws->quantity / $rate;
+                                                    }
+                                                } else {
+                                                    $convertedQty = 0;
+                                                }
                                             @endphp
                                             <div class="flex items-center justify-between font-mono text-[11px] text-slate-600">
                                                 <span>{{ $su->unit->name ?? 'Packaging' }}</span>
-                                                <span class="font-bold text-emerald-700">{{ number_format($convertedQty, 2) }}</span>
+                                                <span class="font-bold text-[#da1705]">{{ number_format($convertedQty, $convertedQty == (int)$convertedQty ? 0 : 2) }}</span>
                                             </div>
                                         @endforeach
                                     </div>

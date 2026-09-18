@@ -24,15 +24,15 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
             <div>
                 <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center font-black">
+                    <div class="w-8 h-8 rounded-lg bg-brand-500 text-white flex items-center justify-center font-black">
                         <i class="fa-solid fa-store text-sm"></i>
                     </div>
-                    <span class="text-xl font-black text-slate-800">Smart<span class="text-emerald-500">POS</span></span>
+                    <span class="text-xl font-black text-slate-800">Smart<span class="text-brand-500">POS</span></span>
                 </div>
                 <p class="text-xs text-slate-400 mt-1">Purchase & Inward Stock Document</p>
             </div>
             <div class="sm:text-right">
-                <span class="px-3 py-1 text-xs font-bold uppercase rounded-full bg-emerald-100 text-emerald-700">
+                <span class="px-3 py-1 text-xs font-bold uppercase rounded-full bg-brand-100 text-brand-700">
                     {{ $purchase->status }}
                 </span>
                 <p class="text-xs text-slate-400 mt-2 font-mono">Date: {{ $purchase->purchase_date->format('d M Y') }}</p>

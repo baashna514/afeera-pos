@@ -27,11 +27,11 @@
             </a>
             <div class="h-5 w-px bg-slate-700"></div>
             <div class="flex items-center gap-2">
-                <div class="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center text-white font-black text-sm">
+                <div class="w-7 h-7 rounded-lg bg-brand-500 flex items-center justify-center text-white font-black text-sm">
                     <i class="fa-solid fa-cash-register"></i>
                 </div>
-                <span class="font-black tracking-wider text-base">Smart<span class="text-emerald-400">POS</span></span>
-                <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                <span class="font-black tracking-wider text-base">Smart<span class="text-brand-400">POS</span></span>
+                <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30">
                     Active Terminal
                 </span>
             </div>
@@ -41,7 +41,7 @@
             <!-- Warehouse Selector -->
             @if(company_has_feature('warehouses'))
             <div class="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700 shadow-xs">
-                <i class="fa-solid fa-warehouse text-emerald-400"></i>
+                <i class="fa-solid fa-warehouse text-brand-400"></i>
                 <label for="posWarehouseSelect" class="text-[10px] uppercase font-bold text-slate-400 hidden md:inline">WH:</label>
                 <select id="posWarehouseSelect" onchange="onPosWarehouseChange(this.value)" class="bg-slate-800 text-white text-xs font-bold focus:outline-none cursor-pointer">
                     @foreach ($warehouses as $wh)
@@ -54,17 +54,17 @@
             @endif
 
             <div class="text-slate-400 hidden sm:block">
-                <i class="fa-regular fa-clock mr-1 text-emerald-400"></i>
+                <i class="fa-regular fa-clock mr-1 text-brand-400"></i>
                 <span id="posClock"></span>
             </div>
             @if(company_has_feature('day_book'))
             <a href="{{ route('day-book.index') }}" target="_blank" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition flex items-center gap-1.5 font-medium" title="Day Book / Daily Cash Drawer Summary">
-                <i class="fa-solid fa-cash-register text-emerald-400"></i>
+                <i class="fa-solid fa-cash-register text-brand-400"></i>
                 <span>Day Book</span>
             </a>
             @endif
             <a href="{{ route('sales.index') }}" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition flex items-center gap-1.5 font-medium">
-                <i class="fa-solid fa-receipt text-emerald-400"></i>
+                <i class="fa-solid fa-receipt text-brand-400"></i>
                 <span>Sales History</span>
             </a>
         </div>
@@ -82,7 +82,7 @@
                     <i class="fa-solid fa-barcode absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
                     <input type="text" id="barcodeSearch" placeholder="Scan barcode or type product name... (Press Enter)" 
                            autofocus
-                           class="w-full pl-12 pr-10 py-3 text-base bg-slate-50 border-2 border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:bg-white transition">
+                           class="w-full pl-12 pr-10 py-3 text-base bg-slate-50 border-2 border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:bg-white transition">
                     <button type="button" onclick="clearSearch()" id="clearSearchBtn" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
@@ -109,7 +109,7 @@
             <div class="flex-1 p-4 overflow-y-auto">
                 <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3" id="productsGrid">
                     @forelse ($products as $product)
-                        <div class="product-card bg-white rounded-xl border border-slate-200/90 hover:border-emerald-500 hover:shadow-md transition p-3.5 flex flex-col justify-between cursor-pointer group {{ $product->quantity <= 0 ? 'opacity-60 cursor-not-allowed' : '' }}"
+                        <div class="product-card bg-white rounded-xl border border-slate-200/90 hover:border-brand-500 hover:shadow-md transition p-3.5 flex flex-col justify-between cursor-pointer group {{ $product->quantity <= 0 ? 'opacity-60 cursor-not-allowed' : '' }}"
                              data-id="{{ $product->id }}"
                              data-name="{{ $product->name }}"
                              data-barcode="{{ $product->barcode }}"
@@ -125,7 +125,7 @@
                                     </span>
                                     <span class="text-[10px] font-mono text-slate-400 truncate">{{ $product->barcode }}</span>
                                 </div>
-                                <h4 class="font-bold text-slate-800 text-sm group-hover:text-emerald-600 transition line-clamp-2 leading-snug">
+                                <h4 class="font-bold text-slate-800 text-sm group-hover:text-brand-600 transition line-clamp-2 leading-snug">
                                     {{ $product->name }}
                                 </h4>
                             </div>
@@ -139,7 +139,7 @@
                                     @if ($product->quantity <= 0)
                                         <span class="px-2 py-0.5 text-[10px] font-bold rounded bg-rose-100 text-rose-700">Out</span>
                                     @else
-                                        <span class="px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 group-hover:bg-emerald-600 group-hover:text-white font-bold text-xs transition flex items-center gap-1">
+                                        <span class="px-2 py-1 rounded-lg bg-brand-50 text-brand-700 group-hover:bg-brand-600 group-hover:text-white font-bold text-xs transition flex items-center gap-1">
                                             <i class="fa-solid fa-plus text-[10px]"></i>
                                             <span class="text-[11px]">{{ $product->quantity }}</span>
                                         </span>
@@ -161,16 +161,16 @@
         <div class="w-full lg:w-[450px] xl:w-[480px] bg-white flex flex-col h-full shadow-2xl flex-shrink-0 border-l border-slate-200">
             
             <!-- Sale Order (Booking) Selector Card -->
-            <div class="p-3 bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/5 border-b border-emerald-200 flex flex-col gap-1.5">
+            <div class="p-3 bg-gradient-to-r from-brand-500/10 via-brand-500/10 to-brand-500/5 border-b border-brand-200 flex flex-col gap-1.5">
                 <div class="flex items-center justify-between">
-                    <label for="saleOrderSelect" class="text-[10px] font-bold uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
-                        <i class="fa-solid fa-file-invoice-dollar text-emerald-600"></i> Select Sale Order / Booking
+                    <label for="saleOrderSelect" class="text-[10px] font-bold uppercase tracking-wider text-brand-800 flex items-center gap-1.5">
+                        <i class="fa-solid fa-file-invoice-dollar text-brand-600"></i> Select Sale Order / Booking
                     </label>
-                    <span id="linkedSoBadge" class="{{ $selectedSo ? '' : 'hidden' }} px-2 py-0.5 text-[9px] font-black bg-emerald-600 text-white rounded-md uppercase tracking-wider shadow-xs">
+                    <span id="linkedSoBadge" class="{{ $selectedSo ? '' : 'hidden' }} px-2 py-0.5 text-[9px] font-black bg-brand-600 text-white rounded-md uppercase tracking-wider shadow-xs">
                         SO Loaded
                     </span>
                 </div>
-                <select id="saleOrderSelect" onchange="onSaleOrderSelect(this.value)" class="w-full px-3 py-1.5 text-xs font-semibold bg-white border border-emerald-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none shadow-2xs">
+                <select id="saleOrderSelect" onchange="onSaleOrderSelect(this.value)" class="w-full px-3 py-1.5 text-xs font-semibold bg-white border border-brand-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none shadow-2xs">
                     <option value="">-- No Order Selected (Standard POS Sale) --</option>
                     @foreach ($pendingSaleOrders as $so)
                         <option value="{{ $so->id }}" {{ ($selectedSo && $selectedSo->id == $so->id) ? 'selected' : '' }}>
@@ -185,7 +185,7 @@
                 <div class="flex-1">
                     <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Customer</label>
                     <div class="flex items-center gap-1.5">
-                        <select id="customerSelect" class="flex-1 px-3 py-1.5 text-xs font-semibold bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <select id="customerSelect" class="flex-1 px-3 py-1.5 text-xs font-semibold bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
                             <option value="">Walk-in Customer (Guest)</option>
                             @foreach ($customers as $c)
                                 <option value="{{ $c->id }}" {{ ($selectedSo && $selectedSo->customer_id == $c->id) ? 'selected' : '' }}>
@@ -193,7 +193,7 @@
                                 </option>
                             @endforeach
                         </select>
-                        <button type="button" onclick="openQuickCustomerModal()" class="px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg border border-emerald-200 text-xs font-bold transition" title="Quick Add Customer">
+                        <button type="button" onclick="openQuickCustomerModal()" class="px-2.5 py-1.5 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-lg border border-brand-200 text-xs font-bold transition" title="Quick Add Customer">
                             <i class="fa-solid fa-user-plus"></i>
                         </button>
                     </div>
@@ -228,7 +228,7 @@
                     </div>
                     <div class="flex items-center justify-between text-base pt-2 border-t border-slate-200 font-bold">
                         <span class="text-slate-800">Total Payable:</span>
-                        <span class="text-2xl font-black text-emerald-600" id="cartTotalDisplay">Rs. 0.00</span>
+                        <span class="text-2xl font-black text-brand-600" id="cartTotalDisplay">Rs. 0.00</span>
                     </div>
                 </div>
 
@@ -237,7 +237,7 @@
                     <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Payment Method</label>
                     <div class="grid grid-cols-4 gap-1.5">
                         <button type="button" onclick="setPaymentMethod('cash')" id="btnMethod_cash" 
-                                class="pay-method-btn active py-2 text-xs font-bold rounded-lg border-2 border-emerald-500 bg-emerald-50 text-emerald-800 flex flex-col items-center justify-center gap-1 transition cursor-pointer">
+                                class="pay-method-btn active py-2 text-xs font-bold rounded-lg border-2 border-brand-500 bg-brand-50 text-brand-800 flex flex-col items-center justify-center gap-1 transition cursor-pointer">
                             <i class="fa-solid fa-money-bill-wave text-sm"></i>
                             <span>Cash</span>
                         </button>
@@ -263,7 +263,7 @@
                 <div id="cashDetailsBox" class="space-y-2">
                     <div class="flex items-center justify-between">
                         <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Payment Breakdown</span>
-                        <span id="livePaymentStatusBadge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                        <span id="livePaymentStatusBadge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-brand-100 text-brand-800 border border-brand-300">
                             Paid (Full)
                         </span>
                     </div>
@@ -272,7 +272,7 @@
                         <div>
                             <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Paid / Received (Rs.)</label>
                             <input type="number" step="0.01" min="0" id="paidAmountInput" oninput="isCustomPaidAmount = true; calculateChange();" placeholder="0.00"
-                                   class="w-full px-3 py-2 text-sm font-bold text-slate-800 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                                   class="w-full px-3 py-2 text-sm font-bold text-slate-800 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1" id="changeLabel">Change Return (Rs.)</label>
@@ -284,7 +284,7 @@
 
                     <!-- Quick Cash Amounts Shortcuts -->
                     <div class="flex items-center gap-1.5 pt-1 text-[11px] flex-wrap">
-                        <button type="button" onclick="setQuickCash('exact')" class="px-2 py-1 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded text-emerald-700 font-bold transition">Full Pay</button>
+                        <button type="button" onclick="setQuickCash('exact')" class="px-2 py-1 bg-brand-50 hover:bg-brand-100 border border-brand-300 rounded text-brand-700 font-bold transition">Full Pay</button>
                         <button type="button" onclick="setQuickCash('unpaid')" class="px-2 py-1 bg-rose-50 hover:bg-rose-100 border border-rose-300 rounded text-rose-700 font-bold transition">Unpaid (0)</button>
                         <button type="button" onclick="addCashShortcut(500)" class="px-2 py-1 bg-white hover:bg-slate-100 border border-slate-200 rounded text-slate-600 font-bold transition">+500</button>
                         <button type="button" onclick="addCashShortcut(1000)" class="px-2 py-1 bg-white hover:bg-slate-100 border border-slate-200 rounded text-slate-600 font-bold transition">+1,000</button>
@@ -306,16 +306,16 @@
                     <p class="text-[11px] text-purple-700 leading-snug">Direct online bank transfer / IBFT / Raast payment. Total payable is automatically marked as paid in full.</p>
                 </div>
 
-                <div id="onlineDetailsBox" class="hidden p-3 bg-emerald-50 border border-emerald-200 rounded-xl space-y-1 text-xs text-emerald-900">
-                    <div class="flex items-center gap-2 font-bold text-emerald-800">
+                <div id="onlineDetailsBox" class="hidden p-3 bg-brand-50 border border-brand-200 rounded-xl space-y-1 text-xs text-brand-900">
+                    <div class="flex items-center gap-2 font-bold text-brand-800">
                         <i class="fa-solid fa-mobile-screen-button"></i> Online / Mobile Wallet
                     </div>
-                    <p class="text-[11px] text-emerald-700 leading-snug">JazzCash / EasyPaisa / SadaPay / NayaPay mobile payment. Total payable is automatically marked as paid in full.</p>
+                    <p class="text-[11px] text-brand-700 leading-snug">JazzCash / EasyPaisa / SadaPay / NayaPay mobile payment. Total payable is automatically marked as paid in full.</p>
                 </div>
 
                 <!-- COMPLETE SALE BUTTON -->
                 <button type="button" onclick="submitCheckout()" id="checkoutBtn" disabled
-                        class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-black text-sm rounded-xl shadow-lg shadow-emerald-600/25 transition duration-150 flex items-center justify-center gap-2 group cursor-pointer">
+                        class="w-full py-3.5 bg-brand-600 hover:bg-brand-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-black text-sm rounded-xl shadow-lg shadow-brand-600/25 transition duration-150 flex items-center justify-center gap-2 group cursor-pointer">
                     <i class="fa-solid fa-circle-check text-base group-hover:scale-110 transition-transform"></i>
                     <span>COMPLETE SALE</span>
                 </button>
@@ -327,7 +327,7 @@
     <div id="receiptModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-200">
             <!-- Modal Header -->
-            <div class="p-4 bg-emerald-600 text-white flex items-center justify-between">
+            <div class="p-4 bg-brand-600 text-white flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-circle-check text-lg"></i>
                     <span class="font-bold text-sm">Sale Completed!</span>
@@ -418,7 +418,7 @@
                     <a id="receiptFullInvoiceLink" href="#" target="_blank" class="px-3 py-2 text-xs font-bold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-100 transition flex items-center gap-1">
                         <i class="fa-solid fa-file-invoice"></i> A4 Invoice
                     </a>
-                    <button type="button" onclick="printReceiptSlip()" class="px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition flex items-center gap-1.5 shadow-sm">
+                    <button type="button" onclick="printReceiptSlip()" class="px-4 py-2 text-xs font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition flex items-center gap-1.5 shadow-sm">
                         <i class="fa-solid fa-print"></i> Print Slip
                     </button>
                 </div>
@@ -431,7 +431,7 @@
         <div class="bg-white rounded-2xl max-w-sm w-full shadow-2xl overflow-hidden p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h4 class="font-bold text-slate-800 text-sm flex items-center gap-2">
-                    <i class="fa-solid fa-user-plus text-emerald-600"></i> Quick Add Customer
+                    <i class="fa-solid fa-user-plus text-brand-600"></i> Quick Add Customer
                 </h4>
                 <button type="button" onclick="closeQuickCustomerModal()" class="text-slate-400 hover:text-slate-600">
                     <i class="fa-solid fa-xmark"></i>
@@ -441,19 +441,19 @@
             <form id="quickCustomerForm" onsubmit="saveQuickCustomer(event)" class="space-y-3">
                 <div>
                     <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1">Name <span class="text-rose-500">*</span></label>
-                    <input type="text" id="qc_name" required placeholder="Customer name" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    <input type="text" id="qc_name" required placeholder="Customer name" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1">Phone Number</label>
-                    <input type="text" id="qc_phone" placeholder="+92 300 1234567" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    <input type="text" id="qc_phone" placeholder="+92 300 1234567" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1">Email</label>
-                    <input type="email" id="qc_email" placeholder="customer@example.com" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    <input type="email" id="qc_email" placeholder="customer@example.com" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
                 </div>
                 <div class="flex items-center justify-end gap-2 pt-2">
                     <button type="button" onclick="closeQuickCustomerModal()" class="px-3 py-1.5 text-xs text-slate-600 font-semibold">Cancel</button>
-                    <button type="submit" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg transition">Save</button>
+                    <button type="submit" class="px-4 py-1.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-lg transition">Save</button>
                 </div>
             </form>
         </div>
@@ -632,16 +632,22 @@
             if (product.secondary_units && product.secondary_units.length > 0) {
                 product.secondary_units.forEach(su => {
                     if (su.unit) {
-                        let conv = parseFloat(su.conversion_rate) || 1.0;
-                        if (su.operator === 'divide') {
-                            conv = 1.0 / conv;
+                        const rawRate = parseFloat(su.conversion_rate) || 1.0;
+                        const op = su.operator || 'multiply';
+                        const conv = (op === 'divide') ? (rawRate > 0 ? (1.0 / rawRate) : 1.0) : rawRate;
+
+                        let price = su.sale_price !== null && su.sale_price !== undefined ? parseFloat(su.sale_price) : 0;
+                        if (price <= 0) {
+                            price = (op === 'divide') ? (rawRate > 0 ? (parseFloat(product.selling_price) / rawRate) : parseFloat(product.selling_price)) : (parseFloat(product.selling_price) * rawRate);
                         }
-                        const price = su.sale_price !== null ? parseFloat(su.sale_price) : (parseFloat(product.selling_price) * conv);
+
                         list.push({
                             unit_id: su.unit.id,
                             name: su.unit.name,
                             short_code: su.unit.short_code,
                             conversion_rate: conv,
+                            operator: op,
+                            raw_rate: rawRate,
                             sale_price: price,
                             is_base: false,
                         });
@@ -683,7 +689,7 @@
                 } else {
                     card.classList.remove('opacity-60', 'cursor-not-allowed');
                     if (stockBadge) {
-                        stockBadge.innerHTML = `<span class="px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 group-hover:bg-emerald-600 group-hover:text-white font-bold text-xs transition flex items-center gap-1"><i class="fa-solid fa-plus text-[10px]"></i><span class="text-[11px]">${whStock}</span></span>`;
+                        stockBadge.innerHTML = `<span class="px-2 py-1 rounded-lg bg-brand-50 text-brand-700 group-hover:bg-brand-600 group-hover:text-white font-bold text-xs transition flex items-center gap-1"><i class="fa-solid fa-plus text-[10px]"></i><span class="text-[11px]">${whStock}</span></span>`;
                     }
                 }
             });
@@ -948,7 +954,7 @@
 
                 const baseStockDeducted = item.quantity * (parseFloat(item.conversion_rate) || 1.0);
                 const convHint = item.conversion_rate > 1
-                    ? `<span class="text-[10px] text-emerald-600 font-semibold block">≈ ${baseStockDeducted} pcs from stock</span>`
+                    ? `<span class="text-[10px] text-brand-600 font-semibold block">≈ ${baseStockDeducted} pcs from stock</span>`
                     : '';
 
                 html += `
@@ -972,8 +978,8 @@
                             <input type="number" min="1" id="cart_qty_input_${index}" value="${item.quantity}" 
                                    oninput="onCartQtyInput(this, ${index})" 
                                    onchange="onCartQtyChange(this, ${index})"
-                                   class="w-10 text-center text-xs font-bold bg-white border border-slate-200 rounded py-0.5 focus:ring-1 focus:ring-emerald-500 focus:outline-none">
-                            <button type="button" onclick="stepCartQty(${index}, 1)" class="w-6 h-6 flex items-center justify-center bg-white rounded text-slate-600 hover:text-emerald-600 text-xs font-bold shadow-xs active:bg-slate-200 cursor-pointer" title="Increase Quantity (+1)">
+                                   class="w-10 text-center text-xs font-bold bg-white border border-slate-200 rounded py-0.5 focus:ring-1 focus:ring-brand-500 focus:outline-none">
+                            <button type="button" onclick="stepCartQty(${index}, 1)" class="w-6 h-6 flex items-center justify-center bg-white rounded text-slate-600 hover:text-brand-600 text-xs font-bold shadow-xs active:bg-slate-200 cursor-pointer" title="Increase Quantity (+1)">
                                 <i class="fa-solid fa-plus text-[10px] pointer-events-none"></i>
                             </button>
                         </div>
@@ -1021,7 +1027,7 @@
                 }
                 if (statusBadge) {
                     statusBadge.innerText = 'Paid (Full)';
-                    statusBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300';
+                    statusBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-brand-100 text-brand-800 border border-brand-300';
                 }
                 return;
             }
@@ -1031,11 +1037,11 @@
                 if (changeLabel) changeLabel.innerText = 'Change Return (Rs.)';
                 if (changeDisplay) {
                     changeDisplay.innerText = 'Rs. ' + change.toFixed(2);
-                    changeDisplay.className = 'px-3 py-2 text-sm font-black text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg';
+                    changeDisplay.className = 'px-3 py-2 text-sm font-black text-brand-700 bg-brand-50 border border-brand-200 rounded-lg';
                 }
                 if (statusBadge) {
                     statusBadge.innerText = 'Paid (Full)';
-                    statusBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300';
+                    statusBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-brand-100 text-brand-800 border border-brand-300';
                 }
             } else if (paid > 0) {
                 const due = total - paid;
@@ -1084,14 +1090,14 @@
         function setPaymentMethod(method) {
             selectedPaymentMethod = method;
             document.querySelectorAll('.pay-method-btn').forEach(btn => {
-                btn.classList.remove('active', 'border-2', 'border-emerald-500', 'bg-emerald-50', 'text-emerald-800');
+                btn.classList.remove('active', 'border-2', 'border-brand-500', 'bg-brand-50', 'text-brand-800');
                 btn.classList.add('border', 'border-slate-200', 'bg-white', 'text-slate-600');
             });
 
             const activeBtn = document.getElementById(`btnMethod_${method}`);
             if (activeBtn) {
                 activeBtn.classList.remove('border', 'border-slate-200', 'bg-white', 'text-slate-600');
-                activeBtn.classList.add('active', 'border-2', 'border-emerald-500', 'bg-emerald-50', 'text-emerald-800');
+                activeBtn.classList.add('active', 'border-2', 'border-brand-500', 'bg-brand-50', 'text-brand-800');
             }
 
             const cashBox = document.getElementById('cashDetailsBox');
@@ -1193,7 +1199,7 @@
                                 badge.innerHTML = `<span class="px-2 py-0.5 text-[10px] font-bold rounded bg-rose-100 text-rose-700">Out</span>`;
                             } else {
                                 badge.innerHTML = `
-                                    <span class="px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 group-hover:bg-emerald-600 group-hover:text-white font-bold text-xs transition flex items-center gap-1">
+                                    <span class="px-2 py-1 rounded-lg bg-brand-50 text-brand-700 group-hover:bg-brand-600 group-hover:text-white font-bold text-xs transition flex items-center gap-1">
                                         <i class="fa-solid fa-plus text-[10px]"></i>
                                         <span class="text-[11px]">${found.quantity}</span>
                                     </span>

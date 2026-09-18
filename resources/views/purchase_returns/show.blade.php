@@ -31,10 +31,10 @@
             <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
                 <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
                     <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                        <i class="fa-solid fa-truck-ramp-box text-emerald-600"></i>
+                        <i class="fa-solid fa-truck-ramp-box text-brand-600"></i>
                         Return #{{ $purchaseReturn->return_number }}
                     </h3>
-                    <span class="px-3 py-1 text-xs font-bold uppercase rounded-full bg-emerald-100 text-emerald-800">
+                    <span class="px-3 py-1 text-xs font-bold uppercase rounded-full bg-brand-100 text-brand-800">
                         Goods Dispatched &amp; Deducted
                     </span>
                 </div>
@@ -54,7 +54,7 @@
                     <div>
                         <p class="text-[10px] uppercase font-bold text-slate-400">Original Purchase</p>
                         @if ($purchaseReturn->purchase)
-                            <a href="{{ route('purchases.show', $purchaseReturn->purchase) }}" class="font-mono font-bold text-emerald-600 hover:underline mt-0.5 block">
+                            <a href="{{ route('purchases.show', $purchaseReturn->purchase) }}" class="font-mono font-bold text-brand-600 hover:underline mt-0.5 block">
                                 {{ $purchaseReturn->purchase->reference_no }}
                             </a>
                         @else
@@ -86,7 +86,7 @@
                                     <td class="px-6 py-4 text-xs text-slate-500 font-semibold">
                                         {{ $item->unit->name ?? 'Base Unit' }}
                                         @if ($item->conversion_rate > 1)
-                                            <span class="block text-[10px] text-emerald-600">(= {{ $item->conversion_rate }} base)</span>
+                                            <span class="block text-[10px] text-brand-600">(= {{ $item->conversion_rate }} base)</span>
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 text-center font-bold text-slate-800">
@@ -119,7 +119,7 @@
             <!-- Vendor Card -->
             <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6">
                 <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-truck text-emerald-600"></i> Vendor / Supplier
+                    <i class="fa-solid fa-truck text-brand-600"></i> Vendor / Supplier
                 </h4>
                 <div class="space-y-2 text-sm">
                     <p class="font-bold text-slate-800 text-base">{{ $purchaseReturn->vendor->name }}</p>
@@ -136,7 +136,7 @@
                         </p>
                     @endif
                     <div class="pt-3 border-t border-slate-100 mt-2">
-                        <a href="{{ route('ledgers.vendor') }}?vendor_id={{ $purchaseReturn->vendor->id }}" class="text-xs font-bold text-emerald-600 hover:underline flex items-center gap-1">
+                        <a href="{{ route('ledgers.vendor') }}?vendor_id={{ $purchaseReturn->vendor->id }}" class="text-xs font-bold text-brand-600 hover:underline flex items-center gap-1">
                             <i class="fa-solid fa-book"></i> View Vendor Khata / Ledger
                         </a>
                     </div>

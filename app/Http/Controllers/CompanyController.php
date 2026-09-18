@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\CompanySettingService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -63,6 +64,7 @@ class CompanyController extends Controller
             'address' => ['nullable', 'string', 'max:500'],
             'currency' => ['nullable', 'string', 'max:10'],
             'is_active' => ['nullable', 'boolean'],
+            'logo' => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp,svg', 'max:2048'],
             'admin_name' => ['nullable', 'string', 'max:255'],
             'admin_email' => ['nullable', 'string', 'email', 'max:255', 'unique:users,email'],
             'admin_password' => ['nullable', 'string', 'min:6'],
@@ -71,6 +73,11 @@ class CompanyController extends Controller
         $validated['is_active'] = $request->boolean('is_active', true);
         $validated['currency'] = $validated['currency'] ?? 'PKR';
 
+        $logoPath = null;
+        if ($request->hasFile('logo')) {
+            $logoPath = $request->file('logo')->store('companies', 'public');
+        }
+
         $company = Company::create([
             'name' => $validated['name'],
             'code' => $validated['code'] ?? null,
@@ -78,8 +85,14 @@ class CompanyController extends Controller
             'phone' => $validated['phone'] ?? null,
             'address' => $validated['address'] ?? null,
             'currency' => $validated['currency'],
+            'logo' => $logoPath,
             'is_active' => $validated['is_active'],
         ]);
+
+        if ($logoPath) {
+            CompanySettingService::set('branding.logo_dark', $logoPath, $company->id);
+            CompanySettingService::set('branding.logo_light', $logoPath, $company->id);
+        }
 
         // Auto-create default Super Admin for the new company
         $superAdminRole = Role::firstOrCreate(
@@ -132,9 +145,17 @@ class CompanyController extends Controller
             'address' => ['nullable', 'string', 'max:500'],
             'currency' => ['nullable', 'string', 'max:10'],
             'is_active' => ['nullable', 'boolean'],
+            'logo' => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp,svg', 'max:2048'],
         ]);
 
         $validated['is_active'] = $request->boolean('is_active', true);
+
+        if ($request->hasFile('logo')) {
+            $logoPath = $request->file('logo')->store('companies', 'public');
+            $validated['logo'] = $logoPath;
+            CompanySettingService::set('branding.logo_dark', $logoPath, $company->id);
+            CompanySettingService::set('branding.logo_light', $logoPath, $company->id);
+        }
 
         $company->update($validated);
 

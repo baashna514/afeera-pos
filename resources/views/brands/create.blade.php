@@ -20,7 +20,7 @@
             <div>
                 <label for="name" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Brand Name <span class="text-rose-500">*</span></label>
                 <input type="text" name="name" id="name" value="{{ old('name') }}" required placeholder="e.g. Samsung, Nike, Nestle" 
-                       class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition @error('name') border-rose-500 @enderror">
+                       class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition @error('name') border-rose-500 @enderror">
                 @error('name')
                     <p class="mt-1.5 text-xs text-rose-500 font-semibold">{{ $message }}</p>
                 @enderror
@@ -29,7 +29,7 @@
             <div>
                 <label for="description" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Description</label>
                 <textarea name="description" id="description" rows="3" placeholder="Optional description of this brand..." 
-                          class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">{{ old('description') }}</textarea>
+                          class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">{{ old('description') }}</textarea>
                 @error('description')
                     <p class="mt-1.5 text-xs text-rose-500 font-semibold">{{ $message }}</p>
                 @enderror
@@ -39,7 +39,7 @@
                 <a href="{{ route('brands.index') }}" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition">
                     Cancel
                 </a>
-                <button type="submit" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center gap-2">
+                <button type="submit" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center gap-2">
                     <i class="fa-solid fa-check"></i>
                     <span>Save Brand</span>
                 </button>

@@ -18,7 +18,7 @@
         <!-- Customer & General Details Card -->
         <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6">
             <h3 class="text-sm font-bold uppercase tracking-wider text-slate-700 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-user text-emerald-600"></i> Customer Details
+                <i class="fa-solid fa-user text-brand-600"></i> Customer Details
             </h3>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -26,12 +26,12 @@
                 <div>
                     <div class="flex items-center justify-between mb-2">
                         <label for="customer_id" class="block text-xs font-bold uppercase tracking-wider text-slate-600">Customer</label>
-                        <button type="button" onclick="openQuickCustomerModal()" class="text-xs font-semibold text-emerald-600 hover:text-emerald-800 flex items-center gap-1">
+                        <button type="button" onclick="openQuickCustomerModal()" class="text-xs font-semibold text-brand-600 hover:text-brand-800 flex items-center gap-1">
                             <i class="fa-solid fa-plus"></i> Add New Customer
                         </button>
                     </div>
                     <select name="customer_id" id="customer_id" 
-                            class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                            class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                         <option value="">Walk-in Customer (General Guest)</option>
                         @foreach ($customers as $customer)
                             <option value="{{ $customer->id }}" {{ old('customer_id') == $customer->id ? 'selected' : '' }}>
@@ -45,7 +45,7 @@
                 <div>
                     <label for="notes" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Order Notes / Terms</label>
                     <input type="text" name="notes" id="notes" value="{{ old('notes') }}" placeholder="Quotation terms, delivery deadline..."
-                           class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                           class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                 </div>
             </div>
         </div>
@@ -55,11 +55,11 @@
             <div class="flex items-center justify-between">
                 <div>
                     <h3 class="text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
-                        <i class="fa-solid fa-cart-shopping text-emerald-600"></i> Ordered Items
+                        <i class="fa-solid fa-cart-shopping text-brand-600"></i> Ordered Items
                     </h3>
                     <p class="text-xs text-slate-400 mt-0.5">Select products, quantity and selling prices.</p>
                 </div>
-                <button type="button" onclick="addItemRow()" class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold rounded-lg border border-emerald-200 flex items-center gap-1.5 transition">
+                <button type="button" onclick="addItemRow()" class="px-3 py-1.5 bg-brand-50 hover:bg-brand-100 text-brand-700 text-xs font-bold rounded-lg border border-brand-200 flex items-center gap-1.5 transition">
                     <i class="fa-solid fa-plus"></i> Add Item
                 </button>
             </div>
@@ -92,7 +92,7 @@
                     </div>
                     <div class="flex items-center justify-between text-sm font-bold border-t border-slate-200 pt-2">
                         <span class="text-slate-800">Grand Total:</span>
-                        <span class="text-xl font-black text-emerald-600" id="grandTotalDisplay">Rs. 0.00</span>
+                        <span class="text-xl font-black text-brand-600" id="grandTotalDisplay">Rs. 0.00</span>
                     </div>
                 </div>
             </div>
@@ -102,7 +102,7 @@
             <a href="{{ route('sale-orders.index') }}" class="px-5 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition">
                 Cancel
             </a>
-            <button type="submit" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-2">
+            <button type="submit" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-2">
                 <i class="fa-solid fa-check"></i>
                 <span>Save Sale Order</span>
             </button>
@@ -174,25 +174,25 @@
         tr.innerHTML = `
             <td class="p-3">
                 <select name="items[${rowCount}][product_id]" required onchange="handleProductChange(this, ${rowCount})"
-                        class="product-select w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none">
+                        class="product-select w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:bg-white focus:outline-none">
                     ${productOptions}
                 </select>
             </td>
             <td class="p-3">
                 <select name="items[${rowCount}][unit_id]" onchange="handleUnitChange(this, ${rowCount})"
-                        class="unit-select w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none">
+                        class="unit-select w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:bg-white focus:outline-none">
                     <option value="">Base Unit</option>
                 </select>
                 <input type="hidden" name="items[${rowCount}][conversion_rate]" class="conversion-rate-input" value="1">
             </td>
             <td class="p-3">
                 <input type="number" min="1" name="items[${rowCount}][quantity]" value="1" required oninput="calculateTotals()"
-                       class="item-qty w-full px-3 py-2 text-xs font-bold text-center bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none">
-                <p class="text-[10px] text-emerald-600 font-semibold mt-0.5 text-center unit-hint-${rowCount}"></p>
+                       class="item-qty w-full px-3 py-2 text-xs font-bold text-center bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:bg-white focus:outline-none">
+                <p class="text-[10px] text-brand-600 font-semibold mt-0.5 text-center unit-hint-${rowCount}"></p>
             </td>
             <td class="p-3">
                 <input type="number" step="0.01" min="0" name="items[${rowCount}][unit_price]" value="0.00" required oninput="calculateTotals()"
-                       class="item-price w-full px-3 py-2 text-xs font-bold text-right bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none">
+                       class="item-price w-full px-3 py-2 text-xs font-bold text-right bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:bg-white focus:outline-none">
             </td>
             <td class="p-3 text-right font-black text-slate-800 item-subtotal text-xs" id="subtotal_${rowCount}">
                 Rs. 0.00
@@ -317,26 +317,26 @@
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Customer Name *</label>
                 <input type="text" id="qc_name" required placeholder="e.g. Ali Khan"
-                       class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none">
+                       class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white focus:outline-none">
             </div>
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Phone Number</label>
                 <input type="text" id="qc_phone" placeholder="e.g. 0300-1234567"
-                       class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none">
+                       class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white focus:outline-none">
             </div>
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Email</label>
                 <input type="email" id="qc_email" placeholder="customer@example.com"
-                       class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none">
+                       class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white focus:outline-none">
             </div>
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Address / City</label>
                 <input type="text" id="qc_address" placeholder="Lahore, Karachi, etc."
-                       class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none">
+                       class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white focus:outline-none">
             </div>
             <div class="flex items-center justify-end gap-2 pt-2">
                 <button type="button" onclick="closeQuickCustomerModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg">Cancel</button>
-                <button type="submit" id="qc_btn" class="px-5 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow">Save &amp; Select Customer</button>
+                <button type="submit" id="qc_btn" class="px-5 py-2 text-xs font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-lg shadow">Save &amp; Select Customer</button>
             </div>
         </form>
     </div>

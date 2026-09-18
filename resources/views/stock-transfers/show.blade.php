@@ -7,7 +7,7 @@
     <div class="flex items-center justify-between">
         <div>
             <h1 class="text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-                <i class="fa-solid fa-receipt text-emerald-600"></i> Stock Transfer #{{ $stockTransfer->transfer_number }}
+                <i class="fa-solid fa-receipt text-brand-600"></i> Stock Transfer #{{ $stockTransfer->transfer_number }}
             </h1>
             <p class="text-xs text-slate-500 font-medium">Processed on {{ $stockTransfer->transfer_date ? $stockTransfer->transfer_date->format('d M Y') : $stockTransfer->created_at->format('d M Y') }}</p>
         </div>
@@ -25,10 +25,10 @@
                 <span class="text-xs text-amber-700 font-mono">{{ $stockTransfer->fromWarehouse->code ?? '' }}</span>
             </div>
 
-            <div class="p-4 bg-emerald-50/50 rounded-xl border border-emerald-100">
-                <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700 block">To (Destination Warehouse)</span>
-                <span class="text-base font-black text-emerald-900 mt-1 block">{{ $stockTransfer->toWarehouse->name ?? 'N/A' }}</span>
-                <span class="text-xs text-emerald-700 font-mono">{{ $stockTransfer->toWarehouse->code ?? '' }}</span>
+            <div class="p-4 bg-brand-50/50 rounded-xl border border-brand-100">
+                <span class="text-[10px] font-extrabold uppercase tracking-wider text-brand-700 block">To (Destination Warehouse)</span>
+                <span class="text-base font-black text-brand-900 mt-1 block">{{ $stockTransfer->toWarehouse->name ?? 'N/A' }}</span>
+                <span class="text-xs text-brand-700 font-mono">{{ $stockTransfer->toWarehouse->code ?? '' }}</span>
             </div>
         </div>
 
@@ -54,7 +54,7 @@
                         <tr class="hover:bg-slate-50">
                             <td class="p-3 font-bold text-slate-800">{{ $item->product->name ?? 'Deleted Product' }}</td>
                             <td class="p-3 font-mono text-slate-500">{{ $item->product->code ?? '-' }}</td>
-                            <td class="p-3 text-right font-mono font-black text-emerald-700 text-sm">
+                            <td class="p-3 text-right font-mono font-black text-brand-700 text-sm">
                                 {{ number_format($item->quantity) }} {{ $item->product->unit->short_code ?? 'pcs' }}
                             </td>
                         </tr>

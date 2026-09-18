@@ -16,7 +16,7 @@
                 </a>
             @endif
             @if(auth()->user()?->hasPermission('pos.access'))
-                <a href="{{ route('pos.index') }}" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-sm transition flex items-center gap-2">
+                <a href="{{ route('pos.index') }}" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-xl shadow-sm transition flex items-center gap-2">
                     <i class="fa-solid fa-cart-shopping"></i>
                     <span>Open POS Terminal</span>
                 </a>
@@ -27,7 +27,7 @@
     <!-- Summary Stats -->
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div class="bg-white p-5 rounded-xl border border-slate-200/80 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+            <div class="w-12 h-12 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-xl">
                 <i class="fa-solid fa-sack-dollar"></i>
             </div>
             <div>
@@ -50,7 +50,7 @@
     <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-3">
         <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
-                <i class="fa-solid fa-filter text-emerald-600"></i> Apply Filter
+                <i class="fa-solid fa-filter text-brand-600"></i> Apply Filter
             </h3>
             @if (!empty($search) || !empty($paymentMethod) || !empty($customerId) || !empty($dateFrom) || !empty($dateTo))
                 <a href="{{ route('sales.index') }}" class="text-xs font-semibold text-rose-600 hover:text-rose-700 flex items-center gap-1 transition">
@@ -66,14 +66,14 @@
                 <div class="relative">
                     <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                     <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Search Invoice..." 
-                           class="w-full pl-8 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                           class="w-full pl-8 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                 </div>
             </div>
 
             <!-- Customer Filter -->
             <div>
                 <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">Customer</label>
-                <select name="customer_id" class="w-full px-3 py-2 text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                <select name="customer_id" class="w-full px-3 py-2 text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                     <option value="">All Customers</option>
                     @foreach ($customers as $c)
                         <option value="{{ $c->id }}" {{ (isset($customerId) && $customerId == $c->id) ? 'selected' : '' }}>
@@ -87,19 +87,19 @@
             <div>
                 <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">From Date</label>
                 <input type="date" name="date_from" value="{{ $dateFrom ?? '' }}"
-                       class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                       class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
             </div>
 
             <!-- To Date -->
             <div>
                 <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">To Date</label>
                 <input type="date" name="date_to" value="{{ $dateTo ?? '' }}"
-                       class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                       class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
             </div>
 
             <!-- Submit Filter Button -->
             <div>
-                <button type="submit" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer">
+                <button type="submit" class="w-full py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer">
                     <i class="fa-solid fa-filter text-xs"></i>
                     <span>Filter Invoices</span>
                 </button>
@@ -129,7 +129,7 @@
                     @forelse ($sales as $sale)
                         <tr class="hover:bg-slate-50/80 transition">
                             <td class="px-4 py-4">
-                                <a href="{{ route('sales.show', $sale) }}" class="font-bold text-emerald-600 hover:underline font-mono text-xs">
+                                <a href="{{ route('sales.show', $sale) }}" class="font-bold text-brand-600 hover:underline font-mono text-xs">
                                     {{ $sale->invoice_number }}
                                 </a>
                             </td>
@@ -144,7 +144,7 @@
                             <td class="px-4 py-4 text-right font-bold text-slate-900">
                                 Rs. {{ number_format($sale->total_amount, 2) }}
                             </td>
-                            <td class="px-4 py-4 text-right font-bold text-emerald-600">
+                            <td class="px-4 py-4 text-right font-bold text-brand-600">
                                 Rs. {{ number_format($sale->paid_amount, 2) }}
                             </td>
                             <td class="px-4 py-4 text-right font-bold {{ $sale->due_amount > 0 ? 'text-rose-600' : 'text-slate-400' }}">
@@ -156,7 +156,7 @@
                                 </span>
                             </td>
                             <td class="px-3 py-4 text-center">
-                                <span class="px-2.5 py-0.5 text-[10px] font-bold uppercase rounded-md {{ $sale->payment_method === 'cash' ? 'bg-emerald-100 text-emerald-700' : ($sale->payment_method === 'card' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700') }}">
+                                <span class="px-2.5 py-0.5 text-[10px] font-bold uppercase rounded-md {{ $sale->payment_method === 'cash' ? 'bg-brand-100 text-brand-700' : ($sale->payment_method === 'card' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700') }}">
                                     {{ str_replace('_', ' ', $sale->payment_method) }}
                                 </span>
                             </td>
@@ -166,7 +166,7 @@
                             </td>
                             <td class="px-4 py-4 text-right">
                                 <div class="flex items-center justify-end gap-1">
-                                    <a href="{{ route('sales.show', $sale) }}" class="p-2 text-slate-400 hover:text-emerald-600 rounded-lg hover:bg-emerald-50 transition" title="Invoice Detail">
+                                    <a href="{{ route('sales.show', $sale) }}" class="p-2 text-slate-400 hover:text-brand-600 rounded-lg hover:bg-brand-50 transition" title="Invoice Detail">
                                         <i class="fa-solid fa-eye text-sm"></i>
                                     </a>
                                     <a href="{{ route('sales.receipt', $sale) }}" target="_blank" class="p-2 text-slate-400 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition" title="Print Thermal Slip">
@@ -181,7 +181,7 @@
                                 <div class="flex flex-col items-center justify-center">
                                     <i class="fa-solid fa-receipt text-4xl text-slate-200 mb-3"></i>
                                     <p class="font-medium text-sm">No sales transactions found.</p>
-                                    <a href="{{ route('pos.index') }}" class="mt-2 text-xs font-bold text-emerald-600 hover:underline">
+                                    <a href="{{ route('pos.index') }}" class="mt-2 text-xs font-bold text-brand-600 hover:underline">
                                         Make your first sale on POS
                                     </a>
                                 </div>

@@ -21,18 +21,18 @@
         <div class="flex items-center gap-2 flex-wrap">
             <!-- Sales Reports Dropdown/Tab Group -->
             <div x-data="{ open: false }" class="relative">
-                <button @click="open = !open" class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 {{ Str::startsWith($type, 'sales') ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-50 text-slate-700 hover:bg-slate-100' }}">
+                <button @click="open = !open" class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 {{ Str::startsWith($type, 'sales') ? 'bg-brand-600 text-white shadow-xs' : 'bg-slate-50 text-slate-700 hover:bg-slate-100' }}">
                     <i class="fa-solid fa-cart-shopping"></i>
                     <span>Sales Reports</span>
                     <i class="fa-solid fa-chevron-down text-[10px]"></i>
                 </button>
                 <div x-show="open" @click.away="open = false" class="absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-30">
-                    <a href="{{ route('reports.index', ['type' => 'sales_summary', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-700">Sales Summary</a>
-                    <a href="{{ route('reports.index', ['type' => 'sales_detail', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-700">Sales Detail</a>
-                    <a href="{{ route('reports.index', ['type' => 'sales_by_product', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-700">Sales by Product</a>
-                    <a href="{{ route('reports.index', ['type' => 'sales_by_customer', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-700">Sales by Customer</a>
-                    <a href="{{ route('reports.index', ['type' => 'sales_by_warehouse', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-700">Sales by Warehouse</a>
-                    <a href="{{ route('reports.index', ['type' => 'sales_returns', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-700">Sales Returns</a>
+                    <a href="{{ route('reports.index', ['type' => 'sales_summary', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-brand-50 hover:text-brand-700">Sales Summary</a>
+                    <a href="{{ route('reports.index', ['type' => 'sales_detail', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-brand-50 hover:text-brand-700">Sales Detail</a>
+                    <a href="{{ route('reports.index', ['type' => 'sales_by_product', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-brand-50 hover:text-brand-700">Sales by Product</a>
+                    <a href="{{ route('reports.index', ['type' => 'sales_by_customer', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-brand-50 hover:text-brand-700">Sales by Customer</a>
+                    <a href="{{ route('reports.index', ['type' => 'sales_by_warehouse', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-brand-50 hover:text-brand-700">Sales by Warehouse</a>
+                    <a href="{{ route('reports.index', ['type' => 'sales_returns', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-brand-50 hover:text-brand-700">Sales Returns</a>
                 </div>
             </div>
 
@@ -82,7 +82,7 @@
             </div>
 
             <!-- Financials & Cash Register -->
-            <a href="{{ route('reports.index', ['type' => 'profit_loss', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 {{ $type === 'profit_loss' ? 'bg-teal-600 text-white shadow-xs' : 'bg-slate-50 text-slate-700 hover:bg-slate-100' }}">
+            <a href="{{ route('reports.index', ['type' => 'profit_loss', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 {{ $type === 'profit_loss' ? 'bg-brand-600 text-white shadow-xs' : 'bg-slate-50 text-slate-700 hover:bg-slate-100' }}">
                 <i class="fa-solid fa-chart-line"></i>
                 <span>Profit & Loss</span>
             </a>
@@ -101,18 +101,18 @@
             
             <div>
                 <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">From Date</label>
-                <input type="date" name="start_date" value="{{ $startDate }}" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:ring-2 focus:ring-emerald-500">
+                <input type="date" name="start_date" value="{{ $startDate }}" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:ring-2 focus:ring-brand-500">
             </div>
 
             <div>
                 <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">To Date</label>
-                <input type="date" name="end_date" value="{{ $endDate }}" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:ring-2 focus:ring-emerald-500">
+                <input type="date" name="end_date" value="{{ $endDate }}" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:ring-2 focus:ring-brand-500">
             </div>
 
             @if(in_array($type, ['sales_detail', 'sales_by_customer', 'party_ledger']))
             <div>
                 <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">Filter Customer</label>
-                <select name="customer_id" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-emerald-500">
+                <select name="customer_id" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-brand-500">
                     <option value="">All Customers</option>
                     @foreach($customers as $c)
                         <option value="{{ $c->id }}" {{ $customerId == $c->id ? 'selected' : '' }}>{{ $c->name }}</option>
@@ -158,7 +158,7 @@
             @endif
 
             <div>
-                <button type="submit" class="w-full px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-xs transition flex items-center justify-center gap-2">
+                <button type="submit" class="w-full px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl shadow-xs transition flex items-center justify-center gap-2">
                     <i class="fa-solid fa-filter"></i>
                     <span>Apply Filter</span>
                 </button>
@@ -179,9 +179,9 @@
             <div class="space-y-6">
                 <h3 class="text-base font-bold text-slate-800">Sales Summary Overview</h3>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-100">
-                        <span class="text-xs font-bold text-emerald-700 uppercase block">Total Sales</span>
-                        <span class="text-xl font-black text-emerald-900">Rs. {{ number_format($totalSales, 2) }}</span>
+                    <div class="p-4 bg-brand-50 rounded-xl border border-brand-100">
+                        <span class="text-xs font-bold text-brand-700 uppercase block">Total Sales</span>
+                        <span class="text-xl font-black text-brand-900">Rs. {{ number_format($totalSales, 2) }}</span>
                     </div>
                     <div class="p-4 bg-blue-50 rounded-xl border border-blue-100">
                         <span class="text-xs font-bold text-blue-700 uppercase block">Total Paid</span>
@@ -212,7 +212,7 @@
                                 <tr>
                                     <td class="p-3 font-mono text-slate-700">{{ \Carbon\Carbon::parse($row->sale_date)->format('d M Y') }}</td>
                                     <td class="p-3 font-bold">{{ $row->count }}</td>
-                                    <td class="p-3 text-right font-mono font-bold text-emerald-600">Rs. {{ number_format($row->total, 2) }}</td>
+                                    <td class="p-3 text-right font-mono font-bold text-brand-600">Rs. {{ number_format($row->total, 2) }}</td>
                                     <td class="p-3 text-right font-mono font-bold text-blue-600">Rs. {{ number_format($row->paid, 2) }}</td>
                                 </tr>
                             @endforeach
@@ -236,9 +236,9 @@
                         <span class="text-xs font-bold text-slate-500 uppercase block">Total Products</span>
                         <span class="text-xl font-black text-slate-800">{{ $products->count() }}</span>
                     </div>
-                    <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-100">
-                        <span class="text-xs font-bold text-emerald-700 uppercase block">Total Physical Units</span>
-                        <span class="text-xl font-black text-emerald-900">{{ number_format($products->sum('quantity')) }}</span>
+                    <div class="p-4 bg-brand-50 rounded-xl border border-brand-100">
+                        <span class="text-xs font-bold text-brand-700 uppercase block">Total Physical Units</span>
+                        <span class="text-xl font-black text-brand-900">{{ number_format($products->sum('quantity')) }}</span>
                     </div>
                     <div class="p-4 bg-amber-50 rounded-xl border border-amber-100">
                         <span class="text-xs font-bold text-amber-700 uppercase block">Low Stock Alert Items</span>
@@ -280,8 +280,15 @@
                                         @if($p->secondaryUnits->count() > 0)
                                             <div class="mt-1 space-y-0.5">
                                                 @foreach($p->secondaryUnits as $su)
+                                                    @php
+                                                        $rate = (float) $su->conversion_rate;
+                                                        $rateNum = $rate == (int) $rate ? (int) $rate : $rate;
+                                                        $ratioText = $su->operator === 'divide'
+                                                            ? "1 {$p->unit?->short_code} = {$rateNum} {$su->unit?->short_code}"
+                                                            : "1 {$su->unit?->short_code} = {$rateNum} {$p->unit?->short_code}";
+                                                    @endphp
                                                     <span class="block text-[10px] text-slate-500">
-                                                        • 1 {{ $su->unit->name ?? 'Unit' }} = {{ $su->conversion_rate }} {{ $p->unit->short_code ?? 'Pcs' }}
+                                                        • {{ $su->unit->name ?? 'Unit' }} ({{ $ratioText }})
                                                     </span>
                                                 @endforeach
                                             </div>
@@ -314,7 +321,7 @@
                                                 <i class="fa-solid fa-bell"></i> Low Stock (Alert <= {{ $p->alert_quantity ?? 5 }})
                                             </span>
                                         @else
-                                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 inline-flex items-center gap-1">
+                                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-brand-100 text-brand-800 border border-brand-200 inline-flex items-center gap-1">
                                                 <i class="fa-solid fa-circle-check"></i> In Stock
                                             </span>
                                         @endif
@@ -370,7 +377,7 @@
                                                 <i class="fa-solid fa-cart-shopping mr-1"></i> Cash Sale
                                             </span>
                                         @elseif($m->type === 'purchase')
-                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-brand-100 text-brand-800 border border-brand-200">
                                                 <i class="fa-solid fa-truck-ramp-box mr-1"></i> Purchase In
                                             </span>
                                         @elseif(Str::startsWith($m->type, 'transfer'))
@@ -396,7 +403,7 @@
                                     <td class="p-3 text-right font-mono text-slate-500 font-semibold">
                                         {{ number_format($m->before_quantity) }}
                                     </td>
-                                    <td class="p-3 text-right font-mono font-black text-sm {{ $isInflow ? 'text-emerald-600' : 'text-rose-600' }}">
+                                    <td class="p-3 text-right font-mono font-black text-sm {{ $isInflow ? 'text-brand-600' : 'text-rose-600' }}">
                                         {{ $isInflow ? '+' : '-' }}{{ number_format($m->quantity) }}
                                     </td>
                                     <td class="p-3 text-right font-mono font-black text-slate-900 bg-slate-50">
@@ -428,9 +435,9 @@
                             <tr>
                                 <td class="p-3 font-bold text-slate-800">{{ $sm['product']->name ?? 'Product' }}</td>
                                 <td class="p-3 text-slate-500">{{ $sm['product']->category->name ?? '-' }}</td>
-                                <td class="p-3 text-right font-mono font-bold text-emerald-600">+{{ number_format($sm['total_in']) }}</td>
+                                <td class="p-3 text-right font-mono font-bold text-brand-600">+{{ number_format($sm['total_in']) }}</td>
                                 <td class="p-3 text-right font-mono font-bold text-rose-600">-{{ number_format($sm['total_out']) }}</td>
-                                <td class="p-3 text-right font-mono font-bold {{ $sm['net_change'] >= 0 ? 'text-emerald-600' : 'text-rose-600' }}">
+                                <td class="p-3 text-right font-mono font-bold {{ $sm['net_change'] >= 0 ? 'text-brand-600' : 'text-rose-600' }}">
                                     {{ $sm['net_change'] >= 0 ? '+' : '' }}{{ number_format($sm['net_change']) }}
                                 </td>
                                 <td class="p-3 text-right font-mono font-black text-slate-900">{{ number_format($sm['current_stock']) }}</td>
@@ -456,9 +463,9 @@
                         <span class="text-xs font-bold text-purple-700 uppercase block">Valuation at Selling Price</span>
                         <span class="text-xl font-black text-purple-900">Rs. {{ number_format($totalRetailValuation, 2) }}</span>
                     </div>
-                    <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-100">
-                        <span class="text-xs font-bold text-emerald-700 uppercase block">Potential Profit Margin</span>
-                        <span class="text-xl font-black text-emerald-900">Rs. {{ number_format($potentialProfit, 2) }}</span>
+                    <div class="p-4 bg-brand-50 rounded-xl border border-brand-100">
+                        <span class="text-xs font-bold text-brand-700 uppercase block">Potential Profit Margin</span>
+                        <span class="text-xl font-black text-brand-900">Rs. {{ number_format($potentialProfit, 2) }}</span>
                     </div>
                 </div>
             </div>
@@ -482,11 +489,11 @@
                         <tbody class="divide-y divide-slate-100">
                             @foreach($sales as $s)
                                 <tr>
-                                    <td class="p-3 font-mono font-bold text-emerald-600">{{ $s->invoice_number }}</td>
+                                    <td class="p-3 font-mono font-bold text-brand-600">{{ $s->invoice_number }}</td>
                                     <td class="p-3 font-mono">{{ \Carbon\Carbon::parse($s->sale_date)->format('d M Y') }}</td>
                                     <td class="p-3 font-medium">{{ $s->customer->name ?? 'Walk-in' }}</td>
                                     <td class="p-3 text-right font-mono font-bold">Rs. {{ number_format($s->total_amount, 2) }}</td>
-                                    <td class="p-3 text-right font-mono font-bold text-emerald-600">Rs. {{ number_format($s->paid_amount, 2) }}</td>
+                                    <td class="p-3 text-right font-mono font-bold text-brand-600">Rs. {{ number_format($s->paid_amount, 2) }}</td>
                                     <td class="p-3 text-right font-mono font-bold text-rose-600">Rs. {{ number_format($s->due_amount, 2) }}</td>
                                     <td class="p-3 uppercase font-bold text-[10px] text-slate-500">{{ $s->payment_method }}</td>
                                 </tr>
@@ -515,7 +522,7 @@
                                 <td class="p-3 font-bold text-slate-800">{{ $ps->product->name ?? 'Unknown Product' }}</td>
                                 <td class="p-3 text-slate-500">{{ $ps->product->category->name ?? '-' }}</td>
                                 <td class="p-3 text-right font-bold">{{ number_format($ps->total_qty) }}</td>
-                                <td class="p-3 text-right font-mono font-bold text-emerald-600">Rs. {{ number_format($ps->total_revenue, 2) }}</td>
+                                <td class="p-3 text-right font-mono font-bold text-brand-600">Rs. {{ number_format($ps->total_revenue, 2) }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -541,7 +548,7 @@
                                 <td class="p-3 font-bold text-slate-800">{{ $cs->customer->name ?? 'Walk-in Customer' }}</td>
                                 <td class="p-3 font-bold">{{ $cs->order_count }}</td>
                                 <td class="p-3 text-right font-mono font-bold">Rs. {{ number_format($cs->total_amount, 2) }}</td>
-                                <td class="p-3 text-right font-mono font-bold text-emerald-600">Rs. {{ number_format($cs->paid_amount, 2) }}</td>
+                                <td class="p-3 text-right font-mono font-bold text-brand-600">Rs. {{ number_format($cs->paid_amount, 2) }}</td>
                                 <td class="p-3 text-right font-mono font-bold text-rose-600">Rs. {{ number_format($cs->due_amount, 2) }}</td>
                             </tr>
                         @endforeach
@@ -563,13 +570,13 @@
                     </div>
                     <div class="flex justify-between text-sm py-2 border-b border-slate-300 font-bold bg-white p-2 rounded-lg">
                         <span class="text-slate-900">Net Sales Revenue</span>
-                        <span class="font-mono text-emerald-700">Rs. {{ number_format($netSales, 2) }}</span>
+                        <span class="font-mono text-brand-700">Rs. {{ number_format($netSales, 2) }}</span>
                     </div>
                     <div class="flex justify-between text-sm py-2 border-b border-slate-200">
                         <span class="font-bold text-slate-700">Less: Cost of Goods Sold (COGS)</span>
                         <span class="font-mono font-bold text-slate-700">- Rs. {{ number_format($cogs, 2) }}</span>
                     </div>
-                    <div class="flex justify-between text-base py-3 border-b-2 border-slate-400 font-black bg-emerald-50 p-3 rounded-xl text-emerald-900">
+                    <div class="flex justify-between text-base py-3 border-b-2 border-slate-400 font-black bg-brand-50 p-3 rounded-xl text-brand-900">
                         <span>GROSS PROFIT</span>
                         <span class="font-mono">Rs. {{ number_format($grossProfit, 2) }}</span>
                     </div>
@@ -592,7 +599,7 @@
                         <span>Opening Cash Balance</span>
                         <span class="font-bold text-indigo-700">Rs. {{ number_format($openingBalance, 2) }}</span>
                     </div>
-                    <div class="flex justify-between py-2 border-b border-slate-200 text-emerald-700 font-bold">
+                    <div class="flex justify-between py-2 border-b border-slate-200 text-brand-700 font-bold">
                         <span>(+) Cash Sales</span>
                         <span>+ Rs. {{ number_format($cashSales, 2) }}</span>
                     </div>
@@ -612,7 +619,7 @@
                         <span>(-) Cash Expenses</span>
                         <span>- Rs. {{ number_format($cashExpenses, 2) }}</span>
                     </div>
-                    <div class="flex justify-between py-3 text-base font-black bg-slate-900 text-emerald-400 p-4 rounded-xl">
+                    <div class="flex justify-between py-3 text-base font-black bg-slate-900 text-brand-400 p-4 rounded-xl">
                         <span class="font-sans">EXPECTED DRAWER CASH</span>
                         <span>Rs. {{ number_format($expectedDrawerCash, 2) }}</span>
                     </div>

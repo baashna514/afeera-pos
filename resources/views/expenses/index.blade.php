@@ -6,7 +6,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <h2 class="text-2xl font-black text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-receipt text-emerald-600"></i>
+                <i class="fa-solid fa-receipt text-brand-600"></i>
                 <span>Business Expenses</span>
             </h2>
             <p class="text-xs text-slate-500 mt-0.5">Log, manage, and monitor company operating expenses.</p>
@@ -16,7 +16,7 @@
                 <i class="fa-solid fa-folder-tree text-indigo-600"></i>
                 <span>Categories</span>
             </a>
-            <a href="{{ route('expenses.create') }}" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-xs transition flex items-center gap-2">
+            <a href="{{ route('expenses.create') }}" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-xl shadow-xs transition flex items-center gap-2">
                 <i class="fa-solid fa-plus"></i>
                 <span>Record Expense</span>
             </a>
@@ -28,7 +28,7 @@
         <form action="{{ route('expenses.index') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
             <div>
                 <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Category</label>
-                <select name="category_id" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none transition">
+                <select name="category_id" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none transition">
                     <option value="">All Categories</option>
                     @foreach($categories as $cat)
                         <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
@@ -38,7 +38,7 @@
 
             <div>
                 <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Payment Method</label>
-                <select name="payment_method" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none transition">
+                <select name="payment_method" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none transition">
                     <option value="">All Methods</option>
                     <option value="cash" {{ request('payment_method') === 'cash' ? 'selected' : '' }}>Cash</option>
                     <option value="card" {{ request('payment_method') === 'card' ? 'selected' : '' }}>Card</option>
@@ -49,12 +49,12 @@
 
             <div>
                 <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">From Date</label>
-                <input type="date" name="date_from" value="{{ request('date_from') }}" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none transition">
+                <input type="date" name="date_from" value="{{ request('date_from') }}" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none transition">
             </div>
 
             <div>
                 <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">To Date</label>
-                <input type="date" name="date_to" value="{{ request('date_to') }}" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none transition">
+                <input type="date" name="date_to" value="{{ request('date_to') }}" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none transition">
             </div>
 
             <div class="flex items-end gap-2">

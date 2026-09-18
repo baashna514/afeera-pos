@@ -48,7 +48,7 @@
             </div>
             <div>
                 <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Party / Account</span>
-                <span class="font-bold text-emerald-800 text-sm">{{ $voucher->party_name }}</span>
+                <span class="font-bold text-brand-800 text-sm">{{ $voucher->party_name }}</span>
             </div>
             <div>
                 <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Reference / Cheque #</span>
@@ -57,9 +57,9 @@
         </div>
 
         <!-- Amount Box -->
-        <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-5 text-center">
-            <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block">Total Amount {{ $voucher->type === 'receipt' ? 'Received' : 'Paid' }}</span>
-            <span class="text-3xl font-black text-emerald-900 mt-1 block">Rs. {{ number_format($voucher->amount, 2) }}</span>
+        <div class="bg-brand-50 border border-brand-200 rounded-xl p-5 text-center">
+            <span class="text-xs font-bold uppercase tracking-wider text-brand-700 block">Total Amount {{ $voucher->type === 'receipt' ? 'Received' : 'Paid' }}</span>
+            <span class="text-3xl font-black text-brand-900 mt-1 block">Rs. {{ number_format($voucher->amount, 2) }}</span>
         </div>
 
         @if($voucher->notes)

@@ -16,7 +16,7 @@
                 </a>
             @endif
             @if(auth()->user()?->hasPermission('companies.create'))
-                <a href="{{ route('companies.create') }}" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-sm transition flex items-center gap-2">
+                <a href="{{ route('companies.create') }}" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-xl shadow-sm transition flex items-center gap-2">
                     <i class="fa-solid fa-building-circle-arrow-right text-xs"></i>
                     <span>Register New Company</span>
                 </a>
@@ -82,8 +82,12 @@
                         <tr class="hover:bg-slate-50/80 transition">
                             <td class="py-3 px-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-sm shrink-0">
-                                        <i class="fa-solid fa-building"></i>
+                                    <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden border border-slate-200">
+                                        @if($company->logo)
+                                            <img src="{{ asset('storage/' . $company->logo) }}" class="w-full h-full object-contain p-0.5" alt="{{ $company->name }}">
+                                        @else
+                                            <i class="fa-solid fa-building"></i>
+                                        @endif
                                     </div>
                                     <div>
                                         <div class="font-bold text-slate-800 flex items-center gap-2">
@@ -125,7 +129,7 @@
                                     <span class="px-2 py-1 bg-purple-50 text-purple-700 rounded-lg font-semibold" title="Staff Users">
                                         <i class="fa-solid fa-users text-[10px] mr-1"></i>{{ $company->users_count }}
                                     </span>
-                                    <span class="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg font-semibold" title="Products">
+                                    <span class="px-2 py-1 bg-brand-50 text-brand-700 rounded-lg font-semibold" title="Products">
                                         <i class="fa-solid fa-box text-[10px] mr-1"></i>{{ $company->products_count }}
                                     </span>
                                     <span class="px-2 py-1 bg-blue-50 text-blue-700 rounded-lg font-semibold" title="Sales Invoices">
@@ -135,8 +139,8 @@
                             </td>
                             <td class="py-3 px-4 text-center">
                                 @if($company->is_active)
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-brand-100 text-brand-800">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-brand-600"></span>
                                         Active
                                     </span>
                                 @else
@@ -172,7 +176,7 @@
                                 No companies found.
                                 @if(auth()->user()?->hasPermission('companies.create'))
                                     <div class="mt-2">
-                                        <a href="{{ route('companies.create') }}" class="text-xs font-bold text-emerald-600 hover:underline">
+                                        <a href="{{ route('companies.create') }}" class="text-xs font-bold text-brand-600 hover:underline">
                                             + Register First Company
                                         </a>
                                     </div>

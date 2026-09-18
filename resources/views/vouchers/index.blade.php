@@ -6,13 +6,13 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <h2 class="text-2xl font-black text-slate-800 flex items-center gap-2.5">
-                <i class="fa-solid fa-receipt text-emerald-600"></i>
+                <i class="fa-solid fa-receipt text-brand-600"></i>
                 <span>Cash &amp; Payment Vouchers (پیمنٹ واؤچرز)</span>
             </h2>
             <p class="text-xs text-slate-500 mt-0.5">Record and manage cash receipts from customers and payments to suppliers/vendors.</p>
         </div>
         <div class="flex items-center gap-3">
-            <a href="{{ route('vouchers.create') }}" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center gap-2">
+            <a href="{{ route('vouchers.create') }}" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center gap-2">
                 <i class="fa-solid fa-plus text-xs"></i>
                 <span>Create Payment Voucher</span>
             </a>
@@ -25,11 +25,11 @@
             <div class="relative">
                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Voucher #, ref or note..."
-                       class="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                       class="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
 
             <div>
-                <select name="type" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <select name="type" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500">
                     <option value="">All Voucher Types</option>
                     <option value="receipt" {{ request('type') === 'receipt' ? 'selected' : '' }}>Cash Receipt (Customer)</option>
                     <option value="payment" {{ request('type') === 'payment' ? 'selected' : '' }}>Cash Payment (Vendor)</option>
@@ -38,7 +38,7 @@
 
             <div>
                 <input type="date" name="date_from" value="{{ request('date_from') }}" placeholder="From Date"
-                       class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                       class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
 
             <div class="flex items-center gap-2">
@@ -73,7 +73,7 @@
                     @forelse ($vouchers as $voucher)
                         <tr class="hover:bg-slate-50/80 transition">
                             <td class="px-5 py-3.5 font-bold text-slate-800">
-                                <a href="{{ route('vouchers.show', $voucher) }}" class="text-emerald-700 hover:underline">
+                                <a href="{{ route('vouchers.show', $voucher) }}" class="text-brand-700 hover:underline">
                                     {{ $voucher->voucher_number }}
                                 </a>
                             </td>
@@ -95,7 +95,7 @@
                                 Rs. {{ number_format($voucher->amount, 2) }}
                             </td>
                             <td class="px-5 py-3.5 text-right space-x-2">
-                                <a href="{{ route('vouchers.show', $voucher) }}" class="p-1.5 text-slate-400 hover:text-emerald-600 transition" title="View / Print Voucher">
+                                <a href="{{ route('vouchers.show', $voucher) }}" class="p-1.5 text-slate-400 hover:text-brand-600 transition" title="View / Print Voucher">
                                     <i class="fa-solid fa-eye"></i>
                                 </a>
                                 <form action="{{ route('vouchers.destroy', $voucher) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this voucher?')">
@@ -112,7 +112,7 @@
                             <td colspan="7" class="px-6 py-12 text-center text-slate-400">
                                 <i class="fa-solid fa-receipt text-3xl mb-2 text-slate-300"></i>
                                 <p class="text-xs font-semibold">No payment vouchers found.</p>
-                                <a href="{{ route('vouchers.create') }}" class="mt-2 inline-block px-3 py-1.5 bg-emerald-600 text-white font-bold text-xs rounded-lg">Create First Voucher</a>
+                                <a href="{{ route('vouchers.create') }}" class="mt-2 inline-block px-3 py-1.5 bg-brand-600 text-white font-bold text-xs rounded-lg">Create First Voucher</a>
                             </td>
                         </tr>
                     @endforelse

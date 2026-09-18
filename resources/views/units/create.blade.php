@@ -19,7 +19,7 @@
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Unit Name *</label>
                 <input type="text" name="name" value="{{ old('name') }}" placeholder="e.g. Box, Piece, Kilogram, Carton" required
-                       class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none transition">
+                       class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white focus:outline-none transition">
                 @error('name')
                     <p class="text-xs text-rose-500 mt-1 font-semibold">{{ $message }}</p>
                 @enderror
@@ -28,7 +28,7 @@
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Short Code / Symbol *</label>
                 <input type="text" name="short_code" value="{{ old('short_code') }}" placeholder="e.g. pc, box, ctn, kg, dz" required
-                       class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none transition">
+                       class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white focus:outline-none transition">
                 @error('short_code')
                     <p class="text-xs text-rose-500 mt-1 font-semibold">{{ $message }}</p>
                 @enderror
@@ -40,7 +40,7 @@
 
                 <div>
                     <label class="block text-xs font-bold text-slate-600 mb-1">Base Unit (Parent)</label>
-                    <select name="base_unit_id" id="base_unit_id" class="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    <select name="base_unit_id" id="base_unit_id" class="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none">
                         <option value="">None (This is a Base Unit)</option>
                         @foreach ($baseUnits as $bu)
                             <option value="{{ $bu->id }}" {{ old('base_unit_id') == $bu->id ? 'selected' : '' }}>
@@ -53,7 +53,7 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1">Operator</label>
-                        <select name="operator" class="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <select name="operator" class="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none">
                             <option value="*" {{ old('operator', '*') == '*' ? 'selected' : '' }}>* (Multiply)</option>
                             <option value="/" {{ old('operator') == '/' ? 'selected' : '' }}>/ (Divide)</option>
                         </select>
@@ -62,7 +62,7 @@
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1">Conversion Factor</label>
                         <input type="number" step="any" name="conversion_factor" value="{{ old('conversion_factor', 1) }}" required
-                               class="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                               class="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none">
                     </div>
                 </div>
 
@@ -75,7 +75,7 @@
                 <a href="{{ route('units.index') }}" class="px-4 py-2.5 text-slate-600 font-semibold text-xs hover:bg-slate-50 rounded-xl transition">
                     Cancel
                 </a>
-                <button type="submit" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition">
+                <button type="submit" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-xl shadow transition">
                     Save Unit
                 </button>
             </div>

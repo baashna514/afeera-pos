@@ -10,7 +10,7 @@
         </div>
         <div class="flex items-center gap-3">
             @if(auth()->user()?->hasPermission('sale_returns.create') || auth()->user()?->hasPermission('sales.return'))
-                <a href="{{ route('sale-returns.create') }}" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-sm transition flex items-center gap-2">
+                <a href="{{ route('sale-returns.create') }}" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-xl shadow-sm transition flex items-center gap-2">
                     <i class="fa-solid fa-plus"></i>
                     <span>Create Sale Return</span>
                 </a>
@@ -44,7 +44,7 @@
     <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-3">
         <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
-                <i class="fa-solid fa-filter text-emerald-600"></i> Apply Filter
+                <i class="fa-solid fa-filter text-brand-600"></i> Apply Filter
             </h3>
             @if (!empty($search) || !empty($customerId) || !empty($dateFrom) || !empty($dateTo))
                 <a href="{{ route('sale-returns.index') }}" class="text-xs font-semibold text-rose-600 hover:text-rose-700 flex items-center gap-1 transition">
@@ -60,14 +60,14 @@
                 <div class="relative">
                     <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                     <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Search Return #..." 
-                           class="w-full pl-8 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                           class="w-full pl-8 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                 </div>
             </div>
 
             <!-- Customer Filter -->
             <div>
                 <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">Customer</label>
-                <select name="customer_id" class="w-full px-3 py-2 text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                <select name="customer_id" class="w-full px-3 py-2 text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                     <option value="">All Customers</option>
                     @foreach ($customers as $c)
                         <option value="{{ $c->id }}" {{ (isset($customerId) && $customerId == $c->id) ? 'selected' : '' }}>
@@ -81,19 +81,19 @@
             <div>
                 <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">From Date</label>
                 <input type="date" name="date_from" value="{{ $dateFrom ?? '' }}"
-                       class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                       class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
             </div>
 
             <!-- To Date -->
             <div>
                 <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">To Date</label>
                 <input type="date" name="date_to" value="{{ $dateTo ?? '' }}"
-                       class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                       class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
             </div>
 
             <!-- Submit Filter Button -->
             <div>
-                <button type="submit" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer">
+                <button type="submit" class="w-full py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer">
                     <i class="fa-solid fa-filter text-xs"></i>
                     <span>Filter Returns</span>
                 </button>
@@ -125,7 +125,7 @@
                             </td>
                             <td class="px-5 py-4 text-xs font-semibold text-slate-700">
                                 @if ($ret->sale)
-                                    <a href="{{ route('sales.show', $ret->sale) }}" class="text-emerald-600 hover:underline font-mono">
+                                    <a href="{{ route('sales.show', $ret->sale) }}" class="text-brand-600 hover:underline font-mono">
                                         {{ $ret->sale->invoice_number }}
                                     </a>
                                 @else
@@ -145,12 +145,12 @@
                                 Rs. {{ number_format($ret->total_amount, 2) }}
                             </td>
                             <td class="px-5 py-4">
-                                <span class="px-2.5 py-1 text-[10px] font-bold rounded-md {{ $ret->payment_status === 'refunded' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800' }} uppercase">
+                                <span class="px-2.5 py-1 text-[10px] font-bold rounded-md {{ $ret->payment_status === 'refunded' ? 'bg-brand-100 text-brand-800' : 'bg-blue-100 text-blue-800' }} uppercase">
                                     {{ str_replace('_', ' ', $ret->payment_status) }}
                                 </span>
                             </td>
                             <td class="px-5 py-4 text-right">
-                                <a href="{{ route('sale-returns.show', $ret) }}" class="p-2 text-slate-400 hover:text-emerald-600 rounded-lg hover:bg-emerald-50 transition" title="View Details">
+                                <a href="{{ route('sale-returns.show', $ret) }}" class="p-2 text-slate-400 hover:text-brand-600 rounded-lg hover:bg-brand-50 transition" title="View Details">
                                     <i class="fa-solid fa-eye text-sm"></i>
                                 </a>
                             </td>
@@ -160,7 +160,7 @@
                             <td colspan="8" class="px-6 py-12 text-center text-slate-400">
                                 <i class="fa-solid fa-arrow-rotate-left text-4xl text-slate-200 mb-2"></i>
                                 <p class="text-sm font-medium">No sale returns recorded.</p>
-                                <a href="{{ route('sale-returns.create') }}" class="mt-2 text-xs font-bold text-emerald-600 hover:underline inline-block">
+                                <a href="{{ route('sale-returns.create') }}" class="mt-2 text-xs font-bold text-brand-600 hover:underline inline-block">
                                     Create a New Sale Return
                                 </a>
                             </td>

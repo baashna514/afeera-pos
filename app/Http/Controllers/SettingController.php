@@ -49,19 +49,31 @@ class SettingController extends Controller
             'address' => ['nullable', 'string', 'max:500'],
             'currency' => ['required', 'string', 'max:10'],
             'currency_symbol' => ['nullable', 'string', 'max:10'],
+            'logo' => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp,svg', 'max:2048'],
         ]);
 
         $companyId = CompanySettingService::resolveCompanyId();
         $company = $companyId ? Company::find($companyId) : Company::first();
 
+        $logoPath = null;
+        if ($request->hasFile('logo')) {
+            $logoPath = $request->file('logo')->store('companies', 'public');
+            CompanySettingService::set('branding.logo_dark', $logoPath, $company?->id);
+            CompanySettingService::set('branding.logo_light', $logoPath, $company?->id);
+        }
+
         if ($company) {
-            $company->update([
+            $updateData = [
                 'name' => $validated['name'],
                 'phone' => $validated['phone'] ?? null,
                 'email' => $validated['email'] ?? null,
                 'address' => $validated['address'] ?? null,
                 'currency' => $validated['currency'],
-            ]);
+            ];
+            if ($logoPath) {
+                $updateData['logo'] = $logoPath;
+            }
+            $company->update($updateData);
         }
 
         CompanySettingService::setMany([
@@ -74,7 +86,7 @@ class SettingController extends Controller
         ], $company?->id);
 
         return redirect()->route('settings.index', ['tab' => 'general'])
-            ->with('success', 'General company settings updated successfully.');
+            ->with('success', 'General company settings and logo updated successfully.');
     }
 
     /**
@@ -209,10 +221,16 @@ class SettingController extends Controller
         if ($request->hasFile('logo_light')) {
             $path = $request->file('logo_light')->store('branding', 'public');
             CompanySettingService::set('branding.logo_light', $path, $companyId);
+            if ($company = Company::find($companyId)) {
+                $company->update(['logo' => $path]);
+            }
         }
         if ($request->hasFile('logo_dark')) {
             $path = $request->file('logo_dark')->store('branding', 'public');
             CompanySettingService::set('branding.logo_dark', $path, $companyId);
+            if ($company = Company::find($companyId)) {
+                $company->update(['logo' => $path]);
+            }
         }
         if ($request->hasFile('favicon')) {
             $path = $request->file('favicon')->store('branding', 'public');

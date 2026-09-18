@@ -49,14 +49,14 @@
                     </div>
                     <div>
                         <p class="text-[10px] uppercase font-bold text-slate-400">Settlement</p>
-                        <span class="mt-0.5 inline-block px-2 py-0.5 text-[10px] font-bold uppercase rounded-md {{ $saleReturn->payment_status === 'refunded' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800' }}">
+                        <span class="mt-0.5 inline-block px-2 py-0.5 text-[10px] font-bold uppercase rounded-md {{ $saleReturn->payment_status === 'refunded' ? 'bg-brand-100 text-brand-800' : 'bg-blue-100 text-blue-800' }}">
                             {{ str_replace('_', ' ', $saleReturn->payment_status) }}
                         </span>
                     </div>
                     <div>
                         <p class="text-[10px] uppercase font-bold text-slate-400">Original Invoice</p>
                         @if ($saleReturn->sale)
-                            <a href="{{ route('sales.show', $saleReturn->sale) }}" class="font-mono font-bold text-emerald-600 hover:underline mt-0.5 block">
+                            <a href="{{ route('sales.show', $saleReturn->sale) }}" class="font-mono font-bold text-brand-600 hover:underline mt-0.5 block">
                                 {{ $saleReturn->sale->invoice_number }}
                             </a>
                         @else
@@ -88,7 +88,7 @@
                                     <td class="px-6 py-4 text-xs text-slate-500 font-semibold">
                                         {{ $item->unit->name ?? 'Base Unit' }}
                                         @if ($item->conversion_rate > 1)
-                                            <span class="block text-[10px] text-emerald-600">(= {{ $item->conversion_rate }} base)</span>
+                                            <span class="block text-[10px] text-brand-600">(= {{ $item->conversion_rate }} base)</span>
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 text-center font-bold text-slate-800">
@@ -121,7 +121,7 @@
             <!-- Customer Card -->
             <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6">
                 <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-user text-emerald-600"></i> Customer Details
+                    <i class="fa-solid fa-user text-brand-600"></i> Customer Details
                 </h4>
                 @if ($saleReturn->customer)
                     <div class="space-y-2 text-sm">
@@ -139,7 +139,7 @@
                             </p>
                         @endif
                         <div class="pt-3 border-t border-slate-100 mt-2">
-                            <a href="{{ route('ledgers.customer') }}?customer_id={{ $saleReturn->customer->id }}" class="text-xs font-bold text-emerald-600 hover:underline flex items-center gap-1">
+                            <a href="{{ route('ledgers.customer') }}?customer_id={{ $saleReturn->customer->id }}" class="text-xs font-bold text-brand-600 hover:underline flex items-center gap-1">
                                 <i class="fa-solid fa-book"></i> View Customer Khata / Ledger
                             </a>
                         </div>

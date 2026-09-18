@@ -9,6 +9,7 @@ use App\Models\Role;
 use App\Models\Sale;
 use App\Models\SaleReturn;
 use App\Models\User;
+use App\Services\CompanySettingService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -69,6 +70,7 @@ class DashboardController extends Controller
             'currency' => ['nullable', 'string', 'max:10'],
             'phone' => ['nullable', 'string', 'max:50'],
             'address' => ['nullable', 'string', 'max:255'],
+            'logo' => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp,svg', 'max:2048'],
             'admin_name' => ['required', 'string', 'max:255'],
             'admin_email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'admin_password' => ['required', 'string', 'min:6'],
@@ -78,6 +80,11 @@ class DashboardController extends Controller
             ? strtoupper(trim($validated['company_code']))
             : 'COMP-'.strtoupper(Str::random(4));
 
+        $logoPath = null;
+        if ($request->hasFile('logo')) {
+            $logoPath = $request->file('logo')->store('companies', 'public');
+        }
+
         // 1. Create the Tenant Company
         $company = Company::create([
             'name' => $validated['company_name'],
@@ -86,8 +93,14 @@ class DashboardController extends Controller
             'phone' => $validated['phone'] ?? null,
             'address' => $validated['address'] ?? null,
             'currency' => $validated['currency'] ?? 'PKR',
+            'logo' => $logoPath,
             'is_active' => true,
         ]);
+
+        if ($logoPath) {
+            CompanySettingService::set('branding.logo_dark', $logoPath, $company->id);
+            CompanySettingService::set('branding.logo_light', $logoPath, $company->id);
+        }
 
         // 2. Auto-create the Company's Level 2 Super Admin
         $superAdminRole = Role::firstOrCreate(

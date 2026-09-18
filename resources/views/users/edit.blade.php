@@ -28,7 +28,7 @@
                         <i class="fa-regular fa-user text-sm"></i>
                     </div>
                     <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}" required
-                           class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                           class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                 </div>
             </div>
 
@@ -40,7 +40,7 @@
                         <i class="fa-regular fa-envelope text-sm"></i>
                     </div>
                     <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" required
-                           class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                           class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                 </div>
             </div>
 
@@ -52,7 +52,7 @@
                         <i class="fa-solid fa-lock text-sm"></i>
                     </div>
                     <input type="password" name="password" id="password" minlength="6"
-                           class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition"
+                           class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition"
                            placeholder="••••••••">
                 </div>
             </div>
@@ -66,7 +66,7 @@
                             <i class="fa-solid fa-building text-sm"></i>
                         </div>
                         <select name="company_id" id="company_id"
-                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                             <option value="">No Specific Company (Global / Super Admin)</option>
                             @foreach($companies as $comp)
                                 <option value="{{ $comp->id }}" {{ old('company_id', $user->company_id) == $comp->id ? 'selected' : '' }}>
@@ -87,7 +87,7 @@
                         <i class="fa-solid fa-shield-halved text-sm"></i>
                     </div>
                     <select name="role_id" id="role_id" required
-                            class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                            class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                         <option value="">Select a Role</option>
                         @foreach($roles as $role)
                             <option value="{{ $role->id }}" {{ old('role_id', $user->roles->first()?->id) == $role->id ? 'selected' : '' }}>
@@ -102,7 +102,7 @@
             <div class="pt-2 border-t border-slate-100">
                 <label class="flex items-center gap-3 cursor-pointer">
                     <input type="checkbox" name="is_active" value="1" {{ old('is_active', $user->is_active) ? 'checked' : '' }}
-                           class="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                           class="w-4 h-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
                            {{ $user->id === auth()->id() ? 'disabled' : '' }}>
                     <div>
                         <span class="text-sm font-semibold text-slate-800">Account is Active</span>
@@ -125,7 +125,7 @@
                 <a href="{{ route('users.index') }}" class="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:text-slate-800">
                     Cancel
                 </a>
-                <button type="submit" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-emerald-500/25 transition">
+                <button type="submit" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-brand-500/25 transition">
                     Save Changes
                 </button>
             </div>

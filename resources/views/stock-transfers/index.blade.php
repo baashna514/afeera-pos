@@ -8,17 +8,17 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
         <div>
             <h1 class="text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-                <i class="fa-solid fa-right-left text-emerald-600"></i> Internal Stock Transfers
+                <i class="fa-solid fa-right-left text-brand-600"></i> Internal Stock Transfers
             </h1>
             <p class="text-xs text-slate-500 font-medium mt-0.5">Transfer inventory seamlessly between warehouses & track movement audit history.</p>
         </div>
 
         <div class="flex items-center gap-3">
             <a href="{{ route('warehouses.index') }}" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-2">
-                <i class="fa-solid fa-warehouse text-emerald-600"></i>
+                <i class="fa-solid fa-warehouse text-brand-600"></i>
                 <span>Warehouses</span>
             </a>
-            <a href="{{ route('stock-transfers.create') }}" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-2">
+            <a href="{{ route('stock-transfers.create') }}" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold transition shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-arrow-right-arrow-left"></i>
                 <span>New Stock Transfer</span>
             </a>
@@ -43,7 +43,7 @@
                 <tbody class="divide-y divide-slate-100">
                     @forelse($transfers as $trf)
                         <tr class="hover:bg-slate-50/70 transition">
-                            <td class="p-4 font-mono font-bold text-emerald-700">
+                            <td class="p-4 font-mono font-bold text-brand-700">
                                 {{ $trf->transfer_number }}
                             </td>
                             <td class="p-4 text-slate-600 font-medium">
@@ -55,7 +55,7 @@
                                 </span>
                             </td>
                             <td class="p-4">
-                                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-brand-100 text-brand-800 border border-brand-200">
                                     <i class="fa-solid fa-building-circle-check mr-1"></i>{{ $trf->toWarehouse->name ?? 'N/A' }}
                                 </span>
                             </td>

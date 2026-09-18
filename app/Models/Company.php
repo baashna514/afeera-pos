@@ -17,6 +17,7 @@ class Company extends Model
         'phone',
         'address',
         'currency',
+        'logo',
         'is_active',
     ];
 
@@ -25,6 +26,15 @@ class Company extends Model
         return [
             'is_active' => 'boolean',
         ];
+    }
+
+    public function getLogoUrlAttribute(): ?string
+    {
+        if ($this->logo) {
+            return asset('storage/'.$this->logo);
+        }
+
+        return null;
     }
 
     public function users(): HasMany

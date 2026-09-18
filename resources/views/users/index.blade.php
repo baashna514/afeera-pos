@@ -11,7 +11,7 @@
         <div class="flex items-center gap-2 sm:gap-3">
             @if(auth()->user()?->hasPermission('permissions.view'))
                 <a href="{{ route('permissions.index') }}" class="px-3.5 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition flex items-center gap-2 shadow-sm">
-                    <i class="fa-solid fa-key text-xs text-emerald-600"></i>
+                    <i class="fa-solid fa-key text-xs text-brand-600"></i>
                     <span>Permissions</span>
                 </a>
             @endif
@@ -22,7 +22,7 @@
                 </a>
             @endif
             @if(auth()->user()?->hasPermission('users.create'))
-                <a href="{{ route('users.create') }}" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-sm transition flex items-center gap-2">
+                <a href="{{ route('users.create') }}" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-xl shadow-sm transition flex items-center gap-2">
                     <i class="fa-solid fa-user-plus text-xs"></i>
                     <span>Add New User</span>
                 </a>
@@ -36,11 +36,11 @@
             <div class="relative flex-1 w-full">
                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Search user by name or email..." 
-                       class="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                       class="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
             </div>
             
             <div class="w-full sm:w-48">
-                <select name="role_id" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                <select name="role_id" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                     <option value="">All Roles</option>
                     @foreach($roles as $r)
                         <option value="{{ $r->id }}" {{ request('role_id') == $r->id ? 'selected' : '' }}>{{ $r->name }}</option>
@@ -49,7 +49,7 @@
             </div>
 
             <div class="w-full sm:w-36">
-                <select name="status" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                <select name="status" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                     <option value="">All Statuses</option>
                     <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Active</option>
                     <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Inactive</option>
@@ -58,7 +58,7 @@
 
             @if(auth()->user()?->isOwner())
                 <div class="w-full sm:w-48">
-                    <select name="company_id" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                    <select name="company_id" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                         <option value="">All Companies</option>
                         @foreach($companies as $c)
                             <option value="{{ $c->id }}" {{ request('company_id') == $c->id ? 'selected' : '' }}>{{ $c->name }}</option>
@@ -99,13 +99,13 @@
                     @forelse ($users as $user)
                         <tr class="hover:bg-slate-50/80 transition">
                             <td class="px-6 py-4 font-bold text-slate-800 flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-sm">
+                                <div class="w-9 h-9 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-sm">
                                     {{ strtoupper(substr($user->name, 0, 1)) }}
                                 </div>
                                 <div>
                                     <div class="text-sm font-bold text-slate-900">{{ $user->name }}</div>
                                     @if($user->id === auth()->id())
-                                        <span class="inline-flex items-center text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">Current Session</span>
+                                        <span class="inline-flex items-center text-[10px] font-semibold text-brand-600 bg-brand-50 px-1.5 py-0.5 rounded border border-brand-200">Current Session</span>
                                     @endif
                                 </div>
                             </td>
@@ -143,8 +143,8 @@
                             </td>
                             <td class="px-6 py-4">
                                 @if($user->is_active)
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-brand-50 text-brand-700 border border-brand-200">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span> Active
                                     </span>
                                 @else
                                     <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">

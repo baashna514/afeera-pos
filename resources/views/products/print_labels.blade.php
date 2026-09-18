@@ -13,7 +13,7 @@
                 <i class="fa-solid fa-arrow-left"></i>
                 <span>Back to Products</span>
             </a>
-            <button type="button" onclick="window.print()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center gap-2">
+            <button type="button" onclick="window.print()" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center gap-2">
                 <i class="fa-solid fa-print"></i>
                 <span>Print Labels</span>
             </button>
@@ -23,19 +23,19 @@
     <!-- Print Configuration Control Panel -->
     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-6 no-print">
         <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
-            <i class="fa-solid fa-sliders text-emerald-600"></i> Label Settings
+            <i class="fa-solid fa-sliders text-brand-600"></i> Label Settings
         </h3>
 
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div>
                 <label for="label_count" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Number of Labels</label>
                 <input type="number" id="label_count" value="12" min="1" max="500" oninput="renderLabels()" 
-                       class="w-full px-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 font-bold">
+                       class="w-full px-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 font-bold">
             </div>
 
             <div>
                 <label for="paper_layout" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Sheet Layout</label>
-                <select id="paper_layout" onchange="renderLabels()" class="w-full px-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 font-semibold">
+                <select id="paper_layout" onchange="renderLabels()" class="w-full px-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 font-semibold">
                     <option value="grid-4">4 Columns (A4 Standard)</option>
                     <option value="grid-3">3 Columns (Wide Labels)</option>
                     <option value="grid-2">2 Columns (Large Sticker)</option>
@@ -45,17 +45,17 @@
 
             <div class="md:col-span-2 flex flex-wrap items-center gap-6 pt-6">
                 <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
-                    <input type="checkbox" id="toggle_company" checked onchange="renderLabels()" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300">
+                    <input type="checkbox" id="toggle_company" checked onchange="renderLabels()" class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500 border-slate-300">
                     <span>Include Company Name</span>
                 </label>
 
                 <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
-                    <input type="checkbox" id="toggle_price" checked onchange="renderLabels()" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300">
+                    <input type="checkbox" id="toggle_price" checked onchange="renderLabels()" class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500 border-slate-300">
                     <span>Include Selling Price</span>
                 </label>
 
                 <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
-                    <input type="checkbox" id="toggle_code" checked onchange="renderLabels()" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300">
+                    <input type="checkbox" id="toggle_code" checked onchange="renderLabels()" class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500 border-slate-300">
                     <span>Include Barcode Text</span>
                 </label>
             </div>

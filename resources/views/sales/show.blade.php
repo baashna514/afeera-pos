@@ -32,10 +32,10 @@
             <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm">
                 <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
                     <h3 class="text-base font-bold text-slate-700 flex items-center gap-2">
-                        <i class="fa-solid fa-file-invoice text-emerald-500"></i>
+                        <i class="fa-solid fa-file-invoice text-brand-500"></i>
                         Invoice #{{ $sale->invoice_number }}
                     </h3>
-                    <span class="px-3 py-1 text-xs font-bold uppercase rounded-full bg-emerald-100 text-emerald-700">
+                    <span class="px-3 py-1 text-xs font-bold uppercase rounded-full bg-brand-100 text-brand-700">
                         Completed
                     </span>
                 </div>
@@ -51,7 +51,7 @@
                     </div>
                     <div>
                         <p class="text-[10px] uppercase font-bold text-slate-400">Payment Method</p>
-                        <span class="mt-0.5 inline-block px-2.5 py-0.5 text-[10px] font-bold uppercase rounded-md {{ $sale->payment_method === 'cash' ? 'bg-emerald-100 text-emerald-700' : ($sale->payment_method === 'card' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700') }}">
+                        <span class="mt-0.5 inline-block px-2.5 py-0.5 text-[10px] font-bold uppercase rounded-md {{ $sale->payment_method === 'cash' ? 'bg-brand-100 text-brand-700' : ($sale->payment_method === 'card' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700') }}">
                             {{ str_replace('_', ' ', $sale->payment_method) }}
                         </span>
                     </div>
@@ -66,7 +66,7 @@
             <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-slate-100">
                     <h3 class="text-base font-bold text-slate-700 flex items-center gap-2">
-                        <i class="fa-solid fa-basket-shopping text-emerald-500"></i>
+                        <i class="fa-solid fa-basket-shopping text-brand-500"></i>
                         Purchased Items
                     </h3>
                 </div>
@@ -110,7 +110,7 @@
             <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm">
                 <div class="px-5 py-4 border-b border-slate-100">
                     <h3 class="text-sm font-bold text-slate-700 flex items-center gap-2">
-                        <i class="fa-solid fa-user text-emerald-500"></i>
+                        <i class="fa-solid fa-user text-brand-500"></i>
                         Customer
                     </h3>
                 </div>
@@ -145,7 +145,7 @@
             <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm">
                 <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
                     <h3 class="text-sm font-bold text-slate-700 flex items-center gap-2">
-                        <i class="fa-solid fa-credit-card text-emerald-500"></i>
+                        <i class="fa-solid fa-credit-card text-brand-500"></i>
                         Payment Summary
                     </h3>
                     <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded-md border {{ $sale->payment_status_badge_class }}">
@@ -168,8 +168,8 @@
                         <span class="text-base text-slate-900">Rs. {{ number_format($sale->total_amount, 2) }}</span>
                     </div>
                     <div class="flex justify-between text-xs">
-                        <span class="font-medium text-emerald-700">Paid Amount</span>
-                        <span class="font-bold text-emerald-600">Rs. {{ number_format($sale->paid_amount, 2) }}</span>
+                        <span class="font-medium text-brand-700">Paid Amount</span>
+                        <span class="font-bold text-brand-600">Rs. {{ number_format($sale->paid_amount, 2) }}</span>
                     </div>
                     @if($sale->due_amount > 0)
                         <div class="flex justify-between text-xs text-rose-600 font-bold bg-rose-50 px-2 py-1.5 rounded-lg border border-rose-100">
@@ -204,7 +204,7 @@
                     Print Thermal Receipt
                 </a>
                 <a href="{{ route('pos.index') }}"
-                   class="w-full text-center px-4 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl transition flex items-center justify-center gap-2">
+                   class="w-full text-center px-4 py-3 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-xl transition flex items-center justify-center gap-2">
                     <i class="fa-solid fa-cart-shopping"></i>
                     New Sale on POS
                 </a>

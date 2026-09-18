@@ -3,15 +3,15 @@
 @section('content')
 <div class="space-y-6">
     <!-- Today & Filtered Profit Analytics Bar -->
-    <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 text-white p-4 rounded-xl shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-brand-900 text-white p-4 rounded-xl shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg font-bold border border-emerald-500/30">
+            <div class="w-10 h-10 rounded-xl bg-brand-500/20 text-brand-400 flex items-center justify-center text-lg font-bold border border-brand-500/30">
                 <i class="fa-solid fa-chart-line"></i>
             </div>
             <div>
-                <span class="block text-[11px] font-bold uppercase tracking-wider text-emerald-400">Net Profit Analytics</span>
+                <span class="block text-[11px] font-bold uppercase tracking-wider text-brand-400">Net Profit Analytics</span>
                 <span class="text-xl font-black text-white">Rs. {{ number_format($filteredNetProfit, 2) }}</span>
-                <span class="text-xs text-slate-400 ml-2">Today Net Profit: <strong class="text-emerald-400">Rs. {{ number_format($todayNetProfit, 2) }}</strong></span>
+                <span class="text-xs text-slate-400 ml-2">Today Net Profit: <strong class="text-brand-400">Rs. {{ number_format($todayNetProfit, 2) }}</strong></span>
             </div>
         </div>
         <div class="flex items-center gap-6 text-xs text-slate-300">
@@ -25,7 +25,7 @@
             </div>
             <div>
                 <span class="block text-[10px] text-slate-400 font-semibold uppercase">Net Profit Margin</span>
-                <span class="font-bold text-emerald-400">{{ number_format($filteredProfitMargin, 1) }}%</span>
+                <span class="font-bold text-brand-400">{{ number_format($filteredProfitMargin, 1) }}%</span>
             </div>
         </div>
     </div>
@@ -75,15 +75,15 @@
         </div>
 
         <!-- Bank Balance -->
-        <div class="bg-emerald-500 text-white p-4 rounded-xl shadow-xs flex items-center justify-between">
+        <div class="bg-brand-500 text-white p-4 rounded-xl shadow-xs flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-12 h-12 rounded-full bg-white/25 flex items-center justify-center text-white text-2xl font-black">
                     $
                 </div>
                 <div>
-                    <span class="block text-xs font-bold uppercase tracking-wider text-emerald-100">Bank Balance</span>
+                    <span class="block text-xs font-bold uppercase tracking-wider text-brand-100">Bank Balance</span>
                     <span class="text-xl font-black">Rs. {{ number_format($bankBalance, 2) }}</span>
-                    <span class="block text-[10px] text-emerald-100 font-medium">This Month</span>
+                    <span class="block text-[10px] text-brand-100 font-medium">This Month</span>
                 </div>
             </div>
         </div>
@@ -92,13 +92,13 @@
     <!-- Top Row 2: Sales Timeframe Breakdown Cards (4 Grid Cards) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- Daily Sale -->
-        <div class="bg-emerald-500 text-white p-4 rounded-xl shadow-xs flex items-center justify-between">
+        <div class="bg-brand-500 text-white p-4 rounded-xl shadow-xs flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-12 h-12 rounded-full bg-white/25 flex items-center justify-center text-white text-xl font-bold">
                     <i class="fa-solid fa-money-bill-1"></i>
                 </div>
                 <div>
-                    <span class="block text-xs font-bold uppercase tracking-wider text-emerald-100">Daily Sale</span>
+                    <span class="block text-xs font-bold uppercase tracking-wider text-brand-100">Daily Sale</span>
                     <span class="text-xl font-black">Rs. {{ number_format($dailySale, 2) }}</span>
                 </div>
             </div>
@@ -186,13 +186,13 @@
         </div>
 
         <!-- Yearly Expense -->
-        <div class="bg-emerald-500 text-white p-4 rounded-xl shadow-xs flex items-center justify-between">
+        <div class="bg-brand-500 text-white p-4 rounded-xl shadow-xs flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-12 h-12 rounded-full bg-white/25 flex items-center justify-center text-white text-2xl font-black">
                     $
                 </div>
                 <div>
-                    <span class="block text-xs font-bold uppercase tracking-wider text-emerald-100">Yearly Expense</span>
+                    <span class="block text-xs font-bold uppercase tracking-wider text-brand-100">Yearly Expense</span>
                     <span class="text-xl font-black">Rs. {{ number_format($yearlyExpense, 2) }}</span>
                 </div>
             </div>
@@ -328,7 +328,7 @@
                     <tbody class="divide-y divide-slate-100">
                         @forelse ($clientDues as $due)
                             <tr>
-                                <td class="px-3 py-2 font-mono font-bold text-emerald-600">{{ $due->invoice_number }}</td>
+                                <td class="px-3 py-2 font-mono font-bold text-brand-600">{{ $due->invoice_number }}</td>
                                 <td class="px-3 py-2 text-slate-800 font-semibold">{{ $due->customer_display_name }}</td>
                                 <td class="px-3 py-2 text-right font-black text-rose-600">Rs. {{ number_format($due->due_amount, 2) }}</td>
                             </tr>
@@ -352,9 +352,9 @@
                     <tbody class="divide-y divide-slate-100">
                         @forelse ($amountReceived as $rec)
                             <tr>
-                                <td class="px-3 py-2 font-mono font-bold text-emerald-600">{{ $rec->invoice_number }}</td>
+                                <td class="px-3 py-2 font-mono font-bold text-brand-600">{{ $rec->invoice_number }}</td>
                                 <td class="px-3 py-2 text-slate-800 font-semibold">{{ $rec->customer_display_name }}</td>
-                                <td class="px-3 py-2 text-right font-black text-emerald-600">Rs. {{ number_format($rec->paid_amount, 2) }}</td>
+                                <td class="px-3 py-2 text-right font-black text-brand-600">Rs. {{ number_format($rec->paid_amount, 2) }}</td>
                             </tr>
                         @empty
                             <tr><td colspan="3" class="px-3 py-4 text-center text-slate-400">No recent payment receipts.</td></tr>

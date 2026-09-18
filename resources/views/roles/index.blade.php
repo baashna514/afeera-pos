@@ -11,7 +11,7 @@
         <div class="flex items-center gap-2 sm:gap-3">
             @if(auth()->user()?->hasPermission('permissions.view'))
                 <a href="{{ route('permissions.index') }}" class="px-3.5 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-bold rounded-xl transition flex items-center gap-2 shadow-sm">
-                    <i class="fa-solid fa-key text-xs text-emerald-600"></i>
+                    <i class="fa-solid fa-key text-xs text-brand-600"></i>
                     <span>Permissions Manager</span>
                 </a>
             @endif
@@ -22,7 +22,7 @@
                 </a>
             @endif
             @if(auth()->user()?->hasPermission('roles.create'))
-                <a href="{{ route('roles.create') }}" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-sm transition flex items-center gap-2">
+                <a href="{{ route('roles.create') }}" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-xl shadow-sm transition flex items-center gap-2">
                     <i class="fa-solid fa-shield-plus text-xs"></i>
                     <span>Create New Role</span>
                 </a>
@@ -55,7 +55,7 @@
                                     <i class="fa-solid fa-crown text-base"></i>
                                 </div>
                             @elseif($role->slug === 'cashier')
-                                <div class="w-10 h-10 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center font-bold">
+                                <div class="w-10 h-10 rounded-xl bg-teal-100 text-brand-700 flex items-center justify-center font-bold">
                                     <i class="fa-solid fa-cash-register text-base"></i>
                                 </div>
                             @else

@@ -7,7 +7,7 @@
     <div class="flex items-center justify-between">
         <div>
             <h1 class="text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-                <i class="fa-solid fa-arrow-right-arrow-left text-emerald-600"></i> New Internal Stock Transfer
+                <i class="fa-solid fa-arrow-right-arrow-left text-brand-600"></i> New Internal Stock Transfer
             </h1>
             <p class="text-xs text-slate-500 font-medium">Transfer inventory from one warehouse location to another.</p>
         </div>
@@ -27,11 +27,11 @@
                 <div>
                     <div class="flex items-center justify-between mb-1">
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">From Warehouse (Source) *</label>
-                        <button type="button" onclick="openQuickWarehouseModal()" class="text-[11px] font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1">
+                        <button type="button" onclick="openQuickWarehouseModal()" class="text-[11px] font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1">
                             <i class="fa-solid fa-plus-circle"></i> New Warehouse
                         </button>
                     </div>
-                    <select name="from_warehouse_id" id="from_warehouse_id" required class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium">
+                    <select name="from_warehouse_id" id="from_warehouse_id" required class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:outline-none font-medium">
                         <option value="">-- Select Source Warehouse --</option>
                         @foreach($warehouses as $wh)
                             <option value="{{ $wh->id }}" {{ old('from_warehouse_id') == $wh->id ? 'selected' : '' }}>
@@ -44,11 +44,11 @@
                 <div>
                     <div class="flex items-center justify-between mb-1">
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">To Warehouse (Destination) *</label>
-                        <button type="button" onclick="openQuickWarehouseModal()" class="text-[11px] font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1">
+                        <button type="button" onclick="openQuickWarehouseModal()" class="text-[11px] font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1">
                             <i class="fa-solid fa-plus-circle"></i> New Warehouse
                         </button>
                     </div>
-                    <select name="to_warehouse_id" id="to_warehouse_id" required class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium">
+                    <select name="to_warehouse_id" id="to_warehouse_id" required class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:outline-none font-medium">
                         <option value="">-- Select Target Warehouse --</option>
                         @foreach($warehouses as $wh)
                             <option value="{{ $wh->id }}" {{ old('to_warehouse_id') == $wh->id ? 'selected' : '' }}>
@@ -61,14 +61,14 @@
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Transfer Date *</label>
                     <input type="date" name="transfer_date" value="{{ old('transfer_date', date('Y-m-d')) }}" required
-                           class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none font-bold">
+                           class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:outline-none font-bold">
                 </div>
             </div>
 
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Transfer Notes (Optional)</label>
                 <input type="text" name="notes" value="{{ old('notes') }}" placeholder="e.g. Weekly stock rebalancing for retail store"
-                       class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                       class="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:outline-none">
             </div>
         </div>
 
@@ -76,7 +76,7 @@
         <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6 space-y-4">
             <div class="flex items-center justify-between border-b border-slate-100 pb-2">
                 <h2 class="text-sm font-bold text-slate-800 uppercase tracking-wider">2. Products & Quantities</h2>
-                <button type="button" id="addItemBtn" class="px-3 py-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold rounded-lg text-xs transition flex items-center gap-1">
+                <button type="button" id="addItemBtn" class="px-3 py-1.5 bg-brand-50 text-brand-700 hover:bg-brand-100 font-bold rounded-lg text-xs transition flex items-center gap-1">
                     <i class="fa-solid fa-plus"></i> Add Product
                 </button>
             </div>
@@ -93,7 +93,7 @@
                     <tbody class="divide-y divide-slate-100" id="itemsTbody">
                         <tr class="item-row">
                             <td class="p-2">
-                                <select name="items[0][product_id]" required class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 font-medium">
+                                <select name="items[0][product_id]" required class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 font-medium">
                                     <option value="">-- Choose Product --</option>
                                     @foreach($products as $p)
                                         <option value="{{ $p->id }}">
@@ -104,7 +104,7 @@
                             </td>
                             <td class="p-2">
                                 <input type="number" name="items[0][quantity]" min="1" value="1" required
-                                       class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 font-bold text-slate-800">
+                                       class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 font-bold text-slate-800">
                             </td>
                             <td class="p-2 text-center">
                                 <button type="button" class="remove-row-btn p-2 text-slate-300 hover:text-rose-600 transition">
@@ -119,7 +119,7 @@
 
         <div class="flex items-center justify-end gap-3">
             <a href="{{ route('stock-transfers.index') }}" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition">Cancel</a>
-            <button type="submit" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-xs transition flex items-center gap-2">
+            <button type="submit" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-xs shadow-xs transition flex items-center gap-2">
                 <i class="fa-solid fa-check"></i>
                 <span>Confirm & Process Transfer</span>
             </button>
@@ -132,7 +132,7 @@
     <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden p-6 space-y-4">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
             <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
-                <i class="fa-solid fa-warehouse text-emerald-600"></i> Quick Add Warehouse
+                <i class="fa-solid fa-warehouse text-brand-600"></i> Quick Add Warehouse
             </h3>
             <button type="button" onclick="closeQuickWarehouseModal()" class="text-slate-400 hover:text-slate-600 p-1">
                 <i class="fa-solid fa-xmark"></i>
@@ -141,25 +141,25 @@
         <form onsubmit="saveQuickWarehouse(event)" class="space-y-4">
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Warehouse Name <span class="text-rose-500">*</span></label>
-                <input type="text" id="qc_wh_name" required placeholder="e.g. Main Godown, North Branch..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium">
+                <input type="text" id="qc_wh_name" required placeholder="e.g. Main Godown, North Branch..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none font-medium">
             </div>
             <div class="grid grid-cols-2 gap-3">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Code</label>
-                    <input type="text" id="qc_wh_code" placeholder="e.g. WH-02" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none font-mono">
+                    <input type="text" id="qc_wh_code" placeholder="e.g. WH-02" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none font-mono">
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Phone</label>
-                    <input type="text" id="qc_wh_phone" placeholder="Contact number..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    <input type="text" id="qc_wh_phone" placeholder="Contact number..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
                 </div>
             </div>
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Address</label>
-                <input type="text" id="qc_wh_address" placeholder="Physical location..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                <input type="text" id="qc_wh_address" placeholder="Physical location..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
             </div>
             <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
                 <button type="button" onclick="closeQuickWarehouseModal()" class="px-3 py-1.5 text-xs text-slate-600 font-semibold hover:text-slate-900">Cancel</button>
-                <button type="submit" id="qc_wh_submit" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg shadow-xs transition flex items-center gap-1.5">
+                <button type="submit" id="qc_wh_submit" class="px-4 py-1.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-lg shadow-xs transition flex items-center gap-1.5">
                     <i class="fa-solid fa-check"></i> Save &amp; Select
                 </button>
             </div>

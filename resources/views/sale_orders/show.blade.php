@@ -24,7 +24,7 @@
                             <option value="card">Card</option>
                             <option value="bank_transfer">Bank Transfer</option>
                         </select>
-                        <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow transition flex items-center gap-1.5">
+                        <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl shadow transition flex items-center gap-1.5">
                             <i class="fa-solid fa-check"></i>
                             <span>Confirm & Generate Invoice</span>
                         </button>
@@ -48,7 +48,7 @@
                 <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Order Status</span>
                 <div>
                     @if ($saleOrder->status === 'confirmed')
-                        <span class="px-3 py-1 text-xs font-black rounded-lg bg-emerald-100 text-emerald-800 uppercase">
+                        <span class="px-3 py-1 text-xs font-black rounded-lg bg-brand-100 text-brand-800 uppercase">
                             Confirmed & Invoiced
                         </span>
                     @else
@@ -96,7 +96,7 @@
         <div class="flex justify-end pt-4 border-t border-slate-200">
             <div class="text-right space-y-1">
                 <span class="text-xs text-slate-400 uppercase font-bold">Total Order Payable</span>
-                <p class="text-2xl font-black text-emerald-600">Rs. {{ number_format($saleOrder->total_amount, 2) }}</p>
+                <p class="text-2xl font-black text-brand-600">Rs. {{ number_format($saleOrder->total_amount, 2) }}</p>
             </div>
         </div>
     </div>

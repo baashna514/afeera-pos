@@ -22,7 +22,7 @@
                 </button>
             @endif
             @if(auth()->user()?->hasPermission('purchases.create'))
-                <a href="{{ route('purchases.create') }}" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-sm transition flex items-center gap-2">
+                <a href="{{ route('purchases.create') }}" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-xl shadow-sm transition flex items-center gap-2">
                     <i class="fa-solid fa-plus text-xs"></i>
                     <span>Restock / New Purchase</span>
                 </a>
@@ -63,7 +63,7 @@
         </div>
 
         <div class="bg-white p-5 rounded-xl border border-slate-200/80 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+            <div class="w-12 h-12 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-xl">
                 <i class="fa-solid fa-vault"></i>
             </div>
             <div>
@@ -82,7 +82,7 @@
                 All Products
             </a>
             <a href="{{ route('stock.index', ['status' => 'in_stock']) }}" 
-               class="px-4 py-2 rounded-lg transition {{ $status === 'in_stock' ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100' }}">
+               class="px-4 py-2 rounded-lg transition {{ $status === 'in_stock' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100' }}">
                 In Stock (Healthy)
             </a>
             <a href="{{ route('stock.index', ['status' => 'low_stock']) }}" 
@@ -104,11 +104,11 @@
             <div class="relative sm:col-span-2">
                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
                 <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Search by product name or barcode..." 
-                       class="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                       class="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
             </div>
 
             <div class="flex items-center gap-2">
-                <select name="category_id" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                <select name="category_id" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                     <option value="">All Categories</option>
                     @foreach ($categories as $cat)
                         <option value="{{ $cat->id }}" {{ (string)$categoryId === (string)$cat->id ? 'selected' : '' }}>
@@ -178,13 +178,13 @@
                                         <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> Low Stock
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-bold rounded-full bg-emerald-100 text-emerald-700 uppercase">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> In Stock
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-bold rounded-full bg-brand-100 text-brand-700 uppercase">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-brand-600"></span> In Stock
                                     </span>
                                 @endif
                             </td>
                             <td class="px-5 py-4 text-right">
-                                <a href="{{ route('purchases.create') }}" class="px-3 py-1.5 text-xs font-semibold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg transition inline-flex items-center gap-1">
+                                <a href="{{ route('purchases.create') }}" class="px-3 py-1.5 text-xs font-semibold bg-brand-50 text-brand-700 hover:bg-brand-100 rounded-lg transition inline-flex items-center gap-1">
                                     <i class="fa-solid fa-plus text-[10px]"></i> Restock
                                 </a>
                             </td>
@@ -225,7 +225,7 @@
             @csrf
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Select Product *</label>
-                <select name="product_id" id="adj_product_id" required class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none">
+                <select name="product_id" id="adj_product_id" required class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white focus:outline-none">
                     <option value="">Choose a product...</option>
                     @foreach ($products as $p)
                         <option value="{{ $p->id }}">{{ $p->name }} (Current: {{ $p->quantity }})</option>
@@ -237,7 +237,7 @@
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Adjustment Type *</label>
                 <div class="grid grid-cols-2 gap-2">
                     <label class="flex items-center gap-2 p-2.5 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer text-xs font-semibold">
-                        <input type="radio" name="type" value="adjustment_in" checked class="text-emerald-600 focus:ring-emerald-500">
+                        <input type="radio" name="type" value="adjustment_in" checked class="text-brand-600 focus:ring-brand-500">
                         <span>➕ Add Stock (+)</span>
                     </label>
                     <label class="flex items-center gap-2 p-2.5 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer text-xs font-semibold">
@@ -250,13 +250,13 @@
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Quantity *</label>
                 <input type="number" min="1" name="quantity" required placeholder="e.g. 2"
-                       class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none">
+                       class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white focus:outline-none">
             </div>
 
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Reason / Notes</label>
                 <input type="text" name="notes" placeholder="e.g. Broken item, physical stock audit count"
-                       class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none">
+                       class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white focus:outline-none">
             </div>
 
             <div class="flex items-center justify-end gap-2 pt-2">

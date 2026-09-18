@@ -16,7 +16,7 @@
 
     <!-- Form Card -->
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
-        <form action="{{ route('companies.store') }}" method="POST" class="space-y-6">
+        <form action="{{ route('companies.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -98,6 +98,32 @@
                     @enderror
                 </div>
 
+                <!-- Company Logo -->
+                <div class="sm:col-span-2" x-data="{ logoPreview: null }">
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                        Company Logo / Brand Mark
+                    </label>
+                    <div class="flex items-center gap-5 p-4 border border-dashed border-slate-300 rounded-2xl bg-slate-50/50 hover:bg-slate-50 transition">
+                        <div class="w-16 h-16 rounded-xl border border-slate-200 bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-xs">
+                            <template x-if="logoPreview">
+                                <img :src="logoPreview" class="w-full h-full object-contain p-1" alt="Logo preview">
+                            </template>
+                            <template x-if="!logoPreview">
+                                <i class="fa-solid fa-building text-2xl text-slate-300"></i>
+                            </template>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <input type="file" name="logo" id="logo" accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                                   @change="const file = $event.target.files[0]; if (file) { logoPreview = URL.createObjectURL(file); }"
+                                   class="block w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 cursor-pointer">
+                            <p class="text-[11px] text-slate-400 mt-1">Upload company logo (PNG, JPG, WEBP, or SVG, max 2MB). This logo will display on the sidebar dashboard & invoices.</p>
+                        </div>
+                    </div>
+                    @error('logo')
+                        <p class="mt-1 text-xs text-rose-500">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <!-- Status Checkbox -->
                 <div class="sm:col-span-2 pt-2">
                     <label class="flex items-center gap-2.5 cursor-pointer select-none">
@@ -113,7 +139,7 @@
                 <a href="{{ route('companies.index') }}" class="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:text-slate-800 transition">
                     Cancel
                 </a>
-                <button type="submit" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-sm transition flex items-center gap-2">
+                <button type="submit" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-xl shadow-sm transition flex items-center gap-2">
                     <i class="fa-solid fa-check"></i>
                     <span>Register Company</span>
                 </button>
