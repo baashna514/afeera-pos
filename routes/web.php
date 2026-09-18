@@ -9,6 +9,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DayBookController;
 use App\Http\Controllers\ExpenseCategoryController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\LabDataController;
 use App\Http\Controllers\LedgerController;
 use App\Http\Controllers\Owner\DashboardController as OwnerDashboardController;
 use App\Http\Controllers\PermissionController;
@@ -235,6 +236,10 @@ Route::middleware(['auth'])->group(function () {
 
     // Analytics & Reports
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index')->middleware('permission:reports.view');
+
+    // Laboratory Integration: Payments & Diagnostics Data
+    Route::get('/lab/payments', [LabDataController::class, 'fetchLabPayments'])->name('lab.payments');
+    Route::get('/lab/reports', [LabDataController::class, 'fetchLabPayments'])->name('lab.reports');
 
     // System & Company Settings
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index')->middleware('permission:settings.view');

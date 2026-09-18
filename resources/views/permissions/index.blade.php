@@ -6,7 +6,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <h2 class="text-2xl font-black text-slate-800 flex items-center gap-2.5">
-                <i class="fa-solid fa-key text-emerald-600"></i>
+                <i class="fa-solid fa-key text-brand-600"></i>
                 <span>Permissions Manager</span>
             </h2>
             <p class="text-xs text-slate-500 mt-0.5">Manage system capabilities, module access rules, and custom permission slugs.</p>
@@ -17,7 +17,7 @@
                 <span>Roles List</span>
             </a>
             @if(auth()->user()?->hasPermission('permissions.create'))
-                <a href="{{ route('permissions.create') }}" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-lg shadow-emerald-500/25 transition flex items-center gap-2">
+                <a href="{{ route('permissions.create') }}" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl shadow-lg shadow-brand-500/25 transition flex items-center gap-2">
                     <i class="fa-solid fa-plus"></i>
                     <span>Add Permission</span>
                 </a>
@@ -28,7 +28,7 @@
     <!-- Quick Stats -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="bg-white rounded-2xl border border-slate-200/80 p-4 flex items-center gap-4 shadow-sm">
-            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+            <div class="w-12 h-12 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-xl">
                 <i class="fa-solid fa-lock-open"></i>
             </div>
             <div>
@@ -53,7 +53,7 @@
             </div>
             <div>
                 <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Super Admin Bypass</p>
-                <h3 class="text-xs font-bold text-emerald-600 mt-1">
+                <h3 class="text-xs font-bold text-brand-600 mt-1">
                     <i class="fa-solid fa-circle-check"></i> 100% Granted By Default
                 </h3>
             </div>
@@ -68,12 +68,12 @@
                     <i class="fa-solid fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                     <input type="text" name="search" value="{{ $search }}"
                            placeholder="Search by name, slug (e.g. sales.create), or description..."
-                           class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                           class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                 </div>
             </div>
 
             <div class="flex items-center gap-2">
-                <select name="group" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 transition">
+                <select name="group" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
                     <option value="">All Module Groups</option>
                     @foreach($allGroups as $grp)
                         <option value="{{ $grp }}" {{ $groupFilter == $grp ? 'selected' : '' }}>{{ $grp }}</option>
@@ -98,7 +98,7 @@
             <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
                 <div class="px-5 py-3.5 bg-slate-50 border-b border-slate-200/80 flex items-center justify-between">
                     <div class="flex items-center gap-2.5">
-                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-brand-500"></span>
                         <h3 class="text-xs font-black uppercase tracking-wider text-slate-700">{{ $groupName }}</h3>
                         <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-200 text-slate-700">
                             {{ $groupPerms->count() }} permissions
@@ -112,7 +112,7 @@
                             <div class="space-y-1">
                                 <div class="flex items-center gap-2">
                                     <span class="font-bold text-sm text-slate-800">{{ $perm->name }}</span>
-                                    <code class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[11px] font-mono font-semibold border border-emerald-200">
+                                    <code class="px-2 py-0.5 rounded bg-brand-50 text-brand-700 text-[11px] font-mono font-semibold border border-brand-200">
                                         {{ $perm->slug }}
                                     </code>
                                 </div>
@@ -124,7 +124,7 @@
                             <div class="flex items-center gap-2 self-end sm:self-center">
                                 @if(auth()->user()?->hasPermission('permissions.edit'))
                                     <a href="{{ route('permissions.edit', $perm) }}" 
-                                       class="px-2.5 py-1 text-xs font-medium text-slate-600 hover:text-emerald-600 bg-slate-100 hover:bg-emerald-50 rounded-lg transition"
+                                       class="px-2.5 py-1 text-xs font-medium text-slate-600 hover:text-brand-600 bg-slate-100 hover:bg-brand-50 rounded-lg transition"
                                        title="Edit Permission">
                                         <i class="fa-solid fa-pen-to-square mr-1"></i> Edit
                                     </a>

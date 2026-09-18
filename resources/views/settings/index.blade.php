@@ -37,8 +37,8 @@
 
     <!-- Feedback Alerts -->
     @if(session('success'))
-        <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center gap-3 text-emerald-800 text-sm font-medium shadow-xs">
-            <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
+        <div class="p-4 rounded-xl bg-brand-50 border border-brand-200 flex items-center gap-3 text-brand-800 text-sm font-medium shadow-xs">
+            <i class="fa-solid fa-circle-check text-brand-600 text-base"></i>
             <span>{{ session('success') }}</span>
         </div>
     @endif
@@ -121,14 +121,14 @@
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1">
                             <input type="checkbox" name="features_brands" value="1" class="sr-only peer" {{ company_setting('features.brands', true) ? 'checked' : '' }}>
-                            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
                         </label>
                     </div>
 
                     <!-- Categories Toggle -->
                     <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-50 transition flex items-start justify-between gap-3">
                         <div class="flex items-start gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                            <div class="w-10 h-10 rounded-lg bg-brand-100 text-brand-700 flex items-center justify-center shrink-0">
                                 <i class="fa-solid fa-tags text-base"></i>
                             </div>
                             <div>
@@ -138,7 +138,7 @@
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1">
                             <input type="checkbox" name="features_categories" value="1" class="sr-only peer" {{ company_setting('features.categories', true) ? 'checked' : '' }}>
-                            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
                         </label>
                     </div>
 
@@ -155,7 +155,7 @@
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1">
                             <input type="checkbox" name="features_sale_orders" value="1" class="sr-only peer" {{ company_setting('features.sale_orders', true) ? 'checked' : '' }}>
-                            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
                         </label>
                     </div>
 
@@ -172,7 +172,7 @@
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1">
                             <input type="checkbox" name="features_purchase_orders" value="1" class="sr-only peer" {{ company_setting('features.purchase_orders', true) ? 'checked' : '' }}>
-                            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
                         </label>
                     </div>
 
@@ -189,7 +189,7 @@
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1">
                             <input type="checkbox" name="features_warehouses" value="1" class="sr-only peer" {{ company_setting('features.warehouses', true) ? 'checked' : '' }}>
-                            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
                         </label>
                     </div>
 
@@ -206,7 +206,7 @@
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1">
                             <input type="checkbox" name="features_stock_transfers" value="1" class="sr-only peer" {{ company_setting('features.stock_transfers', true) ? 'checked' : '' }}>
-                            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
                         </label>
                     </div>
 
@@ -223,7 +223,7 @@
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1">
                             <input type="checkbox" name="features_vouchers" value="1" class="sr-only peer" {{ company_setting('features.vouchers', true) ? 'checked' : '' }}>
-                            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
                         </label>
                     </div>
 
@@ -240,14 +240,14 @@
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1">
                             <input type="checkbox" name="features_expenses" value="1" class="sr-only peer" {{ company_setting('features.expenses', true) ? 'checked' : '' }}>
-                            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
                         </label>
                     </div>
 
                     <!-- Day Book / Daily Cash Book -->
                     <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-50 transition flex items-start justify-between gap-3">
                         <div class="flex items-start gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                            <div class="w-10 h-10 rounded-lg bg-brand-100 text-brand-700 flex items-center justify-center shrink-0">
                                 <i class="fa-solid fa-cash-register text-base"></i>
                             </div>
                             <div>
@@ -257,7 +257,7 @@
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1">
                             <input type="checkbox" name="features_day_book" value="1" class="sr-only peer" {{ company_setting('features.day_book', true) ? 'checked' : '' }}>
-                            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
                         </label>
                     </div>
 
@@ -274,7 +274,7 @@
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1">
                             <input type="checkbox" name="features_sale_returns" value="1" class="sr-only peer" {{ company_setting('features.sale_returns', true) ? 'checked' : '' }}>
-                            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
                         </label>
                     </div>
 
@@ -291,7 +291,7 @@
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1">
                             <input type="checkbox" name="features_purchase_returns" value="1" class="sr-only peer" {{ company_setting('features.purchase_returns', true) ? 'checked' : '' }}>
-                            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-600"></div>
                         </label>
                     </div>
                 </div>

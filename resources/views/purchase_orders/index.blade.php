@@ -10,7 +10,7 @@
         </div>
         <div class="flex items-center gap-3">
             @if(auth()->user()?->hasPermission('purchase_orders.create'))
-                <a href="{{ route('purchase-orders.create') }}" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-sm transition flex items-center gap-2">
+                <a href="{{ route('purchase-orders.create') }}" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-xl shadow-sm transition flex items-center gap-2">
                     <i class="fa-solid fa-plus text-xs"></i>
                     <span>Create Purchase Order</span>
                 </a>
@@ -23,7 +23,7 @@
     <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-3">
         <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
-                <i class="fa-solid fa-filter text-emerald-600"></i> Apply Filter
+                <i class="fa-solid fa-filter text-brand-600"></i> Apply Filter
             </h3>
             @if (!empty($search) || !empty($status) || !empty($vendorId) || !empty($dateFrom) || !empty($dateTo))
                 <a href="{{ route('purchase-orders.index') }}" class="text-xs font-semibold text-rose-600 hover:text-rose-700 flex items-center gap-1 transition">
@@ -39,14 +39,14 @@
                 <div class="relative">
                     <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                     <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Search PO #..." 
-                           class="w-full pl-8 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                           class="w-full pl-8 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                 </div>
             </div>
 
             <!-- Vendor Filter -->
             <div>
                 <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">Vendor / Supplier</label>
-                <select name="vendor_id" class="w-full px-3 py-2 text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                <select name="vendor_id" class="w-full px-3 py-2 text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                     <option value="">All Vendors</option>
                     @foreach ($vendors as $v)
                         <option value="{{ $v->id }}" {{ (isset($vendorId) && $vendorId == $v->id) ? 'selected' : '' }}>
@@ -59,7 +59,7 @@
             <!-- Status Filter -->
             <div>
                 <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">Status</label>
-                <select name="status" class="w-full px-3 py-2 text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                <select name="status" class="w-full px-3 py-2 text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                     <option value="">All Statuses</option>
                     <option value="pending" {{ ($status ?? '') === 'pending' ? 'selected' : '' }}>Pending Delivery</option>
                     <option value="converted" {{ ($status ?? '') === 'converted' ? 'selected' : '' }}>Converted to Invoice</option>
@@ -71,15 +71,15 @@
             <div>
                 <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">From Date</label>
                 <input type="date" name="date_from" value="{{ $dateFrom ?? '' }}"
-                       class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                       class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
             </div>
 
             <!-- To Date & Submit -->
             <div>
                 <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">To Date</label>
                 <input type="date" name="date_to" value="{{ $dateTo ?? '' }}"
-                       class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition mb-2">
-                <button type="submit" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer">
+                       class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition mb-2">
+                <button type="submit" class="w-full py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer">
                     <i class="fa-solid fa-filter text-xs"></i>
                     <span>Filter Orders</span>
                 </button>
@@ -119,7 +119,7 @@
                             </td>
                             <td class="px-5 py-4">
                                 @if ($order->isConverted())
-                                    <span class="px-2.5 py-1 text-[10px] font-bold rounded-md bg-emerald-100 text-emerald-800 uppercase inline-flex items-center gap-1">
+                                    <span class="px-2.5 py-1 text-[10px] font-bold rounded-md bg-brand-100 text-brand-800 uppercase inline-flex items-center gap-1">
                                         <i class="fa-solid fa-check"></i> Converted to Invoice
                                     </span>
                                 @elseif ($order->status === 'cancelled')
@@ -137,21 +137,21 @@
                             </td>
                             <td class="px-5 py-4 text-right">
                                 <div class="flex items-center justify-end gap-2">
-                                    <a href="{{ route('purchase-orders.show', $order) }}" class="p-2 text-slate-400 hover:text-emerald-600 rounded-lg hover:bg-emerald-50 transition" title="View Order Details">
+                                    <a href="{{ route('purchase-orders.show', $order) }}" class="p-2 text-slate-400 hover:text-brand-600 rounded-lg hover:bg-brand-50 transition" title="View Order Details">
                                         <i class="fa-solid fa-eye text-sm"></i>
                                     </a>
 
                                     @if ($order->isConverted())
                                         @if ($order->converted_purchase_id)
                                             <a href="{{ route('purchases.show', $order->converted_purchase_id) }}" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-lg transition flex items-center gap-1" title="View Purchase Invoice">
-                                                <i class="fa-solid fa-receipt text-xs text-emerald-600"></i>
+                                                <i class="fa-solid fa-receipt text-xs text-brand-600"></i>
                                                 <span>View Invoice</span>
                                             </a>
                                         @endif
                                     @elseif ($order->isPending())
                                         @if(auth()->user()?->hasPermission('purchases.create') || auth()->user()?->hasPermission('purchase_orders.convert'))
                                             <button type="button" onclick="openConvertModal('{{ $order->id }}', '{{ $order->po_number }}', '{{ $order->vendor->name ?? 'Vendor' }}', '{{ number_format($order->total_amount, 2) }}')"
-                                                    class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg shadow-xs transition flex items-center gap-1 cursor-pointer">
+                                                    class="px-3 py-1 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-lg shadow-xs transition flex items-center gap-1 cursor-pointer">
                                                 <i class="fa-solid fa-file-invoice"></i>
                                                 <span>Convert into Purchase</span>
                                             </button>
@@ -165,7 +165,7 @@
                             <td colspan="7" class="px-6 py-12 text-center text-slate-400">
                                 <i class="fa-solid fa-clipboard-list text-4xl text-slate-200 mb-2"></i>
                                 <p class="text-sm font-medium">No purchase orders found.</p>
-                                <a href="{{ route('purchase-orders.create') }}" class="mt-2 text-xs font-bold text-emerald-600 hover:underline">
+                                <a href="{{ route('purchase-orders.create') }}" class="mt-2 text-xs font-bold text-brand-600 hover:underline">
                                     Create a Purchase Order
                                 </a>
                             </td>
@@ -188,7 +188,7 @@
     <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden p-6 space-y-4 animate-in fade-in zoom-in-95">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-lg">
+                <div class="w-10 h-10 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center text-lg">
                     <i class="fa-solid fa-file-invoice"></i>
                 </div>
                 <div>
@@ -212,18 +212,18 @@
             </div>
             <div class="flex justify-between border-t border-slate-200 pt-2 font-bold">
                 <span class="text-slate-700">Total Amount:</span>
-                <span class="text-emerald-700" id="modal_po_total">-</span>
+                <span class="text-brand-700" id="modal_po_total">-</span>
             </div>
         </div>
 
         <p class="text-xs text-slate-600">
-            <i class="fa-solid fa-circle-info text-emerald-600 mr-1"></i>
+            <i class="fa-solid fa-circle-info text-brand-600 mr-1"></i>
             All order information will be transferred to the Purchase Invoice. Stock will only be increased after the invoice is submitted.
         </p>
 
         <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
             <button type="button" onclick="closeConvertModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg cursor-pointer">Cancel</button>
-            <button type="button" onclick="proceedToConvertPurchase()" class="px-5 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm cursor-pointer flex items-center gap-1.5">
+            <button type="button" onclick="proceedToConvertPurchase()" class="px-5 py-2 text-xs font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-lg shadow-sm cursor-pointer flex items-center gap-1.5">
                 <i class="fa-solid fa-arrow-right"></i>
                 <span>Yes, Continue</span>
             </button>

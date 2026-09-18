@@ -22,7 +22,7 @@
                 <div class="md:col-span-2">
                     <label for="name" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Product Name <span class="text-rose-500">*</span></label>
                     <input type="text" name="name" id="name" value="{{ old('name', $product->name) }}" required 
-                           class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition @error('name') border-rose-400 bg-rose-50/20 @enderror">
+                           class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition @error('name') border-rose-400 bg-rose-50/20 @enderror">
                     @error('name')
                         <p class="text-xs text-rose-500 mt-1 font-medium">{{ $message }}</p>
                     @enderror
@@ -34,7 +34,7 @@
                     <div class="relative">
                         <i class="fa-solid fa-barcode absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
                         <input type="text" name="barcode" id="barcode" value="{{ old('barcode', $product->barcode) }}" required 
-                               class="w-full pl-10 pr-4 py-2.5 font-mono text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition @error('barcode') border-rose-400 bg-rose-50/20 @enderror">
+                               class="w-full pl-10 pr-4 py-2.5 font-mono text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition @error('barcode') border-rose-400 bg-rose-50/20 @enderror">
                     </div>
                     @error('barcode')
                         <p class="text-xs text-rose-500 mt-1 font-medium">{{ $message }}</p>
@@ -46,12 +46,12 @@
                 <div>
                     <div class="flex items-center justify-between mb-2">
                         <label for="category_id" class="text-xs font-bold uppercase tracking-wider text-slate-600">Category <span class="text-rose-500">*</span></label>
-                        <button type="button" onclick="openQuickCategoryModal()" class="text-[11px] font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1 transition">
+                        <button type="button" onclick="openQuickCategoryModal()" class="text-[11px] font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1 transition">
                             <i class="fa-solid fa-plus-circle"></i> Add New Category
                         </button>
                     </div>
                     <select name="category_id" id="category_id" required 
-                            class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition @error('category_id') border-rose-400 @enderror">
+                            class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition @error('category_id') border-rose-400 @enderror">
                         <option value="">Select Category</option>
                         @foreach ($categories as $cat)
                             <option value="{{ $cat->id }}" {{ old('category_id', $product->category_id) == $cat->id ? 'selected' : '' }}>
@@ -69,12 +69,12 @@
                 <div>
                     <div class="flex items-center justify-between mb-2">
                         <label for="unit_id" class="text-xs font-bold uppercase tracking-wider text-slate-600">Base Unit</label>
-                        <button type="button" onclick="openQuickUnitModal()" class="text-[11px] font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1 transition">
+                        <button type="button" onclick="openQuickUnitModal()" class="text-[11px] font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1 transition">
                             <i class="fa-solid fa-plus-circle"></i> Add New Unit
                         </button>
                     </div>
                     <select name="unit_id" id="unit_id"
-                            class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition @error('unit_id') border-rose-400 @enderror">
+                            class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition @error('unit_id') border-rose-400 @enderror">
                         <option value="">Select Unit (Piece, Box, Kg...)</option>
                         @foreach ($units as $u)
                             <option value="{{ $u->id }}" {{ old('unit_id', $product->unit_id) == $u->id ? 'selected' : '' }}>
@@ -92,12 +92,12 @@
                 <div>
                     <div class="flex items-center justify-between mb-2">
                         <label for="brand_id" class="text-xs font-bold uppercase tracking-wider text-slate-600">Brand</label>
-                        <button type="button" onclick="openQuickBrandModal()" class="text-[11px] font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1 transition">
+                        <button type="button" onclick="openQuickBrandModal()" class="text-[11px] font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1 transition">
                             <i class="fa-solid fa-plus-circle"></i> Add New Brand
                         </button>
                     </div>
                     <select name="brand_id" id="brand_id" 
-                            class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition @error('brand_id') border-rose-400 @enderror">
+                            class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition @error('brand_id') border-rose-400 @enderror">
                         <option value="">Select Brand (Optional)</option>
                         @foreach ($brands as $b)
                             <option value="{{ $b->id }}" {{ old('brand_id', $product->brand_id) == $b->id ? 'selected' : '' }}>
@@ -117,7 +117,7 @@
                     <div class="relative">
                         <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">Rs.</span>
                         <input type="number" step="0.01" min="0" name="purchase_price" id="purchase_price" value="{{ old('purchase_price', $product->purchase_price) }}" required
-                               class="w-full pl-12 pr-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition @error('purchase_price') border-rose-400 @enderror">
+                               class="w-full pl-12 pr-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition @error('purchase_price') border-rose-400 @enderror">
                     </div>
                     @error('purchase_price')
                         <p class="text-xs text-rose-500 mt-1 font-medium">{{ $message }}</p>
@@ -130,7 +130,7 @@
                     <div class="relative">
                         <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">Rs.</span>
                         <input type="number" step="0.01" min="0" name="selling_price" id="selling_price" value="{{ old('selling_price', $product->selling_price) }}" required
-                               class="w-full pl-12 pr-4 py-2.5 text-sm font-bold text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition @error('selling_price') border-rose-400 @enderror">
+                               class="w-full pl-12 pr-4 py-2.5 text-sm font-bold text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition @error('selling_price') border-rose-400 @enderror">
                     </div>
                     @error('selling_price')
                         <p class="text-xs text-rose-500 mt-1 font-medium">{{ $message }}</p>
@@ -141,7 +141,7 @@
                 <div>
                     <label for="default_discount_type" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Default Sale Discount Type</label>
                     <select name="default_discount_type" id="default_discount_type" 
-                            class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                            class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                         <option value="percentage" {{ old('default_discount_type', $product->default_discount_type ?? 'percentage') == 'percentage' ? 'selected' : '' }}>Percentage (%)</option>
                         <option value="fixed" {{ old('default_discount_type', $product->default_discount_type) == 'fixed' ? 'selected' : '' }}>Fixed Amount (Rs.)</option>
                     </select>
@@ -151,7 +151,7 @@
                 <div>
                     <label for="default_discount_value" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Default Sale Discount Value</label>
                     <input type="number" step="0.01" min="0" name="default_discount_value" id="default_discount_value" value="{{ old('default_discount_value', $product->default_discount_value ?? '0.00') }}"
-                           class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                           class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                     <span class="text-[10px] text-slate-400">Auto-filled in sales invoice when selecting this product.</span>
                 </div>
 
@@ -159,7 +159,7 @@
                 <div>
                     <label for="quantity" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Current Quantity in Stock <span class="text-rose-500">*</span></label>
                     <input type="number" min="0" name="quantity" id="quantity" value="{{ old('quantity', $product->quantity) }}" required
-                           class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition @error('quantity') border-rose-400 @enderror">
+                           class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition @error('quantity') border-rose-400 @enderror">
                     @error('quantity')
                         <p class="text-xs text-rose-500 mt-1 font-medium">{{ $message }}</p>
                     @enderror
@@ -169,7 +169,7 @@
                 <div>
                     <label for="alert_quantity" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Low Stock Alert Threshold <span class="text-rose-500">*</span></label>
                     <input type="number" min="0" name="alert_quantity" id="alert_quantity" value="{{ old('alert_quantity', $product->alert_quantity) }}" required
-                           class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition @error('alert_quantity') border-rose-400 @enderror">
+                           class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition @error('alert_quantity') border-rose-400 @enderror">
                     @error('alert_quantity')
                         <p class="text-xs text-rose-500 mt-1 font-medium">{{ $message }}</p>
                     @enderror
@@ -179,7 +179,7 @@
                 <div class="md:col-span-2">
                     <label for="description" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Description / Specifications (Optional)</label>
                     <textarea name="description" id="description" rows="3"
-                              class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">{{ old('description', $product->description) }}</textarea>
+                              class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">{{ old('description', $product->description) }}</textarea>
                 </div>
             </div>
 
@@ -188,15 +188,15 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <h3 class="text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
-                            <i class="fa-solid fa-warehouse text-emerald-600"></i> Warehouses &amp; Stock Allocation (Optional)
+                            <i class="fa-solid fa-warehouse text-brand-600"></i> Warehouses &amp; Stock Allocation (Optional)
                         </h3>
                         <p class="text-xs text-slate-400 mt-0.5">Assign stock directly across multiple warehouses. Total stock will calculate automatically.</p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button type="button" onclick="openQuickWarehouseModal()" class="px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold rounded-lg border border-emerald-200 flex items-center gap-1 transition">
+                        <button type="button" onclick="openQuickWarehouseModal()" class="px-2.5 py-1.5 bg-brand-50 hover:bg-brand-100 text-brand-700 text-xs font-bold rounded-lg border border-brand-200 flex items-center gap-1 transition">
                             <i class="fa-solid fa-plus-circle"></i> New Warehouse
                         </button>
-                        <button type="button" onclick="addWarehouseStockRow()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg shadow-xs transition flex items-center gap-1.5">
+                        <button type="button" onclick="addWarehouseStockRow()" class="px-3 py-1.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-lg shadow-xs transition flex items-center gap-1.5">
                             <i class="fa-solid fa-plus"></i> Add Row
                         </button>
                     </div>
@@ -226,11 +226,11 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <h3 class="text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
-                            <i class="fa-solid fa-layer-group text-emerald-600"></i> Secondary Units &amp; Packaging (Optional)
+                            <i class="fa-solid fa-layer-group text-brand-600"></i> Secondary Units &amp; Packaging (Optional)
                         </h3>
                         <p class="text-xs text-slate-400 mt-0.5">Define alternative packaging (e.g., 1 Box = 12 Pieces, 1 Carton = 24 Pieces) with custom prices.</p>
                     </div>
-                    <button type="button" onclick="addSecondaryUnitRow()" class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold rounded-lg border border-emerald-200 flex items-center gap-1.5 transition">
+                    <button type="button" onclick="addSecondaryUnitRow()" class="px-3 py-1.5 bg-brand-50 hover:bg-brand-100 text-brand-700 text-xs font-bold rounded-lg border border-brand-200 flex items-center gap-1.5 transition">
                         <i class="fa-solid fa-plus"></i> Add Secondary Unit
                     </button>
                 </div>
@@ -254,17 +254,17 @@
                     </div>
                 </div>
                 <p class="text-[11px] text-slate-500 mt-2 flex items-center gap-1.5">
-                    <i class="fa-solid fa-circle-info text-emerald-600"></i>
+                    <i class="fa-solid fa-circle-info text-brand-600"></i>
                     <span><strong>Auto Pricing:</strong> Prices for packaging units are always dynamically computed as <code>Base Price × Conversion Rate</code>. If base price changes, secondary unit prices update automatically.</span>
                 </p>
 
                 <!-- Default Units Preference -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-emerald-50/60 rounded-xl border border-emerald-200/80 mt-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-brand-50/60 rounded-xl border border-brand-200/80 mt-4">
                     <div>
-                        <label for="default_sale_unit_id" class="block text-xs font-bold uppercase tracking-wider text-emerald-800 mb-1.5 flex items-center gap-1.5">
-                            <i class="fa-solid fa-cart-shopping text-emerald-600"></i> Default Sale Unit
+                        <label for="default_sale_unit_id" class="block text-xs font-bold uppercase tracking-wider text-brand-800 mb-1.5 flex items-center gap-1.5">
+                            <i class="fa-solid fa-cart-shopping text-brand-600"></i> Default Sale Unit
                         </label>
-                        <select name="default_sale_unit_id" id="default_sale_unit_id" class="w-full px-3 py-2 text-xs font-semibold bg-white border border-emerald-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <select name="default_sale_unit_id" id="default_sale_unit_id" class="w-full px-3 py-2 text-xs font-semibold bg-white border border-brand-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
                             <option value="">Default: Use Base Unit</option>
                             @foreach ($units as $u)
                                 <option value="{{ $u->id }}" {{ old('default_sale_unit_id', $product->default_sale_unit_id) == $u->id ? 'selected' : '' }}>
@@ -276,10 +276,10 @@
                     </div>
 
                     <div>
-                        <label for="default_purchase_unit_id" class="block text-xs font-bold uppercase tracking-wider text-emerald-800 mb-1.5 flex items-center gap-1.5">
-                            <i class="fa-solid fa-truck-ramp-box text-emerald-600"></i> Default Purchase Unit
+                        <label for="default_purchase_unit_id" class="block text-xs font-bold uppercase tracking-wider text-brand-800 mb-1.5 flex items-center gap-1.5">
+                            <i class="fa-solid fa-truck-ramp-box text-brand-600"></i> Default Purchase Unit
                         </label>
-                        <select name="default_purchase_unit_id" id="default_purchase_unit_id" class="w-full px-3 py-2 text-xs font-semibold bg-white border border-emerald-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <select name="default_purchase_unit_id" id="default_purchase_unit_id" class="w-full px-3 py-2 text-xs font-semibold bg-white border border-brand-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
                             <option value="">Default: Use Base Unit</option>
                             @foreach ($units as $u)
                                 <option value="{{ $u->id }}" {{ old('default_purchase_unit_id', $product->default_purchase_unit_id) == $u->id ? 'selected' : '' }}>
@@ -296,7 +296,7 @@
                 <a href="{{ route('products.index') }}" class="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:text-slate-800 transition">
                     Cancel
                 </a>
-                <button type="submit" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-md shadow-emerald-600/20 transition flex items-center gap-2">
+                <button type="submit" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-xl shadow-md shadow-brand-600/20 transition flex items-center gap-2">
                     <i class="fa-solid fa-check"></i>
                     <span>Update Product</span>
                 </button>
@@ -310,7 +310,7 @@
     <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden p-6 space-y-4">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
             <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
-                <i class="fa-solid fa-folder-plus text-emerald-600"></i> Quick Add Category
+                <i class="fa-solid fa-folder-plus text-brand-600"></i> Quick Add Category
             </h3>
             <button type="button" onclick="closeQuickCategoryModal()" class="text-slate-400 hover:text-slate-600 p-1">
                 <i class="fa-solid fa-xmark"></i>
@@ -319,15 +319,15 @@
         <form onsubmit="saveQuickCategory(event)" class="space-y-4">
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Category Name <span class="text-rose-500">*</span></label>
-                <input type="text" id="qc_cat_name" required placeholder="e.g. Electronics, Hardware..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium">
+                <input type="text" id="qc_cat_name" required placeholder="e.g. Electronics, Hardware..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none font-medium">
             </div>
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Description (Optional)</label>
-                <input type="text" id="qc_cat_desc" placeholder="Brief category notes..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium">
+                <input type="text" id="qc_cat_desc" placeholder="Brief category notes..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none font-medium">
             </div>
             <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
                 <button type="button" onclick="closeQuickCategoryModal()" class="px-3 py-1.5 text-xs text-slate-600 font-semibold hover:text-slate-900">Cancel</button>
-                <button type="submit" id="qc_cat_submit" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg shadow-xs transition flex items-center gap-1.5">
+                <button type="submit" id="qc_cat_submit" class="px-4 py-1.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-lg shadow-xs transition flex items-center gap-1.5">
                     <i class="fa-solid fa-check"></i> Save &amp; Select
                 </button>
             </div>
@@ -340,7 +340,7 @@
     <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden p-6 space-y-4">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
             <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
-                <i class="fa-solid fa-copyright text-emerald-600"></i> Quick Add Brand
+                <i class="fa-solid fa-copyright text-brand-600"></i> Quick Add Brand
             </h3>
             <button type="button" onclick="closeQuickBrandModal()" class="text-slate-400 hover:text-slate-600 p-1">
                 <i class="fa-solid fa-xmark"></i>
@@ -349,15 +349,15 @@
         <form onsubmit="saveQuickBrand(event)" class="space-y-4">
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Brand Name <span class="text-rose-500">*</span></label>
-                <input type="text" id="qc_brand_name" required placeholder="e.g. Samsung, Nike, Nestle..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium">
+                <input type="text" id="qc_brand_name" required placeholder="e.g. Samsung, Nike, Nestle..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none font-medium">
             </div>
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Description (Optional)</label>
-                <input type="text" id="qc_brand_desc" placeholder="Brief brand notes..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium">
+                <input type="text" id="qc_brand_desc" placeholder="Brief brand notes..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none font-medium">
             </div>
             <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
                 <button type="button" onclick="closeQuickBrandModal()" class="px-3 py-1.5 text-xs text-slate-600 font-semibold hover:text-slate-900">Cancel</button>
-                <button type="submit" id="qc_brand_submit" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg shadow-xs transition flex items-center gap-1.5">
+                <button type="submit" id="qc_brand_submit" class="px-4 py-1.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-lg shadow-xs transition flex items-center gap-1.5">
                     <i class="fa-solid fa-check"></i> Save &amp; Select
                 </button>
             </div>
@@ -370,7 +370,7 @@
     <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden p-6 space-y-4">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
             <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
-                <i class="fa-solid fa-scale-balanced text-emerald-600"></i> Quick Add Unit
+                <i class="fa-solid fa-scale-balanced text-brand-600"></i> Quick Add Unit
             </h3>
             <button type="button" onclick="closeQuickUnitModal()" class="text-slate-400 hover:text-slate-600 p-1">
                 <i class="fa-solid fa-xmark"></i>
@@ -379,15 +379,15 @@
         <form onsubmit="saveQuickUnit(event)" class="space-y-4">
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Unit Full Name <span class="text-rose-500">*</span></label>
-                <input type="text" id="qc_unit_name" required placeholder="e.g. Kilogram, Carton, Piece..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium">
+                <input type="text" id="qc_unit_name" required placeholder="e.g. Kilogram, Carton, Piece..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none font-medium">
             </div>
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Short Code <span class="text-rose-500">*</span></label>
-                <input type="text" id="qc_unit_code" required placeholder="e.g. kg, ctn, pc..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none font-mono font-bold">
+                <input type="text" id="qc_unit_code" required placeholder="e.g. kg, ctn, pc..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none font-mono font-bold">
             </div>
             <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
                 <button type="button" onclick="closeQuickUnitModal()" class="px-3 py-1.5 text-xs text-slate-600 font-semibold hover:text-slate-900">Cancel</button>
-                <button type="submit" id="qc_unit_submit" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg shadow-xs transition flex items-center gap-1.5">
+                <button type="submit" id="qc_unit_submit" class="px-4 py-1.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-lg shadow-xs transition flex items-center gap-1.5">
                     <i class="fa-solid fa-check"></i> Save &amp; Select
                 </button>
             </div>
@@ -400,7 +400,7 @@
     <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden p-6 space-y-4">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
             <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
-                <i class="fa-solid fa-warehouse text-emerald-600"></i> Quick Add Warehouse
+                <i class="fa-solid fa-warehouse text-brand-600"></i> Quick Add Warehouse
             </h3>
             <button type="button" onclick="closeQuickWarehouseModal()" class="text-slate-400 hover:text-slate-600 p-1">
                 <i class="fa-solid fa-xmark"></i>
@@ -409,25 +409,25 @@
         <form onsubmit="saveQuickWarehouse(event)" class="space-y-4">
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Warehouse Name <span class="text-rose-500">*</span></label>
-                <input type="text" id="qc_wh_name" required placeholder="e.g. Main Godown, North Branch..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium">
+                <input type="text" id="qc_wh_name" required placeholder="e.g. Main Godown, North Branch..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none font-medium">
             </div>
             <div class="grid grid-cols-2 gap-3">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Code</label>
-                    <input type="text" id="qc_wh_code" placeholder="e.g. WH-02" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none font-mono">
+                    <input type="text" id="qc_wh_code" placeholder="e.g. WH-02" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none font-mono">
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Phone</label>
-                    <input type="text" id="qc_wh_phone" placeholder="Contact number..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    <input type="text" id="qc_wh_phone" placeholder="Contact number..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
                 </div>
             </div>
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Address</label>
-                <input type="text" id="qc_wh_address" placeholder="Physical location..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                <input type="text" id="qc_wh_address" placeholder="Physical location..." class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
             </div>
             <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
                 <button type="button" onclick="closeQuickWarehouseModal()" class="px-3 py-1.5 text-xs text-slate-600 font-semibold hover:text-slate-900">Cancel</button>
-                <button type="submit" id="qc_wh_submit" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg shadow-xs transition flex items-center gap-1.5">
+                <button type="submit" id="qc_wh_submit" class="px-4 py-1.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-lg shadow-xs transition flex items-center gap-1.5">
                     <i class="fa-solid fa-check"></i> Save &amp; Select
                 </button>
             </div>
@@ -463,14 +463,14 @@
         tr.innerHTML = `
             <td class="p-2.5">
                 <select name="warehouse_stocks[${warehouseStockIndex}][warehouse_id]" required
-                        class="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium">
+                        class="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none font-medium">
                     ${options}
                 </select>
             </td>
             <td class="p-2.5">
                 <input type="number" min="0" name="warehouse_stocks[${warehouseStockIndex}][quantity]" value="${qty}" required placeholder="0"
                        oninput="calculateTotalStockFromWarehouses()"
-                       class="wh-qty-input w-full px-2.5 py-1.5 text-xs font-bold text-slate-800 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                       class="wh-qty-input w-full px-2.5 py-1.5 text-xs font-bold text-slate-800 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
             </td>
             <td class="p-2.5 text-center">
                 <button type="button" onclick="removeWarehouseStockRow(${warehouseStockIndex})" class="p-1 text-slate-400 hover:text-rose-600 rounded transition" title="Remove">
@@ -523,7 +523,7 @@
                 if (rate > 0) {
                     const sPrice = op === 'multiply' ? (baseSale * rate) : (baseSale / rate);
                     const bPrice = op === 'multiply' ? (baseBuy * rate) : (baseBuy / rate);
-                    previewEl.innerHTML = `<span class="text-emerald-700 font-bold">Sell: Rs. ${Number(sPrice.toFixed(2)).toLocaleString()}</span> <span class="text-slate-300 mx-1">|</span> <span class="text-slate-600">Buy: Rs. ${Number(bPrice.toFixed(2)).toLocaleString()}</span>`;
+                    previewEl.innerHTML = `<span class="text-brand-700 font-bold">Sell: Rs. ${Number(sPrice.toFixed(2)).toLocaleString()}</span> <span class="text-slate-300 mx-1">|</span> <span class="text-slate-600">Buy: Rs. ${Number(bPrice.toFixed(2)).toLocaleString()}</span>`;
                 } else {
                     previewEl.innerHTML = `<span class="text-slate-400 italic">Enter rate to preview</span>`;
                 }
@@ -555,19 +555,19 @@
         tr.innerHTML = `
             <td class="p-2.5">
                 <select name="secondary_units[${secondaryUnitIndex}][unit_id]" required
-                        class="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        class="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
                     ${options}
                 </select>
             </td>
             <td class="p-2.5">
                 <div class="flex items-center gap-1">
-                    <select name="secondary_units[${secondaryUnitIndex}][operator]" onchange="updateAllUnitPricePreviews()" class="operator-select px-2 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none w-14">
+                    <select name="secondary_units[${secondaryUnitIndex}][operator]" onchange="updateAllUnitPricePreviews()" class="operator-select px-2 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none w-14">
                         <option value="multiply" ${operator === 'multiply' ? 'selected' : ''}>×</option>
                         <option value="divide" ${operator === 'divide' ? 'selected' : ''}>÷</option>
                     </select>
                     <input type="number" step="0.0001" min="0.0001" name="secondary_units[${secondaryUnitIndex}][conversion_rate]" value="${conversion}" required placeholder="e.g. 12"
                            oninput="updateAllUnitPricePreviews()"
-                           class="rate-input w-full px-2.5 py-1.5 text-xs font-bold text-center bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                           class="rate-input w-full px-2.5 py-1.5 text-xs font-bold text-center bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
                 </div>
             </td>
             <td class="p-2.5">

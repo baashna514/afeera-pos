@@ -20,7 +20,7 @@
             <div>
                 <label for="name" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Customer Full Name <span class="text-rose-500">*</span></label>
                 <input type="text" name="name" id="name" value="{{ old('name', $customer->name) }}" required 
-                       class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition @error('name') border-rose-400 bg-rose-50/20 @enderror">
+                       class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition @error('name') border-rose-400 bg-rose-50/20 @enderror">
                 @error('name')
                     <p class="text-xs text-rose-500 mt-1 font-medium">{{ $message }}</p>
                 @enderror
@@ -30,7 +30,7 @@
                 <div>
                     <label for="phone" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Phone Number</label>
                     <input type="text" name="phone" id="phone" value="{{ old('phone', $customer->phone) }}" 
-                           class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                           class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                     @error('phone')
                         <p class="text-xs text-rose-500 mt-1 font-medium">{{ $message }}</p>
                     @enderror
@@ -39,7 +39,7 @@
                 <div>
                     <label for="email" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Email Address</label>
                     <input type="email" name="email" id="email" value="{{ old('email', $customer->email) }}" 
-                           class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                           class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                     @error('email')
                         <p class="text-xs text-rose-500 mt-1 font-medium">{{ $message }}</p>
                     @enderror
@@ -49,14 +49,14 @@
             <div>
                 <label for="address" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Address / City</label>
                 <textarea name="address" id="address" rows="3"
-                          class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">{{ old('address', $customer->address) }}</textarea>
+                          class="w-full px-4 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">{{ old('address', $customer->address) }}</textarea>
             </div>
 
             <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
                 <a href="{{ route('customers.index') }}" class="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:text-slate-800 transition">
                     Cancel
                 </a>
-                <button type="submit" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-md shadow-emerald-600/20 transition flex items-center gap-2">
+                <button type="submit" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-xl shadow-md shadow-brand-600/20 transition flex items-center gap-2">
                     <i class="fa-solid fa-check"></i>
                     <span>Update Customer</span>
                 </button>

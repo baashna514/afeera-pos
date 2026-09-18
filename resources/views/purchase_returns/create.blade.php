@@ -16,10 +16,10 @@
         @csrf
 
         <!-- Load from Purchase Invoice Card (Optional) -->
-        <div class="bg-gradient-to-r from-teal-500/10 via-emerald-500/5 to-transparent rounded-2xl border border-emerald-200/80 p-5">
+        <div class="bg-gradient-to-r from-brand-500/10 via-brand-500/5 to-transparent rounded-2xl border border-brand-200/80 p-5">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-base shadow-sm">
+                    <div class="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center text-base shadow-sm">
                         <i class="fa-solid fa-file-invoice"></i>
                     </div>
                     <div>
@@ -28,7 +28,7 @@
                     </div>
                 </div>
                 <div class="sm:w-72">
-                    <select id="purchase_selector" onchange="onPurchaseSelect(this.value)" class="w-full px-3 py-2 text-xs font-semibold bg-white border border-emerald-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none shadow-xs">
+                    <select id="purchase_selector" onchange="onPurchaseSelect(this.value)" class="w-full px-3 py-2 text-xs font-semibold bg-white border border-brand-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none shadow-xs">
                         <option value="">-- Choose Invoice (Optional) --</option>
                         @foreach ($purchases as $p)
                             <option value="{{ $p->id }}" {{ ($selectedPurchase && $selectedPurchase->id == $p->id) ? 'selected' : '' }}>
@@ -43,7 +43,7 @@
         <!-- Vendor & General Details Card -->
         <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-6">
             <h3 class="text-sm font-bold uppercase tracking-wider text-slate-700 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-truck text-emerald-600"></i> Vendor &amp; Return Details
+                <i class="fa-solid fa-truck text-brand-600"></i> Vendor &amp; Return Details
             </h3>
 
             <input type="hidden" name="purchase_id" id="purchase_id" value="{{ $selectedPurchase ? $selectedPurchase->id : '' }}">
@@ -52,7 +52,7 @@
                 <!-- Vendor Select -->
                 <div>
                     <label for="vendor_id" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Vendor / Supplier <span class="text-rose-500">*</span></label>
-                    <select name="vendor_id" id="vendor_id" required class="w-full px-4 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                    <select name="vendor_id" id="vendor_id" required class="w-full px-4 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                         <option value="">Select Vendor</option>
                         @foreach ($vendors as $v)
                             <option value="{{ $v->id }}" {{ ($selectedPurchase && $selectedPurchase->vendor_id == $v->id) ? 'selected' : '' }}>
@@ -66,14 +66,14 @@
                 <div>
                     <label for="return_date" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Return Date <span class="text-rose-500">*</span></label>
                     <input type="date" name="return_date" id="return_date" value="{{ date('Y-m-d') }}" required
-                           class="w-full px-4 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                           class="w-full px-4 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                 </div>
 
                 <!-- Return Note -->
                 <div>
                     <label for="note" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Reason / Note</label>
                     <input type="text" name="note" id="note" placeholder="Damaged items, supplier return..."
-                           class="w-full px-4 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                           class="w-full px-4 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                 </div>
             </div>
         </div>
@@ -83,11 +83,11 @@
             <div class="flex items-center justify-between">
                 <div>
                     <h3 class="text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
-                        <i class="fa-solid fa-boxes-stacked text-emerald-600"></i> Returned Products
+                        <i class="fa-solid fa-boxes-stacked text-brand-600"></i> Returned Products
                     </h3>
                     <p class="text-xs text-slate-400 mt-0.5">Select products being sent back to supplier. Quantities will be deducted from warehouse stock.</p>
                 </div>
-                <button type="button" onclick="addItemRow()" class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold rounded-lg border border-emerald-200 flex items-center gap-1.5 transition">
+                <button type="button" onclick="addItemRow()" class="px-3 py-1.5 bg-brand-50 hover:bg-brand-100 text-brand-700 text-xs font-bold rounded-lg border border-brand-200 flex items-center gap-1.5 transition">
                     <i class="fa-solid fa-plus"></i> Add Item
                 </button>
             </div>
@@ -116,13 +116,13 @@
         <div class="bg-slate-900 text-white rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
             <div>
                 <span class="text-xs font-bold uppercase tracking-wider text-slate-400 block">Total Return Value</span>
-                <span class="text-3xl font-black text-emerald-400" id="grandTotalDisplay">Rs. 0.00</span>
+                <span class="text-3xl font-black text-brand-400" id="grandTotalDisplay">Rs. 0.00</span>
             </div>
             <div class="flex items-center gap-3">
                 <a href="{{ route('purchase-returns.index') }}" class="px-5 py-2.5 text-sm font-semibold text-slate-300 hover:text-white transition">
                     Cancel
                 </a>
-                <button type="submit" class="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold rounded-xl shadow-lg shadow-emerald-500/30 transition flex items-center gap-2">
+                <button type="submit" class="px-6 py-2.5 bg-brand-500 hover:bg-brand-600 text-white text-sm font-bold rounded-xl shadow-lg shadow-brand-500/30 transition flex items-center gap-2">
                     <i class="fa-solid fa-check"></i>
                     <span>Confirm &amp; Deduct Stock</span>
                 </button>
@@ -197,25 +197,25 @@
         tr.innerHTML = `
             <td class="p-3">
                 <select name="items[${rowIndex}][product_id]" required onchange="onProductSelect(this, ${rowIndex})"
-                        class="product-select w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                        class="product-select w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                     ${productOptions}
                 </select>
             </td>
             <td class="p-3">
                 <select name="items[${rowIndex}][unit_id]" onchange="onUnitSelect(this, ${rowIndex})"
-                        class="unit-select w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                        class="unit-select w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                     <option value="">Base Unit</option>
                 </select>
                 <input type="hidden" name="items[${rowIndex}][conversion_rate]" class="conversion-rate-input" value="1">
             </td>
             <td class="p-3">
                 <input type="number" min="1" value="${data ? data.quantity : 1}" name="items[${rowIndex}][quantity]" required oninput="calculateSubtotal(${rowIndex})"
-                       class="qty-input w-full px-3 py-2 text-xs font-bold text-center bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
-                <p class="text-[10px] text-emerald-600 font-semibold mt-0.5 text-center unit-hint-${rowIndex}"></p>
+                       class="qty-input w-full px-3 py-2 text-xs font-bold text-center bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
+                <p class="text-[10px] text-brand-600 font-semibold mt-0.5 text-center unit-hint-${rowIndex}"></p>
             </td>
             <td class="p-3">
                 <input type="number" step="0.01" min="0" value="${data ? parseFloat(data.price).toFixed(2) : '0.00'}" name="items[${rowIndex}][unit_price]" required oninput="calculateSubtotal(${rowIndex})"
-                       class="price-input w-full px-3 py-2 text-xs font-bold text-right bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                       class="price-input w-full px-3 py-2 text-xs font-bold text-right bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
             </td>
             <td class="p-3 text-right font-black text-slate-800 text-xs" id="subtotal_${rowIndex}">
                 Rs. 0.00

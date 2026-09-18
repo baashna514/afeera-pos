@@ -6,7 +6,7 @@
     <!-- Top Architecture Banner (Matching SaaS Multi-Tenant Diagram) -->
     <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-indigo-900/40 relative overflow-hidden">
         <div class="absolute -right-12 -top-12 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -left-12 -bottom-12 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-12 -bottom-12 w-64 h-64 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center relative z-10">
             <!-- Left Branding -->
@@ -35,9 +35,9 @@
                         </span>
                     </div>
                     <ul class="text-[11px] text-slate-300 space-y-0.5">
-                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-check text-emerald-400 text-[10px]"></i> Has full access to the entire platform</li>
-                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-check text-emerald-400 text-[10px]"></i> Manages all companies & tenants</li>
-                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-check text-emerald-400 text-[10px]"></i> Not attached to any single company</li>
+                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-check text-brand-400 text-[10px]"></i> Has full access to the entire platform</li>
+                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-check text-brand-400 text-[10px]"></i> Manages all companies & tenants</li>
+                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-check text-brand-400 text-[10px]"></i> Not attached to any single company</li>
                     </ul>
                 </div>
             </div>
@@ -51,7 +51,7 @@
                     Each company operates with its own <span class="text-white font-semibold">Level 2 Super Admin</span> who possesses full administrative control strictly within their company boundary.
                 </p>
                 <div class="mt-3 flex items-center gap-2 text-[10px] font-mono text-slate-400">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span class="w-2 h-2 rounded-full bg-brand-400 animate-ping"></span>
                     <span>Multi-tenant query scoping active system-wide</span>
                 </div>
             </div>
@@ -84,12 +84,12 @@
 
         <!-- Gross Platform Sales -->
         <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-3">
-            <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg font-black">
+            <div class="w-11 h-11 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-lg font-black">
                 <i class="fa-solid fa-cash-register"></i>
             </div>
             <div>
                 <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Platform Sales</span>
-                <span class="text-lg font-black text-emerald-600">Rs. {{ number_format($totalPlatformSales, 0) }}</span>
+                <span class="text-lg font-black text-brand-600">Rs. {{ number_format($totalPlatformSales, 0) }}</span>
             </div>
         </div>
 
@@ -121,7 +121,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
             <div>
                 <h3 class="text-lg font-black text-slate-900 flex items-center gap-2">
-                    <span class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-bold">
+                    <span class="w-7 h-7 rounded-lg bg-brand-100 text-brand-700 flex items-center justify-center text-sm font-bold">
                         <i class="fa-solid fa-plus"></i>
                     </span>
                     <span>Register New Company & Provision Super Admin</span>
@@ -135,7 +135,7 @@
             </span>
         </div>
 
-        <form action="{{ route('owner.companies.store') }}" method="POST" class="space-y-6">
+        <form action="{{ route('owner.companies.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6" x-data="{ logoPreview: null }">
             @csrf
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -145,7 +145,7 @@
                         Company Name <span class="text-rose-500">*</span>
                     </label>
                     <input type="text" name="company_name" value="{{ old('company_name') }}" required placeholder="e.g. ABC Traders LLC"
-                           class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:outline-none transition">
+                           class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition">
                 </div>
 
                 <!-- Company Code -->
@@ -154,7 +154,7 @@
                         Company Code (Optional)
                     </label>
                     <input type="text" name="company_code" value="{{ old('company_code') }}" placeholder="e.g. ABC-01 (Auto-generated if empty)"
-                           class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:outline-none transition uppercase">
+                           class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition uppercase">
                 </div>
 
                 <!-- Currency -->
@@ -162,7 +162,7 @@
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
                         Currency
                     </label>
-                    <select name="currency" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none transition">
+                    <select name="currency" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:outline-none transition">
                         <option value="PKR" selected>PKR - Pakistani Rupee (Rs.)</option>
                         <option value="AED">AED - UAE Dirham</option>
                         <option value="USD">USD - US Dollar ($)</option>
@@ -176,7 +176,7 @@
                         Super Admin Name <span class="text-rose-500">*</span>
                     </label>
                     <input type="text" name="admin_name" value="{{ old('admin_name') }}" required placeholder="e.g. Muhammad Ali"
-                           class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:outline-none transition">
+                           class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition">
                 </div>
 
                 <!-- Super Admin Email -->
@@ -185,7 +185,7 @@
                         Super Admin Email (Login ID) <span class="text-rose-500">*</span>
                     </label>
                     <input type="email" name="admin_email" value="{{ old('admin_email') }}" required placeholder="e.g. admin@abctraders.com"
-                           class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:outline-none transition">
+                           class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition">
                 </div>
 
                 <!-- Super Admin Password -->
@@ -194,12 +194,35 @@
                         Password <span class="text-rose-500">*</span>
                     </label>
                     <input type="password" name="admin_password" required placeholder="Minimum 6 characters"
-                           class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:outline-none transition">
+                           class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:outline-none transition">
+                </div>
+
+                <!-- Company Logo Upload -->
+                <div class="sm:col-span-2 lg:col-span-3">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                        Company Logo / Brand Mark (Optional)
+                    </label>
+                    <div class="flex items-center gap-4 p-3.5 border border-dashed border-slate-300 rounded-xl bg-slate-50/50 hover:bg-slate-50 transition">
+                        <div class="w-12 h-12 rounded-lg border border-slate-200 bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
+                            <template x-if="logoPreview">
+                                <img :src="logoPreview" class="w-full h-full object-contain p-1" alt="Logo preview">
+                            </template>
+                            <template x-if="!logoPreview">
+                                <i class="fa-solid fa-building text-slate-300 text-lg"></i>
+                            </template>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <input type="file" name="logo" id="owner_logo" accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                                   @change="const file = $event.target.files[0]; if (file) { logoPreview = URL.createObjectURL(file); }"
+                                   class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
+                            <p class="text-[11px] text-slate-400 mt-1">PNG, JPG, WEBP, or SVG (max 2MB). Shown in tenant's sidebar and receipts.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="flex items-center justify-end gap-3 pt-2">
-                <button type="submit" class="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white text-sm font-bold rounded-xl shadow-lg shadow-emerald-600/25 transition duration-150 flex items-center gap-2">
+                <button type="submit" class="px-6 py-3 bg-gradient-to-r from-brand-600 to-brand-700 hover:from-brand-700 hover:to-brand-800 text-white text-sm font-bold rounded-xl shadow-lg shadow-brand-600/25 transition duration-150 flex items-center gap-2">
                     <i class="fa-solid fa-building-circle-check"></i>
                     <span>Create Company & Provision Super Admin</span>
                 </button>
@@ -225,7 +248,7 @@
         @php
             $accentColors = [
                 ['border' => 'border-blue-500', 'header' => 'bg-blue-500', 'badge' => 'bg-blue-50 text-blue-700 border-blue-200', 'icon' => 'text-blue-500'],
-                ['border' => 'border-emerald-500', 'header' => 'bg-emerald-600', 'badge' => 'bg-emerald-50 text-emerald-700 border-emerald-200', 'icon' => 'text-emerald-600'],
+                ['border' => 'border-brand-500', 'header' => 'bg-brand-600', 'badge' => 'bg-brand-50 text-brand-700 border-brand-200', 'icon' => 'text-brand-600'],
                 ['border' => 'border-amber-500', 'header' => 'bg-amber-500', 'badge' => 'bg-amber-50 text-amber-800 border-amber-200', 'icon' => 'text-amber-600'],
                 ['border' => 'border-purple-500', 'header' => 'bg-purple-600', 'badge' => 'bg-purple-50 text-purple-700 border-purple-200', 'icon' => 'text-purple-600'],
             ];
@@ -241,8 +264,12 @@
                 <!-- Card Header (Company Identity) -->
                 <div class="p-5 {{ $color['header'] }} text-white flex items-start justify-between gap-3">
                     <div class="flex items-center gap-3 min-w-0">
-                        <div class="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-sm text-white flex items-center justify-center text-lg font-black flex-shrink-0 shadow-inner">
-                            <i class="fa-solid fa-building"></i>
+                        <div class="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-sm text-white flex items-center justify-center text-lg font-black flex-shrink-0 shadow-inner overflow-hidden p-1">
+                            @if($company->logo)
+                                <img src="{{ asset('storage/' . $company->logo) }}" class="w-full h-full object-contain" alt="{{ $company->name }}">
+                            @else
+                                <i class="fa-solid fa-building"></i>
+                            @endif
                         </div>
                         <div class="min-w-0">
                             <h4 class="font-black text-base text-white truncate" title="{{ $company->name }}">
@@ -291,7 +318,7 @@
 
                         <!-- Total Products -->
                         <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100 flex items-center gap-2">
-                            <i class="fa-solid fa-box-open text-emerald-500 text-sm w-4 text-center"></i>
+                            <i class="fa-solid fa-box-open text-brand-500 text-sm w-4 text-center"></i>
                             <div>
                                 <span class="text-[10px] text-slate-400 block">Total Products</span>
                                 <span class="font-black text-slate-800">{{ $company->products_count ?? 0 }}</span>
@@ -321,9 +348,9 @@
                     <div class="pt-2 border-t border-slate-100 space-y-2 text-xs">
                         <div class="flex items-center justify-between">
                             <span class="text-slate-500 flex items-center gap-1.5">
-                                <i class="fa-solid fa-cash-register text-emerald-500 text-xs"></i> Total Sales:
+                                <i class="fa-solid fa-cash-register text-brand-500 text-xs"></i> Total Sales:
                             </span>
-                            <span class="font-black text-emerald-600">
+                            <span class="font-black text-brand-600">
                                 Rs. {{ number_format($company->sales_sum_total_amount ?? 0, 2) }}
                             </span>
                         </div>

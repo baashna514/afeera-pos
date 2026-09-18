@@ -214,7 +214,7 @@
                         Net Payable Grand Total
                     </div>
                 </div>
-                <div class="text-2xl font-black text-emerald-400" id="grandTotalDisplay">
+                <div class="text-2xl font-black text-brand-400" id="grandTotalDisplay">
                     Rs. 0.00
                 </div>
             </div>
@@ -305,12 +305,16 @@
         if (!product) return [];
 
         const list = [];
+        const baseShortCode = product.unit ? product.unit.short_code : 'pc';
+
         if (product.unit) {
             list.push({
                 unit_id: product.unit.id,
                 name: product.unit.name,
                 short_code: product.unit.short_code,
                 conversion_rate: 1.0,
+                operator: 'multiply',
+                raw_rate: 1.0,
                 selling_price: parseFloat(product.selling_price) || 0,
                 is_base: true,
             });
@@ -320,6 +324,8 @@
                 name: 'Base Unit',
                 short_code: 'pc',
                 conversion_rate: 1.0,
+                operator: 'multiply',
+                raw_rate: 1.0,
                 selling_price: parseFloat(product.selling_price) || 0,
                 is_base: true,
             });
@@ -328,18 +334,25 @@
         if (product.secondary_units && product.secondary_units.length > 0) {
             product.secondary_units.forEach(su => {
                 if (su.unit) {
-                    let conv = parseFloat(su.conversion_rate) || 1.0;
-                    if (su.operator === 'divide') {
-                        conv = 1.0 / conv;
+                    const rawRate = parseFloat(su.conversion_rate) || 1.0;
+                    const op = su.operator || 'multiply';
+                    const conv = (op === 'divide') ? (rawRate > 0 ? (1.0 / rawRate) : 1.0) : rawRate;
+
+                    let price = su.sale_price !== null && su.sale_price !== undefined ? parseFloat(su.sale_price) : 0;
+                    if (price <= 0) {
+                        price = (op === 'divide') ? (rawRate > 0 ? (parseFloat(product.selling_price) / rawRate) : parseFloat(product.selling_price)) : (parseFloat(product.selling_price) * rawRate);
                     }
-                    const price = su.sale_price !== null ? parseFloat(su.sale_price) : (parseFloat(product.selling_price) * conv);
+
                     list.push({
                         unit_id: su.unit.id,
                         name: su.unit.name,
                         short_code: su.unit.short_code,
                         conversion_rate: conv,
+                        operator: op,
+                        raw_rate: rawRate,
                         selling_price: price,
                         is_base: false,
+                        base_short_code: baseShortCode,
                     });
                 }
             });
@@ -474,11 +487,19 @@
 
         const unitSelect = row.querySelector('.unit-select');
         const units = getProductUnits(productId);
+        const baseCode = product?.unit?.short_code || 'unit';
 
         let html = '';
         units.forEach(u => {
             const isSelected = targetUnitId ? (targetUnitId == u.unit_id) : u.is_base;
-            const label = u.is_base ? `${u.name} (${u.short_code}) [Base]` : `${u.name} (= ${u.conversion_rate} Base)`;
+            let label = `${u.name} (${u.short_code})`;
+            if (u.is_base) {
+                label += ' [Base]';
+            } else if (u.operator === 'divide') {
+                label += ` (1 ${baseCode} = ${u.raw_rate} ${u.short_code})`;
+            } else {
+                label += ` (1 ${u.short_code} = ${u.raw_rate} ${baseCode})`;
+            }
             html += `<option value="${u.unit_id}" data-rate="${u.conversion_rate}" data-price="${u.selling_price}" data-code="${u.short_code}" ${isSelected ? 'selected' : ''}>${label}</option>`;
         });
 
@@ -693,7 +714,7 @@
 
         const badge = document.getElementById('statusBadgeDisplay');
         if (paid >= netGrandTotal && netGrandTotal > 0) {
-            badge.className = 'px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800';
+            badge.className = 'px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-brand-100 text-brand-800';
             badge.innerText = 'Paid';
         } else if (paid > 0) {
             badge.className = 'px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-100 text-amber-800';

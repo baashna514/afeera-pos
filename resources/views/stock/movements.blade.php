@@ -22,11 +22,11 @@
             <div class="relative sm:col-span-2">
                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
                 <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Search by reference (e.g. PI-001, INV-001, ADJ-001) or product name..."
-                       class="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                       class="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
             </div>
 
             <div class="flex items-center gap-2">
-                <select name="type" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                <select name="type" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                     <option value="">All Movement Types</option>
                     <option value="purchase" {{ ($type ?? '') === 'purchase' ? 'selected' : '' }}>🟢 Purchase (Stock In)</option>
                     <option value="sale" {{ ($type ?? '') === 'sale' ? 'selected' : '' }}>🔴 Sale (Stock Out)</option>
@@ -71,7 +71,7 @@
                             </td>
                             <td class="px-5 py-3.5">
                                 @if ($m->type === 'purchase')
-                                    <span class="px-2.5 py-0.5 text-[10px] font-bold rounded-md bg-emerald-100 text-emerald-800 uppercase">
+                                    <span class="px-2.5 py-0.5 text-[10px] font-bold rounded-md bg-brand-100 text-brand-800 uppercase">
                                         Purchase (+ In)
                                     </span>
                                 @elseif ($m->type === 'sale')
@@ -88,7 +88,7 @@
                                     </span>
                                 @endif
                             </td>
-                            <td class="px-5 py-3.5 text-center font-black text-sm {{ in_array($m->type, ['purchase', 'adjustment_in']) ? 'text-emerald-600' : 'text-rose-600' }}">
+                            <td class="px-5 py-3.5 text-center font-black text-sm {{ in_array($m->type, ['purchase', 'adjustment_in']) ? 'text-brand-600' : 'text-rose-600' }}">
                                 {{ in_array($m->type, ['purchase', 'adjustment_in']) ? '+' : '-' }}{{ $m->quantity }}
                             </td>
                             <td class="px-5 py-3.5 text-center text-xs text-slate-600 whitespace-nowrap font-mono">

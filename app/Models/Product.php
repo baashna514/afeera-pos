@@ -95,6 +95,8 @@ class Product extends Model
                 'name' => $this->unit->name,
                 'short_code' => $this->unit->short_code,
                 'conversion_rate' => 1.0,
+                'operator' => 'multiply',
+                'raw_rate' => 1.0,
                 'sale_price' => (float) $this->selling_price,
                 'purchase_price' => (float) $this->purchase_price,
                 'is_base' => true,
@@ -103,14 +105,36 @@ class Product extends Model
 
         foreach ($this->secondaryUnits as $su) {
             if ($su->unit) {
-                $rate = (float) ($su->conversion_rate ?? 1.0);
+                $rawRate = (float) ($su->conversion_rate ?? 1.0);
+                $op = $su->operator ?? 'multiply';
+
+                // Effective multiplier to convert quantity of this unit into base unit quantity
+                $effectiveMultiplier = ($op === 'divide') ? ($rawRate > 0 ? (1.0 / $rawRate) : 1.0) : $rawRate;
+
+                // Price calculation: use explicit price if set, otherwise calculate based on operator
+                $salePrice = (float) ($su->sale_price ?? 0);
+                if ($salePrice <= 0) {
+                    $salePrice = ($op === 'divide')
+                        ? ($rawRate > 0 ? round((float) $this->selling_price / $rawRate, 2) : (float) $this->selling_price)
+                        : round((float) $this->selling_price * $rawRate, 2);
+                }
+
+                $purchasePrice = (float) ($su->purchase_price ?? 0);
+                if ($purchasePrice <= 0) {
+                    $purchasePrice = ($op === 'divide')
+                        ? ($rawRate > 0 ? round((float) $this->purchase_price / $rawRate, 2) : (float) $this->purchase_price)
+                        : round((float) $this->purchase_price * $rawRate, 2);
+                }
+
                 $units[] = [
                     'unit_id' => $su->unit->id,
                     'name' => $su->unit->name,
                     'short_code' => $su->unit->short_code,
-                    'conversion_rate' => $rate,
-                    'sale_price' => round((float) $this->selling_price * $rate, 2),
-                    'purchase_price' => round((float) $this->purchase_price * $rate, 2),
+                    'conversion_rate' => $effectiveMultiplier,
+                    'operator' => $op,
+                    'raw_rate' => $rawRate,
+                    'sale_price' => $salePrice,
+                    'purchase_price' => $purchasePrice,
                     'is_base' => false,
                 ];
             }

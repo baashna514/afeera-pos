@@ -11,12 +11,12 @@
         <div class="flex items-center gap-3">
             @if(auth()->user()?->hasPermission('pos.access'))
                 <a href="{{ route('pos.index') }}" class="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold rounded-xl shadow-sm transition flex items-center gap-2">
-                    <i class="fa-solid fa-cart-shopping text-emerald-400"></i>
+                    <i class="fa-solid fa-cart-shopping text-brand-400"></i>
                     <span>Open POS</span>
                 </a>
             @endif
             @if(auth()->user()?->hasPermission('products.create'))
-                <a href="{{ route('products.create') }}" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-sm transition flex items-center gap-2">
+                <a href="{{ route('products.create') }}" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-xl shadow-sm transition flex items-center gap-2">
                     <i class="fa-solid fa-plus text-xs"></i>
                     <span>Add Product</span>
                 </a>
@@ -31,13 +31,13 @@
             <div class="relative lg:col-span-2">
                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
                 <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Search by name or scan barcode..." 
-                       class="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                       class="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
             </div>
 
             <!-- Category Filter -->
             @if(company_has_feature('categories'))
             <div>
-                <select name="category_id" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                <select name="category_id" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                     <option value="">All Categories</option>
                     @foreach ($categories as $cat)
                         <option value="{{ $cat->id }}" {{ (string)$categoryId === (string)$cat->id ? 'selected' : '' }}>
@@ -50,7 +50,7 @@
 
             <!-- Stock Status Filter -->
             <div class="flex items-center gap-2">
-                <select name="stock_filter" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                <select name="stock_filter" class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
                     <option value="">All Stock Statuses</option>
                     <option value="low_stock" {{ $stockFilter === 'low_stock' ? 'selected' : '' }}>⚠️ Low Stock</option>
                     <option value="out_of_stock" {{ $stockFilter === 'out_of_stock' ? 'selected' : '' }}>🚫 Out of Stock</option>
@@ -89,7 +89,7 @@
                     @forelse ($products as $product)
                         <tr class="hover:bg-slate-50/80 transition">
                             <td class="px-5 py-4">
-                                <a href="{{ route('products.show', $product) }}" class="font-bold text-slate-800 hover:text-emerald-600 hover:underline">{{ $product->name }}</a>
+                                <a href="{{ route('products.show', $product) }}" class="font-bold text-slate-800 hover:text-brand-600 hover:underline">{{ $product->name }}</a>
                                 @if ($product->description)
                                     <div class="text-[11px] text-slate-400 truncate max-w-xs">{{ $product->description }}</div>
                                 @endif
@@ -127,8 +127,8 @@
                                         <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Low Stock
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold rounded-md bg-emerald-100 text-emerald-700 uppercase">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> In Stock
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold rounded-md bg-brand-100 text-brand-700 uppercase">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span> In Stock
                                     </span>
                                 @endif
                             </td>
@@ -137,7 +137,7 @@
                                     <a href="{{ route('products.printLabels', $product) }}" class="p-2 text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition" title="Print Barcode Labels">
                                         <i class="fa-solid fa-barcode"></i>
                                     </a>
-                                    <a href="{{ route('products.show', $product) }}" class="p-2 text-slate-400 hover:text-emerald-600 rounded-lg hover:bg-emerald-50 transition" title="View Stock & Details">
+                                    <a href="{{ route('products.show', $product) }}" class="p-2 text-slate-400 hover:text-brand-600 rounded-lg hover:bg-brand-50 transition" title="View Stock & Details">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
                                     @if(auth()->user()?->hasPermission('products.edit'))
@@ -163,7 +163,7 @@
                                 <div class="flex flex-col items-center justify-center">
                                     <i class="fa-solid fa-box-open text-4xl text-slate-200 mb-3"></i>
                                     <p class="font-medium text-sm">No products found matching the criteria.</p>
-                                    <a href="{{ route('products.create') }}" class="mt-2 text-xs font-bold text-emerald-600 hover:underline">
+                                    <a href="{{ route('products.create') }}" class="mt-2 text-xs font-bold text-brand-600 hover:underline">
                                         Add your first product
                                     </a>
                                 </div>

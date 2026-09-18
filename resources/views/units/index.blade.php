@@ -10,7 +10,7 @@
         </div>
         <div class="flex items-center gap-3">
             @if(auth()->user()?->hasPermission('units.create'))
-                <a href="{{ route('units.create') }}" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-sm transition flex items-center gap-2">
+                <a href="{{ route('units.create') }}" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-xl shadow-sm transition flex items-center gap-2">
                     <i class="fa-solid fa-plus text-xs"></i>
                     <span>Add Unit</span>
                 </a>
@@ -24,7 +24,7 @@
             <div class="relative flex-1">
                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
                 <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Search unit by name or short code (e.g. pc, box, kg)..." 
-                       class="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                       class="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
             </div>
             <button type="submit" class="px-4 py-2 bg-slate-800 text-white text-sm font-semibold rounded-lg hover:bg-slate-700 transition">
                 Search
@@ -54,7 +54,7 @@
                     @forelse ($units as $unit)
                         <tr class="hover:bg-slate-50/80 transition">
                             <td class="px-6 py-4 font-bold text-slate-800 flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs">
+                                <div class="w-8 h-8 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center font-bold text-xs">
                                     <i class="fa-solid fa-scale-balanced"></i>
                                 </div>
                                 <span>{{ $unit->name }}</span>
@@ -68,7 +68,7 @@
                                         1 {{ $unit->short_code }} = {{ (float)$unit->conversion_factor }} {{ $unit->baseUnit->short_code }}
                                     </span>
                                 @else
-                                    <span class="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                    <span class="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-brand-50 text-brand-700 border border-brand-200">
                                         Base Unit (Root)
                                     </span>
                                 @endif
@@ -103,7 +103,7 @@
                                 <div class="flex flex-col items-center justify-center">
                                     <i class="fa-solid fa-scale-balanced text-4xl text-slate-200 mb-3"></i>
                                     <p class="font-medium text-sm">No units found.</p>
-                                    <a href="{{ route('units.create') }}" class="mt-2 text-xs font-bold text-emerald-600 hover:underline">
+                                    <a href="{{ route('units.create') }}" class="mt-2 text-xs font-bold text-brand-600 hover:underline">
                                         Add your first unit
                                     </a>
                                 </div>
